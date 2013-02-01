@@ -1,7 +1,8 @@
 # tested with GNU make 3.81
 SHELL   = /usr/bin/env sh
 CC      = gcc
-CFLAGS  = -g
+# flag -Wextra replaces -W in newer gcc's.  Use -W if you have an old version of gcc and get an arg error.
+CFLAGS  = -g -Wall -Wextra -pedantic -std=c99
 LD      = gcc
 
 #### targets and prerequisites ####
