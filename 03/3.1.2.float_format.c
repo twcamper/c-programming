@@ -12,7 +12,7 @@ int main(void)
   printf("\nExercise 3.1.2\n");
 
   float x = 12.9f;
-  printf("|%-7.1e|%4.6e|%-5.3f|%6.0f|\n", x, x, x, x);
+  printf("|%-8.1e|%10.6e|%-8.3f|%6.0f|\n", x, x, x, x);
 
 
   return 0;
