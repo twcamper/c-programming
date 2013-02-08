@@ -3,11 +3,17 @@
 
 int main(void)
 {
-  float commission, value, percentage, base;
+  int shares;
+  float price, commission, value, percentage, base;
   float minimum = 39.00;
 
-  printf("Enter value of trade: ");
-  scanf("%f", &value);
+  printf("Number of shares: ");
+  scanf("%d", &shares);
+
+  printf("Price per share: ");
+  scanf("%f", &price);
+
+  value = price * shares;
 
   if (value < 2500.00f) {
     base = 30.00;
@@ -34,7 +40,15 @@ int main(void)
   if (commission < minimum)
     commission = minimum;
 
-  printf("Commission: $%.2f\n", commission);
+  printf("Our Commission: $%.2f\n", commission);
+
+  base = 33.00;
+  percentage = 0.02;
+  if (shares > 2000) 
+    percentage = 0.03;
+
+  commission = base + shares * percentage;
+  printf("Their Commission: $%.2f\n", commission);
 
   return 0;
 }
