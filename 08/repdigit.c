@@ -3,8 +3,9 @@
 
 int main(void)
 {
-  bool digit_seen[10] = {false};
+  int digits[10] = {0};
   int digit;
+  bool any_repeats = false;
   long n;
 
   printf("Enter a number: ");
@@ -12,14 +13,20 @@ int main(void)
 
   while (n > 0)  {
     digit = n % 10;
-    if (digit_seen[digit])
-      break;
-    digit_seen[digit] = true;
+    digits[digit]++;
+    if (!any_repeats && digits[digit] > 1)
+      any_repeats = true;
     n /= 10;
   }
 
-  if (n > 0)
-    printf("Repeated digit\n");
+  if (any_repeats) {
+    printf("Repeated digit(s): ");
+    for (digit = 0; digit < 10; digit++) {
+      if (digits[digit] > 1)
+        printf("%2d", digit);
+    }
+    puts("");
+  }
   else
     printf("No repeated digit\n");
 
