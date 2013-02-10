@@ -1,11 +1,9 @@
 #include <stdio.h>
-#include <stdbool.h>
-
+#define DIGIT_FORMAT "%3d"
 int main(void)
 {
-  int digits[10] = {0};
+  int digit_counts[10] = {0};
   int digit;
-  bool any_repeats = false;
   long n;
 
   printf("Enter a number: ");
@@ -13,22 +11,21 @@ int main(void)
 
   while (n > 0)  {
     digit = n % 10;
-    digits[digit]++;
-    if (!any_repeats && digits[digit] > 1)
-      any_repeats = true;
+    digit_counts[digit]++;
     n /= 10;
   }
 
-  if (any_repeats) {
-    printf("Repeated digit(s): ");
-    for (digit = 0; digit < 10; digit++) {
-      if (digits[digit] > 1)
-        printf("%2d", digit);
-    }
-    puts("");
+  printf("Digit:\t\t");
+  for (digit = 0; digit < 10; digit++) {
+    printf(DIGIT_FORMAT, digit);
   }
-  else
-    printf("No repeated digit\n");
+  puts("");
+
+  printf("Occurrences:\t");
+  for (digit = 0; digit < 10; digit++) {
+    printf(DIGIT_FORMAT, digit_counts[digit]);
+  }
+  puts("");
 
   return 0;
 }
