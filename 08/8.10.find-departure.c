@@ -3,6 +3,8 @@
 
 #define FLIGHTS ((int) (sizeof(departures) / sizeof(departures[0])))
 
+void print_am_pm(int minutes_since_midnight);
+
 int main(void)
 {
   int departures[] = {
@@ -27,7 +29,7 @@ int main(void)
     23*60+58
   };
 
-  int flight, diff, nearest_departure, hour_in, minute_in, requested_departure;
+  int flight, diff, f, hour_in, minute_in, requested_departure;
   /* start as max possible diff */
   int minimum_difference = 23*60+59;
 
@@ -49,19 +51,39 @@ int main(void)
    *       store the difference as 'mininum_difference' for use in next comparison
    *       store the array index as 'closest' for use in accessing the flight info
    */
-  nearest_departure = 0;
-  for (flight = 0; flight < FLIGHTS; flight++)  {
-    diff = abs(requested_departure - departures[flight]);
+  for (flight = 0, f = 0; f < FLIGHTS; f++)  {
+    diff = abs(requested_departure - departures[f]);
     if (diff < minimum_difference)  {
       minimum_difference = diff;
-      nearest_departure = flight;
+      flight = f;
     }
   }
 
   /*
    * display the user's answer
    */
-  printf("Closest departure time is %d\n", nearest_departure);
+  printf("Closest departure time is ");
+  print_am_pm(departures[flight]);
+  printf(", arriving at ");
+  print_am_pm(arrivals[flight]);
+  printf("\n");
 
   return 0;
+}
+
+void print_am_pm(int minutes_since_midnight)
+{
+  int hours = minutes_since_midnight / 60;
+  int minutes = minutes_since_midnight % 60;
+  char meridian[] = "AM";
+
+  if (hours >= 12) {
+    meridian[0] = 'P';
+    hours -= 12;
+  }
+  if (hours == 0)
+    hours = 12;
+
+  printf("%d:%.2d %s", hours, minutes, meridian);
+
 }
