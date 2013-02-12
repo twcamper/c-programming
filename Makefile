@@ -2,7 +2,7 @@
 SHELL   = /usr/bin/env sh
 CC      = gcc
 # flag -Wextra replaces -W in newer gcc's.  Use -W if you have an old version of gcc and get an arg error.
-CFLAGS  = -g -Wall -Wextra -pedantic -std=c99
+CFLAGS  = -g3 -gdwarf-4 -Wall -Wextra -pedantic -std=c99
 LD      = gcc
 
 #### targets and prerequisites ####
