@@ -35,7 +35,6 @@ $(OBJECTS) : %.o : %.c
 
 clean: clean-obj clean-archives clean-bin
 
-# GNU xargs
 XARGS_RM = xargs rm -fv
 
 clean-obj:
