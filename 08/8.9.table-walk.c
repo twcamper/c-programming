@@ -37,8 +37,7 @@ int main(void)
    * Break out of the walking loop early if we get boxed in.
    *
    */
-  row = 0;
-  col = 0;
+  row = col = 0;
   for (letter = 0; letter < 26; letter++)  {
     /*make the next move*/
     table[row][col] = alphabet[letter];
@@ -62,7 +61,7 @@ int main(void)
       possible[RIGHT] = true;
 
     /*
-     * exit if there no possible moves
+     * exit if there are no possible moves
      */
     for (move = 0; possible[move] == false && move < MOVES; move++);
 
@@ -78,8 +77,7 @@ int main(void)
       move = rand() % MOVES;
       if (possible[move])
         break;
-      else
-        move = -1;
+      move = -1;
     }
 
     /*
