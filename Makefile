@@ -1,8 +1,18 @@
 # tested with GNU make 3.81
 SHELL   = /usr/bin/env sh
 CC      = gcc
+
+# To get macro expansion in gdb we need -g level 3, and -gdwarf level 4.
+# Those settings only work for me on gcc-4.7 on linux.
+# Builds fail on the mac with the gcc-4.7.2 that I built.
+DBGFLAGS = -g
+CCVERSION = $(shell ls -l /usr/bin/gcc | grep -oE '...$$')
+ifeq ($(CCVERSION),4.7)
+	DBGFLAGS = -g3 -gdwarf-4
+endif
+
 # flag -Wextra replaces -W in newer gcc's.  Use -W if you have an old version of gcc and get an arg error.
-CFLAGS  = -g3 -gdwarf-4 -Wall -Wextra -pedantic -std=c99
+CFLAGS  = $(DBGFLAGS) -Wall -Wextra -pedantic -std=c99
 LD      = gcc
 
 #### targets and prerequisites ####
@@ -26,7 +36,7 @@ $(OBJECTS) : %.o : %.c
 clean: clean-obj clean-archives clean-bin
 
 # GNU xargs
-XARGS_RM = xargs --no-run-if-empty rm -fv
+XARGS_RM = xargs rm -fv
 
 clean-obj:
 	@find . -name '*.o' | $(XARGS_RM)
