@@ -15,9 +15,6 @@ int main(void)
   char table[ROWS][COLS];
   int move, letter, row, col;
   bool possible[4];
-  char alphabet[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-                     'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
-                     'U', 'V', 'W', 'X', 'Y', 'Z'};
 
   /* using rand() to get the next move */
   srand((unsigned) time(NULL));
@@ -39,8 +36,8 @@ int main(void)
    */
   row = col = 0;
   for (letter = 0; letter < 26; letter++)  {
-    /*make the next move*/
-    table[row][col] = alphabet[letter];
+    /*make the next move, advancing through the ASCII table in the uppercase range*/
+    table[row][col] = 'A' + letter;
 
     /*
      * determine possible moves
