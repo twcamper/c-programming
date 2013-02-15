@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#include <limits.h>
 
 #define RANGE 1024
 
@@ -69,8 +68,12 @@ void select_sort(int a[], int n)
 void print_array(int a[], int n)
 {
   int i;
-  for (i = 0; i < n; i++)
+  for (i = 0; i < n; i++)  {
+    /*print the newline first, otherwise the first row is an odd length*/
+    if (i > 0 && i % 12 == 0)
+      printf("\n");
     printf("%d\t", a[i]);
+    }
 
   printf("\n");
 }
