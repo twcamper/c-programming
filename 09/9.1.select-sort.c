@@ -9,6 +9,11 @@ void print_array(int a[], int n);
 
 int main(int argc, char *argv[])
 {
+  if (argc < 2) {
+    fprintf(stderr, "Enter an integer array size.\n");
+    return 1;
+  }
+
   int size = atoi(argv[1]);
   int i, sort_me[size];
 
