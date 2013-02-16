@@ -42,3 +42,5 @@ weird/fgets-buffer-overflow
 09/9.3.11.gpa
 09/9.1.select-sort
 09/9.3.table-walk
+09/9.4.anagram-test
+09/9.5.magic-square
