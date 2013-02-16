@@ -2,20 +2,22 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-void read_word(int letter_counts[], int factor);
-bool is_all_zeroes(int letter_counts[]);
+#define SIZE 26
+void read_word(int letter_counts[]);
+bool arrays_equal(int letter_counts[], int other[]);
 
 int main(void)
 {
-  int letter_counts[26] = {0};
+  int letter_counts1[SIZE] = {0};
+  int letter_counts2[SIZE] = {0};
 
   printf("Enter the first word: ");
-  read_word(letter_counts, 1);
+  read_word(letter_counts1);
 
   printf("Enter the second word: ");
-  read_word(letter_counts, -1);
+  read_word(letter_counts2);
 
-  if (is_all_zeroes(letter_counts))
+  if (arrays_equal(letter_counts1, letter_counts2))
     printf("The words are anagrams\n");
   else
     printf("The words are not anagrams\n");
@@ -23,21 +25,21 @@ int main(void)
   return 0;
 }
 
-void read_word(int letter_counts[], int factor)
+void read_word(int letter_counts[])
 {
   char ch;
   while ((ch = getchar()) != '\n') {
     if (isalpha(ch))
-      letter_counts[tolower(ch) - 'a'] += factor;
+      letter_counts[tolower(ch) - 'a']++;
   }
 }
-bool is_all_zeroes(int letter_counts[])
+bool arrays_equal(int letter_counts[], int other[])
 {
   int i;
   /*find a nonzero value*/
-  for (i = 0; i < 26; i++) {
-    if (letter_counts[i] != 0)
+  for (i = 0; i < SIZE; i++) {
+    if (letter_counts[i] != other[i])
       break;
   }
-  return i == 26 ? true : false;
+  return i == SIZE ? true : false;
 }
