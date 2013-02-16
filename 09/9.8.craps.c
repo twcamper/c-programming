@@ -8,12 +8,14 @@ bool play_game(void);
 bool win(void);
 bool lose(void);
 void print_roll(int);
+void initialize_random_number_generator(void);
 
 int main(void)
 {
-  char response[2];
+  char response;
   int wins, losses;
   wins = losses = 0;
+
 
   do {
     if (play_game())
@@ -22,8 +24,8 @@ int main(void)
       losses++;
 
     printf("Play again? ");
-    scanf("%1s", response);
-  } while ( response[0] == 'y' || response[0] == 'Y');
+    scanf(" %c", &response);
+  } while ( response == 'y' || response == 'Y');
 
   printf("Wins: %d\tLosses: %d\n", wins, losses);
 
@@ -39,8 +41,8 @@ int roll_dice(void)
 }
 bool play_game(void)
 {
-  srand((unsigned) time(NULL));
   int sum, point;
+  initialize_random_number_generator();
 
   printf("\n");
 
@@ -79,4 +81,8 @@ bool lose(void)
 void print_roll(int sum)
 {
   printf("dice = %d\n", sum);
+}
+void initialize_random_number_generator(void)
+{
+  srand((unsigned) time(NULL));
 }
