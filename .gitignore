@@ -46,3 +46,4 @@ weird/fgets-buffer-overflow
 09/9.5.magic-square
 09/9.8.craps
 weird/scanf-clobbers-adjacent-var
+10/10.1.3.scope
