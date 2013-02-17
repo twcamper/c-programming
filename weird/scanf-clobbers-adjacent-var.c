@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int play_game(void);
+int play_game(void)
+{
+  return rand() % 2;
+}
 
 int main(void)
 {
@@ -21,22 +24,17 @@ int main(void)
     printf("Play again? ");
     /* 
      * this format string (" %c") works, and causes no problems
-     */ 
+     */
     /*scanf(" %c", &response);*/
 
     /*
      * with this format string, (" %s") 
      * the value of 'losses' gets reset to 0
-     */ 
+     */
     scanf(" %s", &response);
   } while ( response == 'y' || response == 'Y');
 
   printf("Wins: %d\tLosses: %d\n", wins, losses);
 
   return 0;
-}
-
-int play_game(void)
-{
-  return rand() % 2;
 }
