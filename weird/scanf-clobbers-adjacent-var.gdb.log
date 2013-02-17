@@ -1,0 +1,49 @@
+
+Reading symbols from /home/tim/c/c-programming/weird/scanf-clobbers-adjacent-var...done.
+(gdb) br 13
+Breakpoint 1 at 0x400621: file weird/scanf-clobbers-adjacent-var.c, line 13.
+(gdb) r
+Starting program: /home/tim/c/c-programming/weird/scanf-clobbers-adjacent-var 
+
+Breakpoint 1, main () at weird/scanf-clobbers-adjacent-var.c:13
+13	    if (play_game()) {
+(gdb) p &losses 
+$1 = (int *) 0x7fffffffe228
+(gdb) p &response
+$2 = 0x7fffffffe227 ""
+(gdb) n
+14	      printf("Win!\n");
+(gdb) n
+15	      wins++;
+(gdb) n
+21	    printf("Play again? ");
+(gdb) n
+23	    scanf(" %s", &response);
+(gdb) n
+24	  } while ( response == 'y' || response == 'Y');
+(gdb) c
+Continuing.
+
+Breakpoint 1, main () at weird/scanf-clobbers-adjacent-var.c:13
+13	    if (play_game()) {
+(gdb) n
+17	      printf("Lose.\n");
+(gdb) n
+18	      losses++;
+(gdb) n
+21	    printf("Play again? ");
+(gdb) p losses 
+$3 = 1
+(gdb) n
+23	    scanf(" %s", &response);
+(gdb) n
+24	  } while ( response == 'y' || response == 'Y');
+(gdb) [0mp losses
+$4 = 0
+(gdb) c
+Continuing.
+Win!
+Play again? Lose.
+Play again? Wins: 1	Losses: 0
+[Inferior 1 (process 12479) exited normally]
+(gdb) q
