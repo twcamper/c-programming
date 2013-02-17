@@ -12,8 +12,8 @@ bool is_empty(void);
 bool is_full(void);
 void push(char ch);
 char pop(void);
-void stack_overflow(void);
-void stack_underflow(void);
+void exit_stack_overflow(void);
+void report_stack_underflow(void);
 void exit_incorrect_nesting(void);
 
 int main(void)
@@ -62,26 +62,27 @@ bool is_full(void)
 void push(char ch)
 {
   if (is_full())
-    stack_overflow();
+    exit_stack_overflow();
   else
     stack[top++] = ch;
 }
 char pop(void)
 {
-  if (is_empty())
-    stack_underflow();
+  if (is_empty()) {
+    report_stack_underflow();
+    exit(EXIT_FAILURE);
+  }
   else
     return stack[--top];
 }
-void stack_overflow()
+void exit_stack_overflow()
 {
   fprintf(stderr, "Stack Overflow\n");
   exit(EXIT_FAILURE);
 }
-void stack_underflow(void)
+void report_stack_underflow(void)
 {
   fprintf(stderr, "Stack Underflow\n");
-  exit(EXIT_FAILURE);
 }
 void exit_incorrect_nesting(void)
 {
