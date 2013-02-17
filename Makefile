@@ -16,7 +16,9 @@ CFLAGS  = $(DBGFLAGS) -Wall -Wextra -pedantic -std=c99
 LD      = gcc
 
 #### targets and prerequisites ####
-SRCS        = $(shell find . -name '*.c' |  tr '\n' ' ')
+TEMP        = $(shell find . -name '*.c' |  tr '\n' ' ')
+#### don't build the example programs from the textbook ###
+SRCS        = $(filter-out ./src%.c, $(TEMP))
 OBJECTS     = $(SRCS:.c=.o)
 EXECUTABLES = $(SRCS:.c=)
 
