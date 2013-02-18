@@ -22,7 +22,7 @@
 #define NUM_CARDS 5
 
 /* external variables */
-bool straight, flush, four, three;
+bool royal_flush, straight, flush, four, three;
 int pairs;   /* can be 0, 1, or 2 */
 
 /* prototypes */
@@ -31,7 +31,8 @@ void analyze_hand(int [][2]);
 void print_result(void);
 bool card_exists(int hand[][2], int rank, int suit);
 bool is_flush(int hand[][2]);
-bool is_straight(int hand[][2]);
+bool is_straight(int, int);
+bool is_royal_flush(int);
 void count_ranks_in_hand(int hand[][2], int ranks_in_hand[][2]);
 
 /**********************************************************
@@ -109,26 +110,40 @@ void read_cards(int hand[][2])
   }  /* end hand */
 }
 
-/**********************************************************
- * analyze_hand: Determines whether the hand contains a   *
- *               straight, a flush, four-of-a-kind,       *
- *               and/or three-of-a-kind; determines the   *
- *               number of pairs; stores the results into *
- *               the external variables straight, flush,  *
- *               four, three, and pairs.                  *
- **********************************************************/
+/****************************************************************
+ * analyze_hand: Determines whether the hand contains a
+ *               royal_flush, straight, a flush, four-of-a-kind,
+ *               and/or three-of-a-kind; determines the
+ *               number of pairs; stores the results into
+ *               the external variables straight, flush,
+ *               four, three, and pairs.
+ ****************************************************************/
 void analyze_hand(int hand[][2])
 {
-  int hash_pair;
+  int card, min_rank, max_rank, hash_pair;
   int ranks_in_hand[NUM_CARDS][2];
 
   flush = is_flush(hand);
-  if ((straight = is_straight(hand)))
-    return;
 
-  four = false;
+  /* find the smallest and largest ranks */
+  max_rank = min_rank = hand[0][RANK];
+  for (card = 1; card < NUM_CARDS; card++) {
+    if (hand[card][RANK] < min_rank)
+      min_rank = hand[card][RANK];
+    if (hand[card][RANK] > max_rank)
+      max_rank = hand[card][RANK];
+  }
+
+  straight =  is_straight(min_rank, max_rank);
+
+  royal_flush = is_royal_flush(min_rank);
+
+  four  = false;
   three = false;
   pairs = 0;
+
+  if (flush || straight || royal_flush)
+    return;
 
   count_ranks_in_hand(hand, ranks_in_hand);
   /* a hand can have from 1 to 5 ranks */
@@ -149,7 +164,8 @@ void analyze_hand(int hand[][2])
  **********************************************************/
 void print_result(void)
 {
-  if (straight && flush) printf("Straight flush");
+  if (royal_flush)       printf("Royal flush");
+  else if (straight && flush) printf("Straight flush");
   else if (four)         printf("Four of a kind");
   else if (three &&
            pairs == 1)   printf("Full house");
@@ -173,28 +189,20 @@ bool card_exists(int hand[][2], int rank, int suit)
 bool is_flush(int hand[][2])
 {
   /* check for flush: all of same suit */
-  if (hand[0][SUIT] == hand[1][SUIT] && hand[0][SUIT] == hand[2][SUIT] &&
-      hand[0][SUIT] == hand[3][SUIT] && hand[0][SUIT] == hand[4][SUIT]) {
-    return true;
-  }
-  return false;
-
+  for (int card = 1; card < NUM_CARDS; card++)
+    if (hand[0][SUIT] != hand[card][SUIT])
+      return false;
+  return true;
 }
-bool is_straight(int hand[][2])
+bool is_straight(int min_rank, int max_rank)
 {
-  /* check for straight: 5 consecutive ranks */
-  int card, min_rank, max_rank;
-
-  /* find the smallest and largest ranks */
-  max_rank = min_rank = hand[0][0];
-  for (card = 1; card < NUM_CARDS; card++) {
-    if (hand[card][RANK] < min_rank)
-      min_rank = hand[card][RANK];
-    if (hand[card][RANK] > max_rank)
-      max_rank = hand[card][RANK];
-  }
-
+  /* are all five cards consecutive? */
   return max_rank - min_rank == NUM_CARDS - 1;
+}
+bool is_royal_flush(int min_rank)
+{
+  /* if we're consecutive starting at 10, then max must be the Ace */
+  return flush && straight && min_rank == 10;
 }
 void count_ranks_in_hand(int hand[][2], int ranks_in_hand[][2])
 {
