@@ -31,8 +31,6 @@ void analyze_hand(int [][2]);
 void print_result(void);
 bool card_exists(int hand[][2], int rank, int suit);
 bool is_flush(int hand[][2]);
-bool is_straight(int, int);
-bool is_royal_flush(int);
 void count_ranks_in_hand(int hand[][2], int ranks_in_hand[][2]);
 
 /**********************************************************
@@ -134,9 +132,11 @@ void analyze_hand(int hand[][2])
       max_rank = hand[card][RANK];
   }
 
-  straight =  is_straight(min_rank, max_rank);
+  /* difference will be 4 (for a 5 card hand) if they're all consecutive */
+  straight =  max_rank - min_rank == NUM_CARDS - 1;
 
-  royal_flush = is_royal_flush(min_rank);
+  /* if we're consecutive starting at 10, then max must be the Ace */
+  royal_flush = flush && straight && min_rank == 10;
 
   four  = false;
   three = false;
@@ -193,16 +193,6 @@ bool is_flush(int hand[][2])
     if (hand[0][SUIT] != hand[card][SUIT])
       return false;
   return true;
-}
-bool is_straight(int min_rank, int max_rank)
-{
-  /* are all five cards consecutive? */
-  return max_rank - min_rank == NUM_CARDS - 1;
-}
-bool is_royal_flush(int min_rank)
-{
-  /* if we're consecutive starting at 10, then max must be the Ace */
-  return flush && straight && min_rank == 10;
 }
 void count_ranks_in_hand(int hand[][2], int ranks_in_hand[][2])
 {
