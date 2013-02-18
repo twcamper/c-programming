@@ -15,8 +15,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define NUM_RANKS 13
-#define NUM_SUITS 4
+#define RANK 0
+#define SUIT 1
+#define KEY 0
+#define VALUE 1
 #define NUM_CARDS 5
 
 /* external variables */
@@ -58,7 +60,7 @@ void read_cards(int hand[][2])
   bool bad_card;
 
   for (card = 0; card < NUM_CARDS; card++)
-    hand[card][0] = hand[card][1] = 0;
+    hand[card][RANK] = hand[card][SUIT] = 0;
 
   card = 0;
   while (card < NUM_CARDS) {
@@ -100,8 +102,8 @@ void read_cards(int hand[][2])
     else if (card_exists(hand, rank, suit))
       printf("Duplicate card; ignored.\n");
     else {
-      hand[card][0] = rank;
-      hand[card][1] = suit;
+      hand[card][RANK] = rank;
+      hand[card][SUIT] = suit;
       card++;
     }
   }  /* end hand */
@@ -117,7 +119,7 @@ void read_cards(int hand[][2])
  **********************************************************/
 void analyze_hand(int hand[][2])
 {
-  int rank;
+  int hash_pair;
   int ranks_in_hand[NUM_CARDS][2];
 
   flush = is_flush(hand);
@@ -132,10 +134,10 @@ void analyze_hand(int hand[][2])
   /* a hand can have from 1 to 5 ranks */
 
   /* [> check for 4-of-a-kind, 3-of-a-kind, and pairs <] */
-  for (rank = 0; rank < NUM_CARDS && ranks_in_hand[rank][0] != 0; rank++) {
-    if (ranks_in_hand[rank][1] == 4) four = true;
-    if (ranks_in_hand[rank][1] == 3) three = true;
-    if (ranks_in_hand[rank][1] == 2) pairs++;
+  for (hash_pair = 0; hash_pair < NUM_CARDS && ranks_in_hand[hash_pair][KEY] != 0; hash_pair++) {
+    if (ranks_in_hand[hash_pair][VALUE] == 4) four = true;
+    if (ranks_in_hand[hash_pair][VALUE] == 3) three = true;
+    if (ranks_in_hand[hash_pair][VALUE] == 2) pairs++;
   }
 }
 
@@ -163,7 +165,7 @@ void print_result(void)
 bool card_exists(int hand[][2], int rank, int suit)
 {
   for (int card = 0; card < NUM_CARDS; card++)
-    if (hand[card][0] == rank && hand[card][1] == suit)
+    if (hand[card][RANK] == rank && hand[card][SUIT] == suit)
       return true;
 
   return false;
@@ -171,8 +173,8 @@ bool card_exists(int hand[][2], int rank, int suit)
 bool is_flush(int hand[][2])
 {
   /* check for flush: all of same suit */
-  if (hand[0][1] == hand[1][1] && hand[0][1] == hand[2][1] &&
-      hand[0][1] == hand[3][1] && hand[0][1] == hand[4][1]) {
+  if (hand[0][SUIT] == hand[1][SUIT] && hand[0][SUIT] == hand[2][SUIT] &&
+      hand[0][SUIT] == hand[3][SUIT] && hand[0][SUIT] == hand[4][SUIT]) {
     return true;
   }
   return false;
@@ -186,44 +188,41 @@ bool is_straight(int hand[][2])
   /* find the smallest and largest ranks */
   max_rank = min_rank = hand[0][0];
   for (card = 1; card < NUM_CARDS; card++) {
-    if (hand[card][0] < min_rank)
-      min_rank = hand[card][0];
-    if (hand[card][0] > max_rank)
-      max_rank = hand[card][0];
+    if (hand[card][RANK] < min_rank)
+      min_rank = hand[card][RANK];
+    if (hand[card][RANK] > max_rank)
+      max_rank = hand[card][RANK];
   }
 
   return max_rank - min_rank == NUM_CARDS - 1;
 }
 void count_ranks_in_hand(int hand[][2], int ranks_in_hand[][2])
 {
-  int card, rank;
+  int card, hash_pair;
 
-  for (rank = 0; rank < NUM_CARDS; rank++)
-    ranks_in_hand[rank][0] = ranks_in_hand[rank][1] = 0;
+  for (hash_pair = 0; hash_pair < NUM_CARDS; hash_pair++)
+    ranks_in_hand[hash_pair][KEY] = ranks_in_hand[hash_pair][VALUE] = 0;
 
   /*
    * start with rank of first card in the hand
    * as our first hash key
    */
-  ranks_in_hand[0][0] = hand[0][0];
-  ranks_in_hand[0][1] = 1;
+  ranks_in_hand[0][KEY] = hand[0][RANK];
+  ranks_in_hand[0][VALUE] = 1;
 
   for (card = 1; card < NUM_CARDS; card++)  {
-    rank = 0;
+    hash_pair = 0;
     /* find the current hand's rank or the next empty element
      * which will be our next hash key
      */
-    while (ranks_in_hand[rank][0] != hand[card][0] && ranks_in_hand[rank][0] != 0)
-      rank++;
+    while (ranks_in_hand[hash_pair][KEY] != hand[card][RANK] && ranks_in_hand[hash_pair][KEY] != 0)
+      hash_pair++;
     /*
-     * set the new hash key
-     * because the current hand's rank
-     * was not found in the hash
+     * new hash key: the current hand's rank was not found in the hash
      */
-    if (ranks_in_hand[rank][0] == 0)
-      ranks_in_hand[rank][0] = hand[card][0];
+    if (ranks_in_hand[hash_pair][KEY] == 0)
+      ranks_in_hand[hash_pair][KEY] = hand[card][RANK];
 
-    /* update the count value for the current hash key (a rank) */
-    ranks_in_hand[rank][1]++;
+    ranks_in_hand[hash_pair][VALUE]++;
   }
 }
