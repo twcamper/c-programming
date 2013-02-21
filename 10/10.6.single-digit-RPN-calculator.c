@@ -15,12 +15,16 @@ bool is_empty(void);
 bool is_full(void);
 void push(int operand);
 char pop(void);
+void subtract(void);
+void divide(void);
 void exit_stack_overflow(void);
 void exit_stack_underflow(void);
+void warn_incomplete_expression(void);
 
 int main(void)
 {
   char ch;
+  int value;
 
   for (;;) {
     printf("Enter an RPN expression: ");
@@ -32,22 +36,28 @@ int main(void)
       else if ( ch == '+')
         push(pop() + pop());
       else if ( ch == '-')
-        push(pop() - pop());
+        subtract();
       else if ( ch == '*')
         push(pop() * pop());
       else if ( ch == '/')
-        push(pop() / pop());
+        divide();
       else
         break;
     }
 
     if (ch == '=') {
-      printf("Value: %d\n", pop());
-      empty();
-    } else
+      value = pop();
+      if (is_empty()) {
+        printf("Value: %d\n",  value);
+      } else {
+        warn_incomplete_expression();
+        empty();
+      }
+    } else {
+      /* Quit - neither an operator nor a digit operand */
       break;
+    }
   }
-
 
   return 0;
 }
@@ -82,6 +92,24 @@ void exit_stack_overflow(void)
 }
 void exit_stack_underflow(void)
 {
-  fprintf(stderr, "Not enough operands\n");
+  fprintf(stderr, "Not enough operands in expression\n");
   exit(EXIT_FAILURE);
+}
+void warn_incomplete_expression(void)
+{
+  fprintf(stderr, "Incomplete expression\n");
+}
+void subtract(void)
+{
+  int subtrahend = pop();
+  int minuend = pop();
+
+  push(minuend - subtrahend);
+}
+void divide(void)
+{
+  int divisor = pop();
+  int dividend = pop();
+
+  push(dividend / divisor);
 }
