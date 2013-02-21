@@ -49,3 +49,4 @@ weird/scanf-clobbers-adjacent-var
 10/10.1.3.scope
 10/10.1.global-stack
 10/10.2-5.poker
+10/10.6.single-digit-RPN-calculator
