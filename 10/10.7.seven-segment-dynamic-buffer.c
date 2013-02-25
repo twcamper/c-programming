@@ -21,7 +21,13 @@
       | 3 |
        ---
 */
-const int segments_per_character[10][7] = {
+#define NUM_SEGMENTS 7
+#define CHAR_HEIGHT 3
+#define CHAR_WIDTH  4
+#define MAX_DIGITS 34
+#define COLUMNS (CHAR_WIDTH * MAX_DIGITS)
+
+const int segments_per_character[10][NUM_SEGMENTS] = {
   {1, 1, 1, 1, 1, 1, 0},  // 0
   {0, 1, 1, 0, 0, 0, 0},  // 1
   {1, 1, 0, 1, 1, 0, 1},  // 2
@@ -35,7 +41,7 @@ const int segments_per_character[10][7] = {
 };
 
 /* segment position in a 3x3 grid */
-const int segment_coordinates[7][2] = {
+const int segment_coordinates[NUM_SEGMENTS][2] = {
   {0,1},
   {1,2},
   {2,2},
@@ -44,10 +50,7 @@ const int segment_coordinates[7][2] = {
   {1,0},
   {1,1}
 };
-#define CHAR_HEIGHT 3
-#define CHAR_WIDTH  4
-#define MAX_DIGITS 34
-#define COLUMNS (CHAR_WIDTH * MAX_DIGITS)
+
 char digits[CHAR_HEIGHT][COLUMNS];
 
 void clear_digits_array(void);
@@ -83,13 +86,18 @@ void clear_digits_array(void)
 }
 void process_digit(int digit, int position)
 {
-  const char display[7] = {'_', '|', '|', '_', '|', '|', '_'};
+  char display[NUM_SEGMENTS] = "_||_||_";
   int row, col;
 
-  for (int segment = 0; segment < 7; segment++) {
+  for (int segment = 0; segment < NUM_SEGMENTS; segment++) {
     if (segments_per_character[digit][segment])  {
       row = segment_coordinates[segment][0];
-      col = segment_coordinates[segment][1] + position;
+      col = position + segment_coordinates[segment][1];
+
+      /*
+         place the representative character into the 
+         3x3 sub-grid beginning at the correct offset
+      */
       digits[row][col] = display[segment];
     }
   }
