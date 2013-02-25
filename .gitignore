@@ -51,3 +51,4 @@ weird/scanf-clobbers-adjacent-var
 10/10.2-5.poker
 10/10.6.single-digit-RPN-calculator
 10/10.7.seven-segment-static-buffer
+10/10.7.seven-segment-dynamic-buffer
