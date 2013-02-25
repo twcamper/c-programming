@@ -57,3 +57,4 @@ weird/scanf-clobbers-adjacent-var
 11/11.4.5.split_time
 11/11.4.6.two_largest
 11/11.4.7.split_date
+11/11.5.8.pointer_to_largest
