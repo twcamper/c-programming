@@ -52,3 +52,4 @@ weird/scanf-clobbers-adjacent-var
 10/10.6.single-digit-RPN-calculator
 10/10.7.seven-segment-static-buffer
 10/10.7.seven-segment-dynamic-buffer
+10/10.7.seven-segment-no-buffer
