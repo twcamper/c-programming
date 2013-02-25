@@ -4,20 +4,23 @@
 void split_date(int day_of_year, int year, int *month, int *day)
 {
   int eom[13] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-  int m, previous_month_end, this_month_end;
+  int previous_month_end, current_month_end;
 
   /*leap year?*/
   if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
     eom[2] = 29;
 
   previous_month_end = 0;
-  m = 1;
-  this_month_end = eom[m];
-  while (!(day_of_year > previous_month_end && day_of_year <= this_month_end)) {
-    previous_month_end = this_month_end;
-    this_month_end += eom[++m];
+  *month = 1;
+  current_month_end = eom[*month];
+  /*
+   * Find the closest month end by looping
+   * until we are between the previous EOM and the EOM of our day_of_year
+  */
+  while (!(day_of_year > previous_month_end && day_of_year <= current_month_end)) {
+    previous_month_end = current_month_end;
+    current_month_end += eom[++*month];
   }
-  *month = m;
   *day = day_of_year - previous_month_end;
 }
 
