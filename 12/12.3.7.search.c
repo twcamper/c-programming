@@ -12,6 +12,7 @@ bool search(const int *a, int n, int key);
 bool search_temps(int key);
 void generate_temperatures(void);
 void print_temperatures(int day);
+int *find_largest(int *a, int n);
 
 int main(void)
 {
@@ -27,8 +28,10 @@ int main(void)
   printf("found 32?: %d\n", search_temps(32));
   printf("found 30?: %d\n", search_temps(30));
   
-  for (int d = 0; d < DAYS; d++)
+  for (int d = 0; d < DAYS; d++)  {
+    printf("High for day %d: %2d -- ", d, *find_largest(temperatures[d], HOURS));
     print_temperatures(d);
+  }
 
   return 0;
 }
@@ -65,4 +68,15 @@ void print_temperatures(int day)
   for (h_ptr = temperatures[day]; h_ptr < temperatures[day] + HOURS; h_ptr++)
     printf("%2d ", *h_ptr);
   printf("\n");
+}
+int *find_largest(int *a, int n)
+{
+  int *a_ptr, *max_ptr;
+  max_ptr = a;
+  for (a_ptr = a; a_ptr < a + n; a_ptr++) {
+    if (*a_ptr > *max_ptr)
+      max_ptr = a_ptr;
+  }
+
+  return max_ptr;
 }
