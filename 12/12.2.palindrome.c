@@ -26,9 +26,9 @@ int main(void)
 
 bool is_palindrome(char *a, int n)
 {
-  int left, right;
-  for (left = 0, right = n; left <= right; left++, right--)
-    if (a[left] != a[right])
+  char *left, *right;
+  for (left = a, right = a + n; left <= right; left++, right--)
+    if (*left != *right)
       return false;
 
   return true;
