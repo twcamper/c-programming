@@ -6,7 +6,7 @@ int sum_two_dimensional_array(int cols, const int a[][cols], int rows);
 
 int main(void)
 {
-  const int table[10][COLS] = {
+  const int table[ROWS][COLS] = {
     {207, 455, 849, 180, 286, 398, 1011, 482, 174, 499, 577, 312, 161, 297, 578, 1021, 494, 842, 280, 308, 210, 154, 981, 169, 139},
     {930, 122, 426, 190, 404, 181, 288, 762, 265, 555, 594, 1002, 1018, 434, 599, 489, 788, 225, 216, 961, 577, 578, 581, 394, 635},
     {96, 490, 46, 254, 22, 387, 936, 411, 511, 528, 13, 363, 105, 417, 740, 652, 142, 716, 902, 72, 347, 662, 180, 753, 833},
@@ -20,18 +20,18 @@ int main(void)
 
   int sum; 
 
-  /* expect 1212565 */
+  /* expect 121565 */
   sum = sum_two_dimensional_array(COLS, table, ROWS);
 
   return 0;
 }
 int sum_two_dimensional_array(int cols, const int a[][cols], int rows)
 {
-  int row, col, sum = 0;
+  int sum = 0;
+  const int *a_ptr;
 
-  for (row = 0; row < rows; row++)
-    for (col = 0; col < cols; col++)
-      sum += a[row][col];
+  for (a_ptr = &a[0][0]; a_ptr <= &a[rows - 1][cols - 1]; a_ptr++)
+      sum += *a_ptr;
 
   return sum;
 }
