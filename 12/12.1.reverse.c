@@ -1,17 +1,17 @@
 #include <stdio.h>
 
-#define SIZE 255
+#define SIZE 25
 int main(void)
 {
   char ch, message[SIZE];
-  int i;
+  char *ptr;
   printf("Enter a message up to %d characters: ", SIZE);
-  for (i = 0; i < SIZE && (ch = getchar()) != '\n'; i++)
-    message[i] = ch;
+  for (ptr = message; ptr < message + SIZE && (ch = getchar()) != '\n'; ptr++)
+    *ptr = ch;
 
   printf("Reversed: ");
-  for (; i >= 0; i--)
-    printf("%c", message[i]);
+  for (; ptr >= message; ptr--)
+    printf("%c", *ptr);
 
   printf("\n");
 
