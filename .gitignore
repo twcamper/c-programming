@@ -77,3 +77,6 @@ weird/scanf-clobbers-adjacent-var
 12/12.1.reverse
 12/12.2.palindrome
 12/12.5.reverse-sentence
+13/13.3.2-pointer-to-string
+13/13.3.3-scanf
+13/13.3.1-single-newline
