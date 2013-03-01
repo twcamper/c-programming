@@ -23,22 +23,26 @@ int main(void)
 /* Reads an entire line, but only stores up to n characters */
 int read_line(char s[], int n)
 {
-  int ch, i = 0;
+  int ch, i;
 
   /* ignore leading whitespace */
   while (isspace(ch = getchar()));
 
   /* the first non-whitespace character */
-  s[i++] = ch;
+  s[0] = ch;
 
-  /* i should be 1 */
+  i = 1;
   while ((ch = getchar()) != '\n')
-    if (i < n)
-      s[i++] = ch;
+    if (i < n) {
+      s[i] = ch;
+      i += 1;
+    }
 
   /* store the newline if there's room */
-  if (i < n)
-    s[i++] = ch;
+  if (i < n) {
+    s[i] = ch;
+    i += 1;
+  }
 
   /* terminate the string */
   s[i] = '\0';
