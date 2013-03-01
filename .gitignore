@@ -80,3 +80,4 @@ weird/scanf-clobbers-adjacent-var
 13/13.3.2-pointer-to-string
 13/13.3.3-scanf
 13/13.3.1-single-newline
+13/13.3.4-read-line
