@@ -23,45 +23,43 @@ int main(void)
 }
 void print_reversed(char *a, int n)
 {
-  int boundary;
-  char ch, final_punctuation = 0;
+  char *boundary, *ch_ptr, final_punctuation = 0;
   /*
    * back up, point to last character before the newline, which was not stored
    */
-  int i = n - 1;
-  ch = a[i];
-  if (ch == '.' || ch == '?' || ch == '!') {
-    final_punctuation = ch;
+  ch_ptr = a + (n - 1);
+  if (*ch_ptr == '.' || *ch_ptr == '?' || *ch_ptr == '!') {
+    final_punctuation = *ch_ptr;
     /* replace the punc. char to simplify the code below */
-    a[i] = '\0';
+    *ch_ptr = '\0';
   }
 
-  while (i >= 0) {
+  while (ch_ptr >= a) {
     /* word boundary or start of string */
-    if (a[i] == SPACE || i == 0) {
-      boundary = i;
+    if (*ch_ptr == SPACE || ch_ptr == a) {
+      boundary = ch_ptr;
 
       /* if this is not the beginning of the string,
        * we need to point to the next char
        */
-      if (a[i] == SPACE)
-        i++;
+      if (*ch_ptr == SPACE)
+        ch_ptr++;
       /* Print the word */
-      while (a[i] != SPACE && a[i] != '\0') {
-        printf("%c", a[i]);
-        i++;
+      while (*ch_ptr != SPACE && *ch_ptr != '\0') {
+        printf("%c", *ch_ptr);
+        ch_ptr++;
       }
 
       /* rewind to before the word we just printed */
-      i = boundary;
-      if (i == 0) {  // we've just printed the last (originally first) word
+      ch_ptr = boundary;
+      if (ch_ptr == a) {  // we've just printed the last (originally first) word
         if (final_punctuation)
           printf("%c", final_punctuation);
       } else {       // we've just printed any of the other words
         printf("%c", SPACE);
       }
     }
-    i--;
+    ch_ptr--;
   }
   printf("\n");
 }
