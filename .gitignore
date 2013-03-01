@@ -82,3 +82,5 @@ weird/scanf-clobbers-adjacent-var
 13/13.3.1-single-newline
 13/13.3.4-read-line
 13/13.3.4-read-line-no-whitespace
+13/13.3.4-read-line-with-newline
+13/13.3.4-read-line-truncate
