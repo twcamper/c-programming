@@ -16,8 +16,8 @@
 
 #define RANGE 1024
 
-void quicksort(int a[], int low, int high);
-int split(int a[], int low, int high);
+void quicksort(int *low, int *high);
+int *split(int *low, int *high);
 void print_array(int a[], int n);
 void fill_array(int *a, int n);
 
@@ -35,40 +35,42 @@ int main(int argc, char *argv[])
   fill_array(a, size);
 
   print_array(a, size);
-  quicksort(a, 0, size - 1);
+  quicksort(a, a + (size - 1));
   printf("\n");
   print_array(a, size);
 
   return 0;
 }
 
-void quicksort(int a[], int low, int high)
+void quicksort(int *low, int *high)
 {
-  int middle;
+  int *middle;
 
   if (low >= high) return;
-  middle = split(a, low, high);
-  quicksort(a, low, middle - 1);
-  quicksort(a, middle + 1, high);
+  middle = split(low, high);
+  quicksort(low, middle - 1);
+  quicksort(middle + 1, high);
 }
 
-int split(int a[], int low, int high)
+int *split(int *low, int *high)
 {
-  int part_element = a[low];
+  int part_element = *low;
 
   for (;;) {
-    while (low < high && part_element <= a[high])
+    while (low < high && part_element <= *high)
       high--;
     if (low >= high) break;
-    a[low++] = a[high];
+    *low = *high;
+    low++;
 
-    while (low < high && a[low] <= part_element)
+    while (low < high && *low <= part_element)
       low++;
     if (low >= high) break;
-    a[high--] = a[low];
+    *high = *low;
+    high--;
   }
 
-  a[high] = part_element;
+  *high = part_element;
   return high;
 }
 void print_array(int a[], int n)
