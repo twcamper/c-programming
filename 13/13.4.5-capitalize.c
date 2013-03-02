@@ -16,6 +16,7 @@ int main(void)
 
 void capitalize(char *str)
 {
-  for (int i = 0; str[i] != '\0'; i++)
-    str[i] = toupper(str[i]);
+  char *ch_ptr;
+  for (ch_ptr = str; *ch_ptr != '\0'; ch_ptr++)
+    *ch_ptr = toupper(*ch_ptr);
 }
