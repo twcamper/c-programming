@@ -23,24 +23,24 @@ int main(void)
 /* mask out any occurrences of target in the source string */
 void censor(char *source, char *target)
 {
-  int target_length = strlen(target);
-  int t;
-  for (int s = 0; source[s] != '\0'; s++)  {
-    for (t = 0; t < target_length && source[s] == target[t]; s++, t++);
+  char *target_end = target + strlen(target);
+  char *t, *s;
+  for (s = source; *s != '\0'; s++)  {
+    for (t = target; t < target_end && *s == *t; s++, t++);
 
-    if (t == target_length) {
+    if (t == target_end) {
       /* we had a full match: censor it! */
-      while (t > 0) {
+      while (t > target) {
         /* walk forward, left to right */
-        source[s - t] = 'x';
+        *(s - (t - target)) = 'x';
         t--;
       }
-    } else if (t > 0)
+    } else if (t > target)
       /*
          Partial Match: back up to the beginning of that partial
          match so we can try again from the following character.
          (i.e., ensure that our normal 's++' leaves us in the right position)
         */
-      s -= t;
+      s -= (t - target);
   }
 }
