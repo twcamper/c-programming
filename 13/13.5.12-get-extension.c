@@ -4,18 +4,11 @@
 void get_extension(char *file_name, char *extension)
 {
 
-  int i = strlen(file_name) - 1;
-
+  char *dot;
   extension[0] = '\0';
 
-  while  (i >= 0) {
-    if (file_name[i] == '.') {
-      strcpy(extension, &file_name[++i]);
-      break;
-    } else
-      i--;
-  }
-
+  if ((dot = strrchr(file_name, '.')))
+    strcpy(extension, ++dot);
 }
 
 int main(int argc, char *argv[])
