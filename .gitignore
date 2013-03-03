@@ -88,3 +88,4 @@ weird/scanf-clobbers-adjacent-var
 13/13.4.6-censor
 12/12.6.qsort
 13/13.5.11-str-cmp
+13/13.5.12-get-extension
