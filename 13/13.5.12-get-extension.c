@@ -4,15 +4,16 @@
 void get_extension(char *file_name, char *extension)
 {
 
-  char *f_ptr = file_name + strlen(file_name);
+  int i = strlen(file_name) - 1;
 
   extension[0] = '\0';
-  while  (f_ptr >= file_name) {
-   if (*f_ptr == '.') {
-     strcpy(extension, ++f_ptr);
-     break;
-   } else
-    f_ptr--;
+
+  while  (i >= 0) {
+    if (file_name[i] == '.') {
+      strcpy(extension, &file_name[++i]);
+      break;
+    } else
+      i--;
   }
 
 }
