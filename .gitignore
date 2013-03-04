@@ -93,3 +93,5 @@ weird/scanf-clobbers-adjacent-var
 13/13.6.16-count-spaces
 13/13.6.17-test-extension
 13/13.6.18-remove-filename
+NERD_tree*
+12/12.7-maxmin
