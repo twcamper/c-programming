@@ -17,16 +17,17 @@
 
 #define MAX_REMIND 50   /* maximum number of reminders */
 #define MSG_LEN 60      /* max length of reminder message */
-
+#define DATE_LEN 6      /* mm/dd + ' ' */
 int read_line(char str[], int n);
 bool is_leap_year(void);
 int this_year(void);
+bool is_date_valid(int mm, int dd);
 
 int main(void)
 {
-  char reminders[MAX_REMIND][MSG_LEN+3];
-  char day_str[3], msg_str[MSG_LEN+1];
-  int day, i, j, num_remind = 0;
+  char reminders[MAX_REMIND][MSG_LEN+DATE_LEN];
+  char date_str[DATE_LEN], msg_str[MSG_LEN+1];
+  int mm, dd, i, j, num_remind = 0;
 
   for (;;) {
     if (num_remind == MAX_REMIND) {
@@ -34,28 +35,34 @@ int main(void)
       break;
     }
 
-    printf("Enter day and reminder: ");
-    scanf("%2d", &day);
-    if (day == 0)
+    printf("Enter mm/dd and reminder: ");
+    scanf("%2d", &mm);
+    if (mm == 0)
       break;
-    sprintf(day_str, "%2d", day);
+    scanf("/%2d", &dd);
     read_line(msg_str, MSG_LEN);
 
+    if (!is_date_valid(mm, dd)) {
+      fprintf(stderr, "Date %d/%d invalid for %d\n", mm, dd, this_year());
+      continue;
+    }
+    sprintf(date_str, "%.2d/%.2d", mm, dd);
+
     for (i = 0; i < num_remind; i++)
-      if (strcmp(day_str, reminders[i]) < 0)
+      if (strcmp(date_str, reminders[i]) < 0)
         break;
     for (j = num_remind; j > i; j--)
       strcpy(reminders[j], reminders[j-1]);
 
-    strcpy(reminders[i], day_str);
+    strcpy(reminders[i], date_str);
     strcat(reminders[i], msg_str);
 
     num_remind++;
   }
 
-  printf("\nDay Reminder\n");
+  printf("\nDate  Reminder\n");
   for (i = 0; i < num_remind; i++)
-    printf(" %s\n", reminders[i]);
+    printf("%s\n", reminders[i]);
 
   return 0;
 }
@@ -84,4 +91,19 @@ bool is_leap_year(void)
 {
   int yyyy = this_year();
   return ((yyyy % 4 == 0 && yyyy % 100 != 0) || yyyy % 400 == 0);
+}
+bool is_date_valid(int mm, int dd)
+{
+  static int eom[13] = {0, 31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  if (!eom[2]) {
+    eom[2] = 28;
+    if (is_leap_year())
+      eom[2] = 29;
+  }
+
+  if (mm > 0 && mm < 13)
+    if (dd > 0 && dd <= eom[mm])
+      return true;
+
+  return false;
 }
