@@ -17,21 +17,22 @@
 
 #define MAX_REMIND 50   /* maximum number of reminders */
 #define MSG_LEN 60      /* max length of reminder message */
-#define DATE_LEN 6      /* mm/dd + ' ' */
+#define DATE_LEN 13     /* mm/dd + ' ' + HH:MM + ' ' */
 int read_line(char str[], int n);
 bool is_leap_year(void);
 int this_year(void);
 bool is_date_valid(int mm, int dd);
+bool is_time_valid(int hh, int min);
 
 int main(void)
 {
   char reminders[MAX_REMIND][MSG_LEN+DATE_LEN];
   char date_str[DATE_LEN], msg_str[MSG_LEN+1];
-  int mm, dd, i, j, num_remind = 0;
+  int hour, min, mm, dd, i, j, num_remind = 0;
 
   for (;;) {
     if (num_remind == MAX_REMIND) {
-      printf("-- No space left --\n");
+      fprintf(stderr, "-- No space left --\n");
       break;
     }
 
@@ -40,13 +41,20 @@ int main(void)
     if (mm == 0)
       break;
     scanf("/%2d", &dd);
+
+    hour = min = -1;
+    scanf("%2d:%2d", &hour, &min);
+
     read_line(msg_str, MSG_LEN);
 
     if (!is_date_valid(mm, dd)) {
       fprintf(stderr, "Date %d/%d invalid for %d\n", mm, dd, this_year());
       continue;
     }
-    sprintf(date_str, "%.2d/%.2d", mm, dd);
+
+    if (!is_time_valid(hour, min))
+      hour = min = 0;
+    sprintf(date_str, "%.2d/%.2d %.2d:%.2d", mm, dd, hour, min);
 
     for (i = 0; i < num_remind; i++)
       if (strcmp(date_str, reminders[i]) < 0)
@@ -60,7 +68,7 @@ int main(void)
     num_remind++;
   }
 
-  printf("\nDate  Reminder\n");
+  printf("\nDate  Time  Reminder\n");
   for (i = 0; i < num_remind; i++)
     printf("%s\n", reminders[i]);
 
@@ -106,4 +114,13 @@ bool is_date_valid(int mm, int dd)
       return true;
 
   return false;
+}
+bool is_time_valid(int hh, int min)
+{
+  if (hh < 0 || hh > 23)
+    return false;
+  if (min < 0 || min > 59)
+    return false;
+
+  return true;
 }
