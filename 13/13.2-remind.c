@@ -17,7 +17,7 @@
 
 #define MAX_REMIND 50   /* maximum number of reminders */
 #define MSG_LEN 60      /* max length of reminder message */
-#define DATE_LEN 13     /* mm/dd + ' ' + HH:MM + ' ' */
+#define DATE_LEN 12     /* mm/dd + ' ' + HH:MM + ' ' */
 int read_line(char str[], int n);
 bool is_leap_year(void);
 int this_year(void);
@@ -36,13 +36,13 @@ int main(void)
       break;
     }
 
+    mm = dd = hour = min = -1;
     printf("Enter mm/dd and reminder: ");
     scanf("%2d", &mm);
     if (mm == 0)
       break;
     scanf("/%2d", &dd);
 
-    hour = min = -1;
     scanf("%2d:%2d", &hour, &min);
 
     read_line(msg_str, MSG_LEN);
@@ -52,8 +52,10 @@ int main(void)
       continue;
     }
 
-    if (!is_time_valid(hour, min))
-      hour = min = 0;
+    if (!is_time_valid(hour, min))  {
+      fprintf(stderr, "Time %d:%d invalid\n", hour, min);
+      continue;
+    }
     sprintf(date_str, "%.2d/%.2d %.2d:%.2d", mm, dd, hour, min);
 
     for (i = 0; i < num_remind; i++)
