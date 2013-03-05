@@ -20,6 +20,7 @@
 
 int read_line(char str[], int n);
 bool is_leap_year(void);
+int this_year(void);
 
 int main(void)
 {
@@ -69,11 +70,18 @@ int read_line(char str[], int n)
   str[i] = '\0';
   return i;
 }
+int this_year(void)
+{
+  static int year = 0;
+  if (!year) {
+    time_t t;
+    time(&t);
+    year = localtime(&t)->tm_year + 1900;
+  }
+  return year;
+}
 bool is_leap_year(void)
 {
-  time_t t;
-  time(&t);
-  int this_year = localtime(&t)->tm_year + 1900;
-
-  return ((this_year % 4 == 0 && this_year % 100 != 0) || this_year % 400 == 0);
+  int yyyy = this_year();
+  return ((yyyy % 4 == 0 && yyyy % 100 != 0) || yyyy % 400 == 0);
 }
