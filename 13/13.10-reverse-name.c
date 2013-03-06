@@ -24,16 +24,12 @@ void reverse_name(char *name)
   /* sprintf(name, "%s, %c.", last, first[0]); */
 
   char first, *p = name;
-  while (*p == ' ') p++;  /* find first non-space character */
+  int len;
+  while (*p && *p == ' ') p++;  /* find first non-space character */
   first = *p;
-  while (*p != ' ') p++;  /* find word boundary: first space after first p */
-  while (*p == ' ') p++;  /* find start of last */
-  for (;*p != '\n' && *p && *p != ' '; name++, p++)
-    *name = *p;
+  while (*p && *p != ' ') p++;  /* find word boundary: first space after first p */
+  while (*p && *p == ' ') p++;  /* find start of last */
+  for (len = 0; p[len] != '\n' && p[len] && p[len] != ' '; len++);
+  sprintf(name, "%.*s, %c.", len, p, first);
 
-  *name++ = ',';
-  *name++ = ' ';
-  *name++ = first;
-  *name++ = '.';
-  *name = '\0';
 }
