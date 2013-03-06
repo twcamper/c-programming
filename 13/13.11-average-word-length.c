@@ -24,7 +24,7 @@ double compute_average_word_length(const char *sentence)
   open_quotes = other_single_quotes = 0;
   chars = words = apostrophes = 0.0;
 
-  for (const char *c = sentence; *c && *c != '\n'; c++)  {
+  for (const char *c = sentence; *c; c++)  {
     if (*c == '\'') {
       if (in_word)
         /* could be an apostrophe or a close-quote right after a word */
