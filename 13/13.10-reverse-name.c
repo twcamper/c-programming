@@ -17,9 +17,23 @@ int main(void)
 }
 void reverse_name(char *name)
 {
-  char first[SIZE / 2], last[SIZE / 2];
+  /* char first[SIZE / 2], last[SIZE / 2]; */
 
-  sscanf(name, " %s %s", first, last);
+  /* sscanf(name, " %s %s", first, last); */
 
-  sprintf(name, "%s, %c.", last, first[0]);
+  /* sprintf(name, "%s, %c.", last, first[0]); */
+
+  char first, *p = name;
+  while (*p == ' ') p++;  /* find first non-space character */
+  first = *p;
+  while (*p != ' ') p++;  /* find word boundary: first space after first p */
+  while (*p == ' ') p++;  /* find start of last */
+  for (;*p != '\n' && *p && *p != ' '; name++, p++)
+    *name = *p;
+
+  *name++ = ',';
+  *name++ = ' ';
+  *name++ = first;
+  *name++ = '.';
+  *name = '\0';
 }
