@@ -22,10 +22,9 @@ int main(void)
 void print_reversed(char sentence[][WORD_LEN])
 {
   int word = 0;
-  /* find last word: this is where any final punctuation will be */
+  /* find last word: this is where the final punctuation will be */
   while (sentence[word][0]) word++;
 
-  /* might just be NULL */
   char punctuation = sentence[--word][0];
 
   for (word-- ;word >= 0; word--)
@@ -41,12 +40,18 @@ void read(char sentence[][WORD_LEN])
   i = word = 0;
 
   while ((ch = getchar()) != '\n') {
-    if (ch == '!' || ch == '?')
+    if (ch == '!' || ch == '?') {
+      /* defaults to '.' if nothing else is found */
       punctuation = ch;
-    else if (isalnum(ch) || ch == '-' ||ch == '\'' || ch == '_') {
+    } else if (isalnum(ch) || ch == '-' ||ch == '\'' || ch == '_') {
       in_word = true;
       sentence[word][i++] = ch;
     } else if (in_word) {
+      /*
+         we've just found the ending word boundary;
+         space and punc. will be ignored until we hit
+         another word char and the 'in_word' flag gets set
+      */
       in_word = false;
       sentence[word++][i] = '\0';
       i = 0;
