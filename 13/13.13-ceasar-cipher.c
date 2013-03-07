@@ -24,7 +24,7 @@ int main(void)
   for (i = 0; i < SIZE && (ch = getchar()) != '\n'; i++) {
     message[i] = ch;
   }
-  message[i++] = '\0';
+  message[i] = '\0';
 
   printf("Enter shift amount (1-25): ");
   scanf("%d", &shift_amount);
