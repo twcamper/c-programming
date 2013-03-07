@@ -11,7 +11,7 @@ void read(char sentence[][WORD_LEN]);
 int main(void)
 {
   /* extra 'word' array to hold final punctation */
-  char sentence[WORDS + 1][WORD_LEN] = {{0}};
+  char sentence[WORDS + 1][WORD_LEN] = {{'\0'}};
 
   read(sentence);
 
@@ -22,6 +22,7 @@ int main(void)
 void print_reversed(char sentence[][WORD_LEN])
 {
   int word = 0;
+
   /* find last word: this is where the final punctuation will be */
   while (sentence[word][0]) word++;
 
@@ -35,33 +36,41 @@ void print_reversed(char sentence[][WORD_LEN])
 void read(char sentence[][WORD_LEN])
 {
   register bool in_word = false;
-  char ch, punctuation = '.';
-  int i, word;
-  i = word = 0;
+  char punctuation = '.';
+  int input_ch;
+  /* point to storage for first word string */
+  char (*word_ptr)[WORD_LEN] = sentence;
+  char *ch_ptr = word_ptr[0];
 
-  while ((ch = getchar()) != '\n') {
-    if (ch == '!' || ch == '?') {
+  while (word_ptr < sentence + WORDS && (input_ch = getchar()) != '\n') {
+    if (input_ch == '!' || input_ch == '?') {
       /* defaults to '.' if nothing else is found */
-      punctuation = ch;
-    } else if (isalnum(ch) || ch == '-' ||ch == '\'' || ch == '_') {
+      punctuation = input_ch;
+    } else if (isalnum(input_ch) || input_ch == '-' ||input_ch == '\'' || input_ch == '_') {
       in_word = true;
-      sentence[word][i++] = ch;
+      *ch_ptr = input_ch;
+      ch_ptr++;
     } else if (in_word) {
       /*
-         we've just found the ending word boundary;
-         space and punc. will be ignored until we hit
+         We've just found the ending word boundary;
+         spaces and punc. will be ignored until we hit
          another word char and the 'in_word' flag gets set
       */
       in_word = false;
-      sentence[word++][i] = '\0';
-      i = 0;
+
+      /* terminate this word string */
+      *ch_ptr = '\0';
+
+      /* point to storage for next word string */
+      word_ptr++;
+      ch_ptr = word_ptr[0];
     }
   }
 
   /* did we end on a word character? */
   if (in_word)
-    word++;
+    word_ptr++;
 
-  sentence[word][0] = punctuation;
-  sentence[word][1] = '\0';
+  *word_ptr[0] = punctuation;
+  *word_ptr[1] = '\0';
 }
