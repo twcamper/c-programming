@@ -16,7 +16,7 @@ int top;
 int input_error = 0;
 
 /* prototypes */
-void empty(void);
+void empty_stack(void);
 bool is_empty(void);
 bool is_full(void);
 void push(int operand);
@@ -47,7 +47,7 @@ int main(void)
 
   return 0;
 }
-void empty(void)
+void empty_stack(void)
 {
   top = 0;
 }
@@ -103,31 +103,44 @@ void divide(void)
 
   push(dividend / divisor);
 }
-int evaluate(char *str)
+
+int evaluate(char *expression)
 {
-  int token, token_count, value;
-  char ch;
-  char *expression[TOKENS];
+  int i, token_count, value;
+  char *t_ptr;
+  char *token_pointers[TOKENS];   /* list of addresses within the expression string */
 
-  tokenize(str, expression, &token_count);
+  empty_stack();
 
-  for (token = 0; token < token_count; token++) {
+  /* pepper our expression input string with terminators (NULL chars) */
+  tokenize(expression, token_pointers, &token_count);
 
-    ch = expression[token][0];
-    if (isdigit(ch))
-      push((int) ch - '0');
-    else if ( ch == '+')
-      push(pop() + pop());
-    else if ( ch == '-')
-      subtract();
-    else if ( ch == '*')
-      push(pop() * pop());
-    else if ( ch == '/')
-      divide();
-    else {
-      /* Quit - neither an operator nor a digit operand */
-      input_error = QUIT;
-    }
+  for (i = 0; i < token_count; i++) {
+    /* the next substring in our NULL delimited input string */
+    t_ptr = token_pointers[i];
+
+    /*
+       Is the token a number?
+       It may begin with (or be) a digit,
+       OR if it's longer than 1 char,
+         it must be '-' then at least one digit
+    */
+    if (isdigit(t_ptr[0]) || (strlen(t_ptr) > 1 && isdigit(t_ptr[1]) && t_ptr[0] == '-'))
+      push(atoi(t_ptr));
+    else
+      switch(t_ptr[0])  {
+        case '+': push(pop() + pop());
+          break;
+        case '-': subtract();
+          break;
+        case '*': push(pop() * pop());
+          break;
+        case '/': divide();
+          break;
+        default:
+          /* Quit - neither an operator nor a digit operand */
+          input_error = QUIT;
+      }
     if (input_error)
       return input_error;
   }
@@ -135,7 +148,6 @@ int evaluate(char *str)
   value = pop();
   if (!is_empty()) {
     warn_incomplete_expression();
-    empty();
     return (input_error = 1);
   }
   return value;
@@ -144,19 +156,19 @@ void tokenize(char *expression, char **tokens, int *token_count)
 {
   register bool in_token = false;
   int t;
-  char *c;
-  for (t = 0, c = expression; *c; c++)  {
-    if (isspace(*c))  {
+  char *ch_ptr;
+  for (t = 0, ch_ptr = expression; *ch_ptr; ch_ptr++)  {
+    if (isspace(*ch_ptr))  {
       if (in_token)
         /* this is the first char after a token,
          * and this is how we tokenize our string */
-        *c = '\0';
+        *ch_ptr = '\0';
       in_token = false;
     } else  /* NOT A SPACE  */
       if (!in_token) {
         /* this is the frist char of our token, */
         /* so we put a pointer to it in our list */
-        tokens[t++] = c;
+        tokens[t++] = ch_ptr;
         in_token = true;
       }
   }
