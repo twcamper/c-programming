@@ -1,13 +1,26 @@
 # tested with GNU make 3.81
 SHELL   = /usr/bin/env sh
-CC      = clang
 
-# To get macro expansion in gdb we need -g level 3, and -gdwarf level 4.
-DBGFLAGS = -g3 -gdwarf-4
+DBGFLAGS = -g3
+
+# running clang on the Mac, gcc on linux due to stdlib header clashes
+ifeq ($(shell which clang),)   # Is 'which' call empty?
+  CC = gcc
+  LD = gcc
+  CCVERSION = $(shell ls -l /usr/bin/gcc | grep -oE '...$$')
+  ifeq ($(CCVERSION),4.7)
+     # To get macro expansion in gdb we need -g level 3, and -gdwarf level 4.
+     # Those settings only work for me on gcc-4.7 on linux.
+     # Builds fail on the mac with the gcc-4.7.2 that I built.
+     DBGFLAGS += -gdwarf-4
+  endif
+else
+  CC = clang
+  LD = clang
+endif
 
 # flag -Wextra replaces -W in newer gcc's.  Use -W if you have an old version of gcc and get an arg error.
 CFLAGS  = $(DBGFLAGS) -Wall -Wextra -pedantic -std=c99
-LD      = clang
 
 #### targets and prerequisites ####
 TEMP        = $(shell find . -name '*.c' |  tr '\n' ' ')
