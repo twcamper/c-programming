@@ -1,26 +1,17 @@
 # tested with GNU make 3.81
 SHELL   = /usr/bin/env sh
-
 DBGFLAGS = -g3
+CC = clang
+LD = clang
 
-# running clang on the Mac, gcc on linux due to stdlib header clashes
-ifeq ($(shell which clang),)   # Is 'which' call empty?
-  CC = gcc
-  LD = gcc
-  CCVERSION = $(shell ls -l /usr/bin/gcc | grep -oE '...$$')
-  ifeq ($(CCVERSION),4.7)
-     # To get macro expansion in gdb we need -g level 3, and -gdwarf level 4.
-     # Those settings only work for me on gcc-4.7 on linux.
-     # Builds fail on the mac with the gcc-4.7.2 that I built.
-     DBGFLAGS += -gdwarf-4
-  endif
-else
-  CC = clang
-  LD = clang
-endif
-
-# flag -Wextra replaces -W in newer gcc's.  Use -W if you have an old version of gcc and get an arg error.
-CFLAGS  = $(DBGFLAGS) -Wall -Wextra -pedantic -std=c99
+# Flag -Wextra replaces -W in newer gcc's.  Use -W if you have an old version of gcc and get an arg error.
+#
+# Flag -O (optimize) is needed by clang so it will inline functions that
+# are also extern (e.g., sqrt() in math.h).  GCC does that by default.
+# We get linker 'undefined reference' errors if such functions aren't inlined
+#
+# 'override' alows us to prepend from the command line (GNU make manual, 6.7)
+override CFLAGS += -O $(DBGFLAGS) -Wall -Wextra -pedantic -std=c99
 
 #### targets and prerequisites ####
 TEMP        = $(shell find . -name '*.c' |  tr '\n' ' ')
@@ -45,13 +36,14 @@ $(OBJECTS) : %.o : %.c
 clean: clean-obj clean-archives clean-bin
 
 XARGS_RM = xargs rm -fv
+CLEAN_PATH = ./$(CLEAN)
 
 clean-obj:
-	@find . -name '*.o' | $(XARGS_RM)
+	@find $(CLEAN_PATH) -name '*.o' | $(XARGS_RM)
 
 clean-archives:
-	@find . -name '*.a' | $(XARGS_RM)
-	@find . -name '*.so' | $(XARGS_RM)
+	@find $(CLEAN_PATH) -name '*.a' | $(XARGS_RM)
+	@find $(CLEAN_PATH) -name '*.so' | $(XARGS_RM)
 
 clean-bin:
-	@find . -perm +111 -type f | grep -vE '\.git' | $(XARGS_RM)
+	@find $(CLEAN_PATH) -perm +111 -type f | grep -vE '\.git' | $(XARGS_RM)
