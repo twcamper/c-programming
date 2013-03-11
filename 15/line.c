@@ -13,7 +13,7 @@
 #include <string.h>
 #include "line.h"
 
-#define MAX_LINE_LEN 60
+#define MAX_LINE_LEN 80
 
 char line[MAX_LINE_LEN+1];
 int line_len = 0;
@@ -45,17 +45,21 @@ int space_remaining(void)
 
 void write_line(void)
 {
-  int extra_spaces, spaces_to_insert, i, j;
+  int padding, gaps_needed, extra_spaces, spaces_to_insert, i, j;
 
   extra_spaces = MAX_LINE_LEN - line_len;
   for (i = 0; i < line_len; i++) {
     if (line[i] != ' ')
       putchar(line[i]);
     else {
-      spaces_to_insert = extra_spaces / (num_words - 1);
-      for (j = 1; j <= spaces_to_insert + 1; j++)
+      /* each gap between 2 words could have more than 1 space */
+      gaps_needed = num_words - 1;
+      padding = extra_spaces / gaps_needed;
+      spaces_to_insert = 1 + padding;
+
+      for (j = 1; j <= spaces_to_insert; j++)
         putchar(' ');
-      extra_spaces -= spaces_to_insert;
+      extra_spaces -= padding;
       num_words--;
     }
   }
