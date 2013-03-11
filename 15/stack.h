@@ -1,5 +1,8 @@
+#ifndef STACK_H
+#define STACK_H
+
 #include <stdio.h>
-#if !defined(__STDBOOL_H) && !defined(_STDBOOL_H_)
+#if !defined(__STDBOOL_H) && !defined(_STDHOOL_H_)
 #include <stdbool.h>
 #endif
 
@@ -15,3 +18,4 @@ void push(int operand);
 int pop(void);
 void exit_stack_overflow(void);
 void exit_stack_underflow(void);
+#endif
