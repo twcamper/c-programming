@@ -1,7 +1,8 @@
-SHELL   = /usr/bin/env sh
+SHELL    = /usr/bin/env sh
 DBGFLAGS = -g3
-CC = clang
-LD = clang
+OFLAGS   = -O
+CC       = clang
+LD       = clang
 
 # Flag -Wextra replaces -W in newer gcc's.  Use -W if you have an old version of gcc and get an arg error.
 #
@@ -10,6 +11,6 @@ LD = clang
 # We get linker 'undefined reference' errors if such functions aren't inlined
 #
 # 'override' alows us to prepend from the command line (GNU make manual, 6.7)
-override CFLAGS += -O $(DBGFLAGS) -Wall -Wextra -pedantic -std=c99
+override CFLAGS += $(OFLAGS) $(DBGFLAGS) -Wall -Wextra -pedantic -std=c99
 
 
