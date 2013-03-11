@@ -31,6 +31,9 @@ int read_word(char *word, int len)
       word[pos++] = ch;
     ch = read_char();
   }
+  if (pos == len)
+    word[pos - 1] = '*';
+
   word[pos] = '\0';
   return pos;
 }
