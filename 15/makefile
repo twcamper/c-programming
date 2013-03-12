@@ -3,7 +3,7 @@ include ../make/env.mk
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
-all: 15.1.justify 15.5.RPN-calculator
+all: 15.1.justify 15.3.qsort 15.5.RPN-calculator
 
 15.1.justify: 15.1.justify.o line.o word.o
 	$(LINK)
@@ -12,6 +12,15 @@ all: 15.1.justify 15.5.RPN-calculator
 	$(COMPILE)
 
 line.o word.o: %.o : %.c %.h
+	$(COMPILE)
+
+15.3.qsort: 15.3.qsort.o quicksort.o
+	$(LINK)
+
+15.3.qsort.o: 15.3.qsort.c quicksort.h
+	$(COMPILE)
+
+quicksort.o: %.o : %.c %.h
 	$(COMPILE)
 
 15.5.RPN-calculator: 15.5.RPN-calculator.o tokenize.o stack.o
