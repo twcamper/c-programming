@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
   fill_array(a, size);
 
   print_array(a, size);
-  quicksort(a, a + size);
+  quicksort(a, a + (size-1));
   printf("\n");
   print_array(a, size);
 
