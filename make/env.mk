@@ -1,5 +1,5 @@
 SHELL    = /usr/bin/env sh
-DBGFLAGS = -g3
+DBGFLAGS = -g3 -gdwarf-2
 OFLAGS   = -O
 CC       = clang
 LD       = clang
