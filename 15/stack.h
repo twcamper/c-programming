@@ -2,10 +2,7 @@
 #define STACK_H
 
 #include <stdio.h>
-#if !defined(__STDBOOL_H) && !defined(_STDHOOL_H_)
 #include <stdbool.h>
-#endif
-
 #include <stdlib.h>
 
 extern int stack[];
