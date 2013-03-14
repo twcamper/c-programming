@@ -1,11 +1,17 @@
 include ../make/env.mk
-EXCLUDE = ./16.1.5-6.c
+EXCLUDE = ./16.1.5-6.c ./16.1.7.fraction.c
 include ../make/generic.mk
 
-all: 16.1.5-6 $(EXECUTABLES)
+all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction
 
 COMPILE = $(CC) -c -I$(INCS) $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
+
+16.1.7.fraction: 16.1.7.fraction.o $(LIBS)/error.o
+	$(LINK)
+
+16.1.7.fraction.o: 16.1.7.fraction.c $(INCS)/error.h
+	$(COMPILE)
 
 16.1.5-6: 16.1.5-6.o $(LIBS)/time_helper.o
 	$(LINK)
