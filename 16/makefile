@@ -1,11 +1,17 @@
 include ../make/env.mk
-EXCLUDE = ./16.1.5-6.c ./16.1.7.fraction.c
+EXCLUDE = ./16.1.5-6.c ./16.1.7.fraction.c ./16.3.10.test-rectangle.c
 include ../make/generic.mk
 
-all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction
+all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.3.10.test-rectangle
 
 COMPILE = $(CC) -c -I$(INCS) $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
+
+16.3.10.test-rectangle: 16.3.10.test-rectangle.o rectangle.o
+	$(LINK)
+
+16.3.10.test-rectangle.o: 16.3.10.test-rectangle.c rectangle.h
+	$(COMPILE
 
 16.1.7.fraction: 16.1.7.fraction.o $(LIBS)/error.o
 	$(LINK)
@@ -19,5 +25,7 @@ LINK    = $(LD) $^ -o $@
 16.1.5-6.o: 16.1.5-6.c $(INCS)/time_helper.h
 	$(COMPILE)
 
+%.o : %.c %.h
+	$(CC) -c $(CFLAGS) $< -o $@
 include ../make/clean.mk
 include $(LIBS)/makefile
