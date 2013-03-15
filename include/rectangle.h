@@ -3,6 +3,9 @@
 
 #include <stdbool.h>
 
+typedef struct {int x, y;} point;
+typedef struct {point upper_left, lower_right; } rectangle;
+
 int area(rectangle r);
 int center(rectangle r);
 rectangle move(rectangle r, int x, int y);

@@ -25,7 +25,5 @@ LINK    = $(LD) $^ -o $@
 16.1.5-6.o: 16.1.5-6.c $(INCS)/time_helper.h
 	$(COMPILE)
 
-%.o : %.c %.h
-	$(CC) -c $(CFLAGS) $< -o $@
 include ../make/clean.mk
 include $(LIBS)/makefile
