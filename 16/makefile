@@ -7,11 +7,11 @@ all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.3.10.test-rectangle
 COMPILE = $(CC) -c -I$(INCS) $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
-16.3.10.test-rectangle: 16.3.10.test-rectangle.o rectangle.o
+16.3.10.test-rectangle: 16.3.10.test-rectangle.o $(LIBS)/rectangle.o
 	$(LINK)
 
-16.3.10.test-rectangle.o: 16.3.10.test-rectangle.c rectangle.h
-	$(COMPILE
+16.3.10.test-rectangle.o: 16.3.10.test-rectangle.c $(INCS)/rectangle.h
+	$(COMPILE)
 
 16.1.7.fraction: 16.1.7.fraction.o $(LIBS)/error.o
 	$(LINK)
