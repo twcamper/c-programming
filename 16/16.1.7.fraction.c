@@ -9,6 +9,8 @@ void print_fraction(char *, fraction);
 void convert_terms(fraction *, fraction *);
 fraction add(fraction, fraction);
 fraction subtract(fraction, fraction);
+fraction multiply(fraction, fraction);
+fraction divide(fraction, fraction);
 
 int main(int argc, char *argv[])
 {
@@ -80,4 +82,12 @@ fraction subtract(fraction f1, fraction f2)
 void print_fraction(char *header, fraction f)
 {
   printf("%s %d/%d\n", header, f.numerator, f.denominator);
+}
+fraction multiply(fraction f1, fraction f2)
+{
+  return reduce((fraction) {f1.numerator * f2.numerator, f1.denominator * f2.denominator});
+}
+fraction divide(fraction f1, fraction f2)
+{
+  return reduce((fraction) {f1.numerator * f2.denominator, f1.denominator * f2.numerator});
 }
