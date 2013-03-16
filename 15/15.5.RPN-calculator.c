@@ -27,11 +27,11 @@ void divide(void)
 
   push(dividend / divisor);
 }
-inline void add()
+void add()
 {
   push(pop() + pop());
 }
-inline void multiply()
+void multiply()
 {
   push(pop() * pop());
 }

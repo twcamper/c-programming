@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 
 #define CUBE(x) ((x) * (x) * (x))
@@ -13,10 +12,14 @@
 #define DISP(f,x)  printf(#f "(%g) = %g\n", (x), f(x))
 #define NEWLINE printf("\n")
 
+double square(double x)
+{
+  return x * x;
+}
 void test_disp(void)
 {
   NEWLINE;
-  DISP(sqrt, 3.0);
+  DISP(square, 3.0);
 
   NEWLINE;
 }
