@@ -1,11 +1,17 @@
 include ../make/env.mk
-EXCLUDE = ./16.1.5-6.c ./16.1.7.fraction.c ./16.3.10.rectangle-spec.c
+EXCLUDE = ./16.1.5-6.c ./16.1.7.fraction.c ./16.3.10.rectangle-spec.c ./chess-spec.c
 include ../make/generic.mk
 
-all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.3.10.rectangle-spec
+all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.3.10.rectangle-spec ./chess-spec
 
 COMPILE = $(CC) -c -I$(INCS) $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
+
+chess-spec: chess-spec.o $(LIBS)/chess.o
+	$(LINK)
+
+chess-spec.o: chess-spec.c $(INCS)/chess.h
+	$(COMPILE)
 
 16.3.10.rectangle-spec: 16.3.10.rectangle-spec.o $(LIBS)/rectangle.o
 	$(LINK)
