@@ -5,8 +5,6 @@ typedef struct {
   int code;
 } dialing_code;
 
-const dialing_code empty_dialing_code = {"", 0};
-
 const dialing_code country_codes[] = {
   {"Argentina", 54}, {"Bangladesh",      880},
   {"Brazil",    55}, {"Burma (Myanmar)",  95},
@@ -20,7 +18,7 @@ char *find_country(int code)
     if (country_codes[i].code == code)
       return country_codes[i].country;
   }
-  return empty_dialing_code.country;
+  return "";
 }
 #ifdef TEST
 #include "test_runner.h"
