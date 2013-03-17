@@ -124,3 +124,5 @@ NERD_tree*
 16/chess-spec
 16/16.5.20.directions
 16/16.1.country-codes
+spec/rectangle-spec
+spec/chess-spec

@@ -14,4 +14,4 @@ $(EXECUTABLES) : % : %.o
 
 #### compiled object files ####
 $(OBJECTS) : %.o : %.c
-	$(CC) -c -I$(INCS) $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@

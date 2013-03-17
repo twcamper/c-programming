@@ -1,4 +1,6 @@
-include ../make/env.mk
+PREFIX = ../
+
+include $(PREFIX)make/env.mk
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
@@ -32,4 +34,4 @@ quicksort.o: %.o : %.c %.h
 stack.o tokenize.o: %.o : %.c %.h
 	$(COMPILE)
 
-include ../make/clean.mk
+include $(PREFIX)make/clean.mk
