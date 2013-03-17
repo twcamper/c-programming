@@ -127,3 +127,4 @@ NERD_tree*
 spec/rectangle-spec
 spec/chess-spec
 16/16.inventory
+spec/inventory-model-spec
