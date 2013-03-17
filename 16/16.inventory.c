@@ -9,7 +9,7 @@
 
 /* inventory.c (Chapter 16, page 391) */
 /* Maintains a parts database (array version) */
-#include "inventory.h"
+#include "inventory-view.h"
 
 /**********************************************************
  * main: Prompts the user to enter an operation code,     *

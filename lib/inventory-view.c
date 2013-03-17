@@ -1,4 +1,4 @@
-#include "inventory.h"
+#include "inventory-view.h"
 
 int num_parts = 0;
 struct part inventory[MAX_PARTS];
