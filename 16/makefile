@@ -1,13 +1,19 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./16.1.5-6.c ./16.1.7.fraction.c ./16.1.country-codes.c
+EXCLUDE = ./16.1.5-6.c ./16.1.7.fraction.c ./16.1.country-codes.c ./16.inventory.c
 include $(PREFIX)make/generic.mk
 
-all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.1.country-codes
+all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.1.country-codes ./16.inventory
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
+
+16.inventory: 16.inventory.o $(LIBS)/inventory.o $(LIBS)/readline.o
+	$(LINK)
+
+16.inventory.o: 16.inventory.c $(INCS)/inventory.h $(INCS)/readline.h
+	$(COMPILE)
 
 16.1.country-codes: 16.1.country-codes.o $(LIBS)/error.o
 	$(LINK)
