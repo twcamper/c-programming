@@ -19,6 +19,6 @@ $(BASE_NAMES:=-spec) : %-spec : %-spec.o $(LIBS)/%.o
 $(SPECS:.c=.o) : %.o : %.c $(INCS)/test_runner.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-# We end up here, in the lib/makefile, when lib/foo.c has changed
+# We end up here, in the lib/makefile, when lib/foo.c or include/foo.h has changed
 include $(LIBS)/makefile
 include $(PREFIX)make/clean.mk
