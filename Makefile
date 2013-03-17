@@ -8,13 +8,13 @@ SELF_MAKERS = $(foreach mf_dir, $(MF_DIRS), $(wildcard $(mf_dir)*.c))
 SPECS       = $(shell find ./spec -name '*-spec.c')
 EXCLUDE     = $(shell find ./src -name '*.c') $(SELF_MAKERS) $(SPECS)
 SPEC_LIBS   = $(patsubst ./spec%,$(LIBS)%,$(SPECS:-spec.c=.o))
-SPEC_HEADERS = $(patsubst ./spec%,$(INCS)%,$(SPECS:-spec.c=.h))
+SPEC_HEADERS = $(patsubst ./spec%,$(INCS)%,$(SPECS:-spec.c=.h)) $(INCS)/test_runner.h
 
 include make/generic.mk
 all: $(EXECUTABLES)
 
 spec: $(SPECS:.c=)
-	@for test in $(^); do ./$$test; done
+	@for test in $(^); do echo $$test; ./$$test; done
 
 $(SPECS:.c=) : % : %.o $(SPEC_LIBS)
 	$(LD) $^ -o $@

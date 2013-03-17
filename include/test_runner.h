@@ -22,7 +22,7 @@ int main(void) {
 	int result = all_tests();
 	if (result == 0)
 		printf("PASSED\n");
-	printf("Tests: %d\nAssertions: %d\n", tests_run, assertions);
+	printf("Tests: %d\nAssertions: %d\n\n", tests_run, assertions);
 
 	return result != 0;
 }
