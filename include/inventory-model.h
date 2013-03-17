@@ -1,22 +1,27 @@
 #ifndef INVENTORY_MODEL_H
 #define INVENTORY_MODEL_H
+#include <limits.h>
+#include <stdbool.h>
 
 #define NAME_LEN 25
 #define MAX_PARTS 100
 
-typedef struct part {
+typedef struct Part {
   int number;
   char name[NAME_LEN+1];
   int on_hand;
-} part;
+} Part;
 
 typedef struct InventoryDatabase {
   int count; 
-  part rows[MAX_PARTS];
+  Part rows[MAX_PARTS];
 } InventoryDatabase;
 
 void new_db(InventoryDatabase *db);
 int db_size(InventoryDatabase *db);
-int insert_part(InventoryDatabase *db, part p);
+int insert_part(InventoryDatabase *db, Part p);
+int update_part(InventoryDatabase *db, int part_number, int change);
 int find_part(InventoryDatabase *db, int part_number);
+int validate_record(Part *p);
+bool is_in_range(int field_value);
 #endif
