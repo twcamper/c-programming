@@ -24,4 +24,6 @@ int update_part(InventoryDatabase *db, int part_number, int change);
 int find_part(InventoryDatabase *db, int part_number);
 int validate_record(Part *p);
 bool is_in_range(int field_value);
+void load(InventoryDatabase *db);
+void sort_on_part_number(InventoryDatabase *db);
 #endif

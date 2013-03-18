@@ -109,6 +109,7 @@ void print(InventoryDatabase *db)
 {
   int i;
 
+  sort_on_part_number(db);
   printf("Part Number   Part Name                  "
          "Quantity on Hand\n");
   for (i = 0; i < db->count; i++)

@@ -171,6 +171,27 @@ int update_part_fail_invalid_test(void)
   _assert(db.count == 1);
   return 0;
 }
+int sort_test(void)
+{
+  InventoryDatabase db;
+  new_db(&db);
+  load(&db);
+  sort_on_part_number(&db);
+  _assert(db.rows[0].number == 1);
+  _assert(strcmp(db.rows[0].name,"Fern Spore sorter, gross") == 0);
+  _assert(db.rows[0].on_hand == 100);
+
+  _assert(db.rows[7].number == 97);
+  _assert(strcmp(db.rows[7].name,"Sink, heat, fur") == 0);
+  _assert(db.rows[7].on_hand == 2147483647);
+
+  int last = db.count - 1;
+  _assert(db.rows[last].number == 1989776);
+  _assert(strcmp(db.rows[last].name,"Tractor Beam cowl") == 0);
+  _assert(db.rows[last].on_hand == 30);
+  return 0;
+}
+
 int all_tests(void)
 {
   _run(new_db_test);
@@ -184,5 +205,6 @@ int all_tests(void)
   _run(update_part_success_test);
   _run(update_part_fail_not_found_test);
   _run(update_part_fail_invalid_test);
+  _run(sort_test);
   return 0;
 }

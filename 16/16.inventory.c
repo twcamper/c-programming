@@ -25,6 +25,8 @@ int main(void)
   InventoryDatabase db;
   new_db(&db);
 
+  load(&db);
+
   for (;;) {
     printf("Enter operation code: ");
     scanf(" %c", &code);
