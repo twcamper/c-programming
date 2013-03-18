@@ -74,7 +74,7 @@ void search(InventoryDatabase *db)
  **********************************************************/
 void update(InventoryDatabase *db)
 {
-  int i, number, change;
+  int row, number, change;
   number = change = 0;
 
   printf("Enter part number: ");
@@ -83,15 +83,15 @@ void update(InventoryDatabase *db)
     return;
   }
 
-  i = find_part(db, number);
-  if (i >= 0) {
+  row = find_part(db, number);
+  if (row >= 0) {
     printf("Enter change in quantity on hand: ");
     if (read_int(&change) != 0) {
       printf("Invalid quantity.\n");
       return;
     }
-    if (update_part(db, number, change) != 0) {
-      printf("Invalid new quantity: %d + %d\n", db->rows[i].on_hand, change);
+    if (update_part(db, row, change) != 0) {
+      printf("Invalid new quantity: %d + %d\n", db->rows[row].on_hand, change);
       return;
     }
   } else

@@ -22,10 +22,10 @@ int insert_part(InventoryDatabase *db, Part p)
   db->count++;
   return 0;
 }
-int update_part(InventoryDatabase *db, int part_number, int change)
+int update_part(InventoryDatabase *db, int row, int change)
 {
-  int row, new_value;
-  if ((row = find_part(db, part_number)) != 0)
+  int new_value;
+  if (row < 0 || row >= db->count)
     return -1;
 
   new_value = db->rows[row].on_hand + change;

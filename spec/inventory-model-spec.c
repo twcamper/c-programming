@@ -133,11 +133,11 @@ int update_part_success_test(void)
 
   insert_part(&db, (Part) {88, "Ramen, Top", 200});
   _assert(db.count == 1);
-  _assert(update_part(&db, 88, 199) == 0);
+  _assert(update_part(&db, 0, 199) == 0);
   _assert(db.rows[0].on_hand == 399);
-  _assert(update_part(&db, 88, -99) == 0);
+  _assert(update_part(&db, 0, -99) == 0);
   _assert(db.rows[0].on_hand == 300);
-  _assert(update_part(&db, 88, -300) == 0);
+  _assert(update_part(&db, 0, -300) == 0);
   _assert(db.rows[0].on_hand == 0);
   _assert(db.count == 1);
 
@@ -152,6 +152,7 @@ int update_part_fail_not_found_test(void)
   insert_part(&db, (Part) {88, "Joystick, rotating", 200});
   _assert(db.count == 1);
   _assert(update_part(&db, 1, 199) != 0);
+  _assert(update_part(&db, -1, 199) != 0);
   _assert(db.count == 1);
   return 0;
 }
@@ -163,9 +164,9 @@ int update_part_fail_invalid_test(void)
 
   insert_part(&db, (Part) {88, "Mercy!", 20});
   _assert(db.count == 1);
-  _assert(update_part(&db, 88, -21) != 0);
+  _assert(update_part(&db, 0, -21) != 0);
   _assert(db.rows[0].on_hand == 20);
-  _assert(update_part(&db, 88, INT_MAX) != 0);
+  _assert(update_part(&db, 0, INT_MAX) != 0);
   _assert(db.rows[0].on_hand == 20);
   _assert(db.count == 1);
   return 0;
