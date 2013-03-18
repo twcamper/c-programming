@@ -10,7 +10,7 @@
  **********************************************************/
 void insert(InventoryDatabase *db)
 {
-  Part p;
+  Part p = {0, "", 0};
 
   if (db->count == MAX_PARTS) {
     printf("Database is full; can't add more parts.\n");
@@ -28,7 +28,10 @@ void insert(InventoryDatabase *db)
   read_line(p.name, NAME_LEN);
   printf("Enter quantity on hand: ");
   scanf("%d", &(p.on_hand));
-  insert_part(db,p);
+  if (insert_part(db,p) != 0) {
+    printf("Invalid number.");
+    return;
+  }
 }
 
 /**********************************************************
@@ -68,7 +71,10 @@ void update(InventoryDatabase *db)
   if (i >= 0) {
     printf("Enter change in quantity on hand: ");
     scanf("%d", &change);
-    update_part(db, number, change);
+    if (update_part(db, number, change) != 0) {
+      printf("Invalid new quantity: %d + %d\n", db->rows[i].on_hand, change);
+      return;
+    }
   } else
     printf("Part not found.\n");
 }
