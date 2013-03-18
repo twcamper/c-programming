@@ -18,7 +18,10 @@ void insert(InventoryDatabase *db)
   }
 
   printf("Enter part number: ");
-  scanf("%d", &(p.number));
+  if (read_int(&(p.number)) != 0) {
+    printf("Invalid part number\n");
+    return;
+  }
   if (find_part(db, p.number) >= 0) {
     printf("Part already exists.\n");
     return;
@@ -26,10 +29,15 @@ void insert(InventoryDatabase *db)
 
   printf("Enter part name: ");
   read_line(p.name, NAME_LEN);
+
   printf("Enter quantity on hand: ");
-  scanf("%d", &(p.on_hand));
+  if (read_int(&(p.on_hand)) != 0) {
+    printf("Invalid quantity.\n");
+    return;
+  }
+
   if (insert_part(db,p) != 0) {
-    printf("Invalid number.\n");
+    printf("Record rejected: invalid number.\n");
     return;
   }
 }
@@ -42,10 +50,13 @@ void insert(InventoryDatabase *db)
  **********************************************************/
 void search(InventoryDatabase *db)
 {
-  int i, number;
+  int i, number = 0;
 
   printf("Enter part number: ");
-  scanf("%d", &number);
+  if (read_int(&number) != 0) {
+    printf("Invalid part number.\n");
+    return;
+  }
   i = find_part(db, number);
   if (i >= 0) {
     printf("Part name: %s\n", db->rows[i].name);
@@ -64,13 +75,21 @@ void search(InventoryDatabase *db)
 void update(InventoryDatabase *db)
 {
   int i, number, change;
+  number = change = 0;
 
   printf("Enter part number: ");
-  scanf("%d", &number);
+  if (read_int(&number) != 0) {
+    printf("Invalid part number.\n");
+    return;
+  }
+
   i = find_part(db, number);
   if (i >= 0) {
     printf("Enter change in quantity on hand: ");
-    scanf("%d", &change);
+    if (read_int(&change) != 0) {
+      printf("Invalid quantity.\n");
+      return;
+    }
     if (update_part(db, number, change) != 0) {
       printf("Invalid new quantity: %d + %d\n", db->rows[i].on_hand, change);
       return;
