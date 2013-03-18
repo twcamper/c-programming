@@ -29,7 +29,7 @@ void insert(InventoryDatabase *db)
   printf("Enter quantity on hand: ");
   scanf("%d", &(p.on_hand));
   if (insert_part(db,p) != 0) {
-    printf("Invalid number.");
+    printf("Invalid number.\n");
     return;
   }
 }
