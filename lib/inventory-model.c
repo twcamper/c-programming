@@ -35,6 +35,11 @@ int update_part(InventoryDatabase *db, int part_number, int change)
   db->rows[row].on_hand = new_value;
   return 0;
 }
+/**********************************************************
+ * find_part: Looks up a part number in the inventory     *
+ *            array. Returns the array index if the part  *
+ *            number is found; otherwise, returns -1.     *
+ **********************************************************/
 int find_part(InventoryDatabase *db, int part_number)
 {
   int i;

@@ -22,19 +22,22 @@ int main(void)
 {
   char code;
 
+  InventoryDatabase db;
+  new_db(&db);
+
   for (;;) {
     printf("Enter operation code: ");
     scanf(" %c", &code);
     while (getchar() != '\n')   /* skips to end of line */
       ;
     switch (code) {
-      case 'i': insert();
+      case 'i': insert(&db);
                 break;
-      case 's': search();
+      case 's': search(&db);
                 break;
-      case 'u': update();
+      case 'u': update(&db);
                 break;
-      case 'p': print();
+      case 'p': print(&db);
                 break;
       case 'q': return 0;
       default:  printf("Illegal code\n");
