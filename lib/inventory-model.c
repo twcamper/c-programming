@@ -12,7 +12,7 @@ int insert_part(InventoryDatabase *db, Part p)
 {
   if (db->count == MAX_PARTS)
     return -1;
-  if (find_part(db, p.number) >= 0)
+  if (find_part(db, p.number))
     return -2;
   if (validate_record(&p) != 0)
     return -3;
@@ -22,17 +22,18 @@ int insert_part(InventoryDatabase *db, Part p)
   db->count++;
   return 0;
 }
-int update_part(InventoryDatabase *db, int row, int change)
+int update_part(InventoryDatabase *db, int number, int change)
 {
   int new_value;
-  if (row < 0 || row >= db->count)
+  Part *p;
+  if (!(p = find_part(db, number)))
     return -1;
 
-  new_value = db->rows[row].on_hand + change;
+  new_value = p->on_hand + change;
   if (!is_in_range(new_value))
     return -2;
 
-  db->rows[row].on_hand = new_value;
+  p->on_hand = new_value;
   return 0;
 }
 /**********************************************************
@@ -40,13 +41,13 @@ int update_part(InventoryDatabase *db, int row, int change)
  *            array. Returns the array index if the part  *
  *            number is found; otherwise, returns -1.     *
  **********************************************************/
-int find_part(InventoryDatabase *db, int part_number)
+Part *find_part(InventoryDatabase *db, int part_number)
 {
   int i;
   for (i = 0; i < db->count; i++)
     if (db->rows[i].number == part_number)
-      return i;
-  return -1;
+      return &db->rows[i];
+  return NULL;
 }
 int validate_record(Part *p)
 {  
@@ -100,6 +101,11 @@ void select_sort(InventoryDatabase *db, int n)
 void sort_on_part_number(InventoryDatabase *db)
 {
   select_sort(db, db->count);
+}
+void iterate(InventoryDatabase *db, void (*op)(Part *p))
+{
+  for (int i = 0; i < db->count; i++)
+    op(&db->rows[i]);
 }
 void load(InventoryDatabase *db)
 {

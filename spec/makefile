@@ -1,11 +1,19 @@
 PREFIX = ../
 include $(PREFIX)make/env.mk
-SPECS       = $(shell find . -name '*-spec.c')
+SPECS       = $(filter-out ./inventory-record-validation-spec.c, $(shell find . -name '*-spec.c'))
 # for lib/foo.c and spec/foo-spec.c, this will be 'foo'
 BASE_NAMES  = $(notdir $(SPECS:-spec.c=))
 
-all: $(SPECS:.c=)
+all: $(SPECS:.c=) inventory-record-validation-spec
 	@for test in $(^); do echo $$test; ./$$test; done
+
+# This guy exists because of the annoying warnings about INT overflow, the handling of which
+# is what were testing.  Needs a custom rule because he doesn't fit the naming convention.
+inventory-record-validation-spec: inventory-record-validation-spec.o $(LIBS)/inventory-model.o
+	$(LD) $^ -o $@
+
+inventory-record-validation-spec.o: inventory-record-validation-spec.c $(INCS)/inventory-model.h $(INCS)/test_runner.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 # For each executable spec/foo-spec
 # # check if spec/foo-spec.o or the corresponding lib/foo.o has changed

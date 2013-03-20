@@ -22,7 +22,7 @@ void insert(InventoryDatabase *db)
     printf("Invalid part number\n");
     return;
   }
-  if (find_part(db, p.number) >= 0) {
+  if (find_part(db, p.number)) {
     printf("Part already exists.\n");
     return;
   }
@@ -50,17 +50,17 @@ void insert(InventoryDatabase *db)
  **********************************************************/
 void search(InventoryDatabase *db)
 {
-  int i, number = 0;
+  int number = 0;
+  Part *p;
 
   printf("Enter part number: ");
   if (read_int(&number) != 0) {
     printf("Invalid part number.\n");
     return;
   }
-  i = find_part(db, number);
-  if (i >= 0) {
-    printf("Part name: %s\n", db->rows[i].name);
-    printf("Quantity on hand: %d\n", db->rows[i].on_hand);
+  if ((p = find_part(db, number))) {
+    printf("Part name: %s\n", p->name);
+    printf("Quantity on hand: %d\n", p->on_hand);
   } else
     printf("Part not found.\n");
 }
@@ -74,7 +74,7 @@ void search(InventoryDatabase *db)
  **********************************************************/
 void update(InventoryDatabase *db)
 {
-  int row, number, change;
+  int number, change;
   number = change = 0;
 
   printf("Enter part number: ");
@@ -83,15 +83,15 @@ void update(InventoryDatabase *db)
     return;
   }
 
-  row = find_part(db, number);
-  if (row >= 0) {
+  Part *p;
+  if ((p = find_part(db, number))) {
     printf("Enter change in quantity on hand: ");
     if (read_int(&change) != 0) {
       printf("Invalid quantity.\n");
       return;
     }
-    if (update_part(db, row, change) != 0) {
-      printf("Invalid new quantity: %d + %d\n", db->rows[row].on_hand, change);
+    if (update_part(db, number, change) != 0) {
+      printf("Invalid new quantity: %d + %d\n", p->on_hand, change);
       return;
     }
   } else
@@ -105,14 +105,13 @@ void update(InventoryDatabase *db)
  *        order in which they were entered into the       *
  *        database.                                       *
  **********************************************************/
+void print_line(Part *p)
+{
+  printf("%7d       %-25s%11d\n", p->number, p->name, p->on_hand);
+}
 void print(InventoryDatabase *db)
 {
-  int i;
-
   sort_on_part_number(db);
-  printf("Part Number   Part Name                  "
-         "Quantity on Hand\n");
-  for (i = 0; i < db->count; i++)
-    printf("%7d       %-25s%11d\n", db->rows[i].number,
-           db->rows[i].name, db->rows[i].on_hand);
+  printf("Part Number   Part Name                   Quantity on Hand\n");
+  iterate(db, print_line);
 }
