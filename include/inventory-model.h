@@ -16,7 +16,6 @@ typedef struct Part {
 typedef struct InventoryDatabase {
   int count; 
   Part rows[MAX_PARTS];
-  Part *next;
 } InventoryDatabase;
 
 void new_db(InventoryDatabase *db);
