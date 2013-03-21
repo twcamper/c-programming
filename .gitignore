@@ -131,3 +131,4 @@ spec/inventory-model-spec
 spec/inventory-record-validation-spec
 17/17.1.1-malloc-or-die
 17/17.2.2-duplicate
+17/17.3.3-create-array
