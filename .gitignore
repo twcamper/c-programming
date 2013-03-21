@@ -129,3 +129,5 @@ spec/chess-spec
 16/16.inventory
 spec/inventory-model-spec
 spec/inventory-record-validation-spec
+17/17.1.1-malloc-or-die
+17/17.2.2-duplicate
