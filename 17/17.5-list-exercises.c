@@ -13,6 +13,7 @@ node *create(void)
     fprintf(stderr, "malloc failed: %s:%d\n", __FILE__, __LINE__);
     exit(EXIT_FAILURE);
   }
+  /* printf("malloc: %p\n", n); */
   return n;
 }
 node *add(node *list, int value)
@@ -31,32 +32,29 @@ node *create_list(int a[], int n)
   }
   return first;
 }
-void free_list(node *list)
+void free_list(node *head)
 {
-
-}
-int free_list_test(void)
-{
-
-  return 0;
+  node *next = NULL;
+  for (node *n = head; n; n = next) {
+    next = n->next;
+    /* printf("free: %p\n", n); */
+    free(n);
+  }
 }
 int create_list_test(void)
 {
-  node *list = create_list((int[]){11, 22, 33, 44, 55, 66, 77, 88, 99, 101}, 10);
+  node *list = create_list((int[]){11, 22, 33}, 3);
   _assert(list->next != NULL);
-  _assert(list->value == 101);
-  _assert(list->next->value == 99);
-  return 0;
-}
-int delete_from_list_test(void)
-{
-
+  _assert(list->value == 33);
+  _assert(list->next->value == 22);
+  _assert(list->next->next->value == 11);
+  _assert(list->next->next->next == NULL);
+  free_list(list);
   return 0;
 }
 
 int all_tests(void)
 {
-
   _run(create_list_test);
   return 0;
 }
