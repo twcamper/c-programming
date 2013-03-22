@@ -14,7 +14,11 @@ int assertions = 0;
           }                   \
         } while (0)
 
-#define _run(test) do { int r=test(); tests_run++; if(r) return r; } while(0)
+#ifdef TEST_VERBOSE
+  #define _run(test) do { printf("\t%s\n",  #test); int r=test(); tests_run++; if(r) return r; } while(0)
+#else
+  #define _run(test) do { int r=test(); tests_run++; if(r) return r; } while(0)
+#endif
 
 static int all_tests(void);
 
