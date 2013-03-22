@@ -4,38 +4,53 @@
 typedef struct node {
   int value;
   struct node *next;
-} node;
+} Node;
 
-node *create(void)
+Node *create(int value)
 {
-  node *n;
-  if ((n = malloc(sizeof(node))) == NULL) {
+  Node *n;
+  if ((n = malloc(sizeof(Node))) == NULL) {
     fprintf(stderr, "malloc failed: %s:%d\n", __FILE__, __LINE__);
     exit(EXIT_FAILURE);
   }
   /* printf("malloc: %p\n", n); */
+  n->value = value;
   return n;
 }
-node *add(node *list, int value)
+Node *add(Node *list, int value)
 {
-  node *new = create();
-  new->value = value;
+  Node *new = create(value);
   new->next = list;
   return new;
 }
-node *create_list(int a[], int n)
+Node *create_list(int a[], int n)
 {
-  node *first = create();
-  first->value = a[0];
+  Node *first = create(a[0]);
   for (int i = 1; i < n; i++) {
     first = add(first, a[i]);
   }
   return first;
 }
-void free_list(node *head)
+Node *insert_17_5_13(Node *head, Node *new_node)
 {
-  node *next = NULL;
-  for (node *n = head; n; n = next) {
+  Node *cur = head, *prev = NULL;
+  while (cur != NULL && cur->value <= new_node->value)  {
+    prev = cur;
+    cur  = cur->next;
+  }
+  if (cur == head) {
+    new_node->next = head;
+    head           = new_node;
+  } else
+    prev->next = new_node;
+
+
+  return head;
+}
+void free_list(Node *head)
+{
+  Node *next = NULL;
+  for (Node *n = head; n; n = next) {
     next = n->next;
     /* printf("free: %p\n", n); */
     free(n);
@@ -43,7 +58,7 @@ void free_list(node *head)
 }
 int create_list_test(void)
 {
-  node *list = create_list((int[]){11, 22, 33}, 3);
+  Node *list = create_list((int[]){11, 22, 33}, 3);
   _assert(list->next != NULL);
   _assert(list->value == 33);
   _assert(list->next->value == 22);
@@ -53,8 +68,39 @@ int create_list_test(void)
   return 0;
 }
 
+int insert_before_test(void)
+{
+  Node *list = create_list((int[]){11, 22}, 2);
+  Node *n = create(21);
+  list = insert_17_5_13(list, n);
+
+  _assert(list->value == 21);
+  _assert(list->next->value == 22);
+
+  return 0;
+}
+int insert_after_test(void)
+{
+  Node *list = create_list((int[]){11, 10}, 2);
+  Node *n = create(12);
+  list = insert_17_5_13(list, n);
+
+  _assert(list->value == 10);
+  _assert(list->next->value == 11);
+  _assert(list->next->next->value == 12);
+
+  return 0;
+}
+int insert_middle_test(void)
+{
+  Node *list = create_list((int[]){11, 22, 33}, 3);
+  return 0;
+}
 int all_tests(void)
 {
   _run(create_list_test);
+  _run(insert_before_test);
+  _run(insert_after_test);
+  _run(insert_middle_test);
   return 0;
 }
