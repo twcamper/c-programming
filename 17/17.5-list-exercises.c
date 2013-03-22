@@ -34,17 +34,19 @@ Node *create_list(int a[], int n)
 Node *insert_17_5_13(Node *head, Node *new_node)
 {
   Node *cur = head, *prev = NULL;
-  while (cur != NULL && cur->value <= new_node->value)  {
+  while (cur != NULL && cur->value < new_node->value)  {
     prev = cur;
     cur  = cur->next;
   }
-  if (cur == head) {
+  if (cur == head) {  /* insert at beginning */
     new_node->next = head;
     head           = new_node;
-  } else
+  } else {
+    if (cur != NULL) {  /* into middle (current is not final node) */
+      new_node->next = cur;
+    }
     prev->next = new_node;
-
-
+  }
   return head;
 }
 void free_list(Node *head)
@@ -70,12 +72,12 @@ int create_list_test(void)
 
 int insert_before_test(void)
 {
-  Node *list = create_list((int[]){11, 22}, 2);
-  Node *n = create(21);
+  Node *list = create_list((int[]){11, 10}, 2);
+  Node *n = create(9);
   list = insert_17_5_13(list, n);
 
-  _assert(list->value == 21);
-  _assert(list->next->value == 22);
+  _assert(list->value == 9);
+  _assert(list->next->value == 10);
 
   return 0;
 }
@@ -93,7 +95,14 @@ int insert_after_test(void)
 }
 int insert_middle_test(void)
 {
-  Node *list = create_list((int[]){11, 22, 33}, 3);
+  Node *list = create_list((int[]){5, 3}, 2);
+  Node *n = create(4);
+  list = insert_17_5_13(list, n);
+
+  _assert(list->value == 3);
+  _assert(list->next->value == 4);
+  _assert(list->next->next->value == 5);
+
   return 0;
 }
 int all_tests(void)
