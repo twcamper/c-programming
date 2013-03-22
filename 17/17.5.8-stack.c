@@ -71,16 +71,6 @@ void delete_head(void)
 }
 #ifdef TEST
 #include "test_runner.h"
-int push_item_test(void)
-{
-  _assert(push(13) == true);
-  _assert(top->value == 13);
-  _assert(top->next == NULL);
-
-  empty_the_stack();
-
-  return 0;
-}
 int push_items_test(void)
 {
   _assert(push(1) == true);
@@ -90,6 +80,7 @@ int push_items_test(void)
   _assert(push(2) == true);
   _assert(top->value == 2);
   _assert(top->next->value == 1);
+  _assert(top->next->next == NULL);
 
   _assert(push(3) == true);
   _assert(top->value == 3);
@@ -127,7 +118,6 @@ int empty_the_stack_test(void)
 
 int all_tests(void)
 {
-  _run(push_item_test);
   _run(push_items_test);
   _run(is_empty_test);
 
