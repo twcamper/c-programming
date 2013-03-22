@@ -35,16 +35,14 @@ bool push(int n)
 
 int pop(void)
 {
-  /*
-   * if top is empty
-   *   warn stack underflow
-   *   exit fail
-   * else
-   *   assign top->value to temp_int
-   *   delete head
-   *   return temp_int
-   */
-  return 0;
+  if (is_empty()) {
+    fprintf(stderr, "Stack Underflow\n");
+    exit(EXIT_FAILURE);
+  }
+
+  int temp_value = top->value;
+  delete_head();
+  return temp_value;
 }
 
 void empty_the_stack(void)
@@ -71,20 +69,22 @@ void delete_head(void)
 }
 #ifdef TEST
 #include "test_runner.h"
+#include <limits.h>
+
 int push_items_test(void)
 {
   _assert(push(1) == true);
   _assert(top->value == 1);
   _assert(top->next == NULL);
 
-  _assert(push(2) == true);
-  _assert(top->value == 2);
+  _assert(push(INT_MAX) == true);
+  _assert(top->value == INT_MAX);
   _assert(top->next->value == 1);
   _assert(top->next->next == NULL);
 
   _assert(push(3) == true);
   _assert(top->value == 3);
-  _assert(top->next->value == 2);
+  _assert(top->next->value == INT_MAX);
   _assert(top->next->next->value == 1);
   _assert(top->next->next->next == NULL);
 
@@ -92,13 +92,23 @@ int push_items_test(void)
 
   return 0;
 }
-int pop_item_test(void)
+int pop_test(void)
 {
+  push(1);
+  push(2);
+  push(3);
 
-  return 0;
-}
-int pop_last_item_test(void)
-{
+  _assert(pop() == 3);
+  _assert(top->value == 2);
+  _assert(top->next->value == 1);
+  _assert(top->next->next == NULL);
+
+  _assert(pop() == 2);
+  _assert(top->value == 1);
+  _assert(top->next == NULL);
+
+  _assert(pop() == 1);
+  _assert(top == NULL);
 
   return 0;
 }
@@ -113,6 +123,15 @@ int is_empty_test(void)
 int empty_the_stack_test(void)
 {
 
+  push(34);
+  push(87);
+  push(12345);
+  push(0);
+  push(-687);
+
+  empty_the_stack();
+  _assert(top == NULL);
+  _assert(is_empty());
   return 0;
 }
 
@@ -120,15 +139,25 @@ int all_tests(void)
 {
   _run(push_items_test);
   _run(is_empty_test);
-
+  _run(pop_test);
+  _run(empty_the_stack_test);
   return 0;
 }
 #else
-int pop_from_empty_stack_test(void);
+int pop_from_empty_stack_test(void)
+{
+  printf("We should exit with an error: echo $? should return %d\n", EXIT_FAILURE);
+  push(63);
+  pop();
+  pop();
+
+  return 0;
+}
 
 int main(void)
 {
 
+  pop_from_empty_stack_test();
   return 0;
 }
 #endif
