@@ -18,21 +18,21 @@ Node *create(int value)
   n->next  = NULL;
   return n;
 }
-Node *add(Node *list, int value)
+void add(Node **list, int value)
 {
   Node *new = create(value);
-  new->next = list;
-  return new;
+  new->next = *list;
+  *list     = new;
 }
 Node *create_list(int a[], int n)
 {
   Node *first = create(a[0]);
   for (int i = 1; i < n; i++) {
-    first = add(first, a[i]);
+    add(&first, a[i]);
   }
   return first;
 }
-void delete_17_6_14(struct node **list, int n)
+void delete_17_6_14(Node **list, int n)
 {
   Node *cur, *prev;
 
@@ -48,16 +48,16 @@ void delete_17_6_14(struct node **list, int n)
     prev->next = cur->next;
   free(cur);
 }
-Node *insert_17_5_13(Node *head, Node *new_node)
+void insert_17_5_13(Node **head, Node *new_node)
 {
-  Node *cur = head, *prev = NULL;
+  Node *cur = *head, *prev = NULL;
   while (cur != NULL && cur->value < new_node->value)  {
     prev = cur;
     cur  = cur->next;
   }
-  if (cur == head) {  /* insert at beginning */
-    new_node->next = head;
-    head           = new_node;
+  if (cur == *head) {  /* insert at beginning */
+    new_node->next = *head;
+    *head           = new_node;
   } else {
     if (cur == NULL) { /* appending at end */
       new_node->next = NULL;
@@ -66,7 +66,6 @@ Node *insert_17_5_13(Node *head, Node *new_node)
     }
     prev->next = new_node;
   }
-  return head;
 }
 int count_occurrences_17_5_11(Node *head, int n)
 {
@@ -111,7 +110,7 @@ int insert_before_test(void)
 {
   Node *list = create_list((int[]){11, 10}, 2);
   Node *n = create(9);
-  list = insert_17_5_13(list, n);
+  insert_17_5_13(&list, n);
 
   _assert(list->value == 9);
   _assert(list->next->value == 10);
@@ -123,7 +122,7 @@ int insert_after_test(void)
 {
   Node *list = create_list((int[]){11, 10}, 2);
   Node *n = create(12);
-  list = insert_17_5_13(list, n);
+  insert_17_5_13(&list, n);
 
   _assert(list->value == 10);
   _assert(list->next->value == 11);
@@ -137,7 +136,7 @@ int insert_middle_test(void)
 {
   Node *list = create_list((int[]){5, 3}, 2);
   Node *n = create(4);
-  list = insert_17_5_13(list, n);
+  insert_17_5_13(&list, n);
 
   _assert(list->value == 3);
   _assert(list->next->value == 4);
