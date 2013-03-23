@@ -32,6 +32,22 @@ Node *create_list(int a[], int n)
   }
   return first;
 }
+void delete_17_6_14(struct node **list, int n)
+{
+  Node *cur, *prev;
+
+  for (cur = *list, prev = NULL;
+       cur != NULL && cur->value != n;
+       prev = cur, cur = cur->next)
+    ;
+  if (cur == NULL)
+    return;
+  if (prev == NULL)
+    *list = (*list)->next;
+  else
+    prev->next = cur->next;
+  free(cur);
+}
 Node *insert_17_5_13(Node *head, Node *new_node)
 {
   Node *cur = head, *prev = NULL;
@@ -156,12 +172,99 @@ int find_last_test(void)
   free_list(list);
   return 0;
 }
+int delete_empty_test(void)
+{
+  Node *list = NULL;
+  delete_17_6_14(&list, 3);
+  _assert(list == NULL);
+
+  return 0;
+}
+int delete_not_found_test(void)
+{
+  Node *list = create_list((int[]) {9, 7}, 2);
+  _assert(list->value == 7);
+  _assert(list->next->value == 9);
+  _assert(list->next->next == NULL);
+
+  delete_17_6_14(&list, 6);
+
+  _assert(list->value == 7);
+  _assert(list->next->value == 9);
+  _assert(list->next->next == NULL);
+  free_list(list);
+
+  return 0;
+}
+int delete_only_test(void)
+{
+  Node *list = create(3);
+
+  _assert(list->value == 3);
+  _assert(list->next == NULL);
+
+  delete_17_6_14(&list, 3);
+
+  _assert(list == NULL);
+
+  return 0;
+}
+int delete_first_test(void)
+{
+  Node *list = create_list((int[]) {9, 7}, 2);
+  _assert(list->value == 7);
+  _assert(list->next->value == 9);
+  _assert(list->next->next == NULL);
+
+  delete_17_6_14(&list, 7);
+
+  _assert(list->value == 9);
+  _assert(list->next == NULL);
+  free_list(list);
+  return 0;
+}
+int delete_middle_test(void)
+{
+  Node *list = create_list((int[]) {9, 8, 7}, 3);
+  _assert(list->value == 7);
+  _assert(list->next->value == 8);
+  _assert(list->next->next->value == 9);
+  _assert(list->next->next->next == NULL);
+
+  delete_17_6_14(&list, 8);
+
+  _assert(list->value == 7);
+  _assert(list->next->value == 9);
+  _assert(list->next->next == NULL);
+  free_list(list);
+  return 0;
+}
+int delete_last_test(void)
+{
+  Node *list = create_list((int[]) {9, 7}, 2);
+  _assert(list->value == 7);
+  _assert(list->next->value == 9);
+  _assert(list->next->next == NULL);
+
+  delete_17_6_14(&list, 9);
+
+  _assert(list->value == 7);
+  _assert(list->next == NULL);
+  free_list(list);
+  return 0;
+}
 int all_tests(void)
 {
   _run(create_list_test);
   _run(insert_before_test);
   _run(insert_after_test);
   _run(insert_middle_test);
+  _run(delete_empty_test);
+  _run(delete_not_found_test);
+  _run(delete_only_test);
+  _run(delete_first_test);
+  _run(delete_middle_test);
+  _run(delete_last_test);
   _run(count_occurrences_test);
   _run(find_last_test);
   return 0;
