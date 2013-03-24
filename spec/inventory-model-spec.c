@@ -13,14 +13,27 @@ int new_db_test(void)
 
   _assert(db.count == 0);
   _assert(sizeof(db.rows[0]) == sizeof(Part));
-  _assert(db_size(&db) == MAX_PARTS);
+  _assert(sizeof(db.rows[INITIAL_SIZE - 1]) == sizeof(Part));
+  _assert(db.requested_row_allocation == INITIAL_SIZE);
+  destroy_db(&db);
+
+  return 0;
+}
+int destroy_db_test(void)
+{
+  InventoryDatabase db; 
+  new_db(&db);
+  _assert(db.rows != NULL);
+  destroy_db(&db);
+  _assert(db.rows == NULL);
+  _assert(db.count == 0);
   return 0;
 }
 int insert_part_success_test(void)
 {
   InventoryDatabase db;
   new_db(&db);
-   
+
   _assert(db.count == 0);
 
   int rc = insert_part(&db, (Part) {88, "Short Name", 200});
@@ -29,6 +42,8 @@ int insert_part_success_test(void)
   _assert(db.rows[0].number == 88);
   _assert(strcmp(db.rows[0].name, "Short Name") == 0);
   _assert(db.rows[0].on_hand == 200);
+  destroy_db(&db);
+
   return 0;
 }
 int find_part_test(void)
@@ -42,6 +57,8 @@ int find_part_test(void)
   _assert(find_part(&db, 212)->number == 212);
   _assert(find_part(&db, 88)->number == 88);
   _assert(find_part(&db, 10) == NULL);
+
+  destroy_db(&db);
 
   return 0;
 }
@@ -59,23 +76,42 @@ int insert_part_fail_non_unique_test(void)
   _assert(strcmp(db.rows[0].name, "Short Name") == 0);
   _assert(db.rows[0].on_hand == 200);
 
+  destroy_db(&db);
+
   return 0;
 }
-int insert_part_fail_max_records_test(void)
+int insert_part_resize_test(void)
 {
   InventoryDatabase db;
   new_db(&db);
-  int i, rc = 0; 
-  for (i = 0; i < MAX_PARTS; i++)
+  int i, rc = 0;
+  for (i = 0; i < INITIAL_SIZE; i++)
     rc = insert_part(&db, (Part) {i, "name", 10});
-  
+
+  _assert(db.requested_row_allocation == INITIAL_SIZE);
   _assert(rc == 0);
-  _assert(db.count == MAX_PARTS);
-   
-  rc = insert_part(&db, (Part) {312, "unique name", 1020});
-  _assert(rc == -1);
-  _assert(db.count == MAX_PARTS);
-  _assert(find_part(&db, 312) == NULL);
+  _assert(db.count == INITIAL_SIZE);
+
+  Part *p;
+  int part_number = db.count  + 1;
+  rc = insert_part(&db, (Part) {part_number, "unique name", 1020});
+  _assert(rc == 0);
+  _assert(db.requested_row_allocation == INITIAL_SIZE * 2);
+  _assert(db.count == INITIAL_SIZE + 1);
+  p = find_part(&db, part_number);
+  _assert(p->number == part_number);
+  _assert(strcmp(p->name,"unique name") == 0);
+  _assert(p->on_hand == 1020);
+
+  size_t new_size = INITIAL_SIZE * 2;
+  for (i = db.count; i < (int)db.requested_row_allocation; i++)
+    rc = insert_part(&db, (Part) {i+1, "name", 10});
+
+  _assert(db.requested_row_allocation == new_size);
+  _assert(rc == 0);
+  _assert(db.count == (int)new_size);
+
+  destroy_db(&db);
 
   return 0;
 }
@@ -94,6 +130,8 @@ int insert_part_truncates_name_test(void)
   insert_part(&db, (Part) {8, "Short", 20});
   _assert(strlen(db.rows[1].name) == 5);
 
+  destroy_db(&db);
+
   return 0;
 }
 int update_part_success_test(void)
@@ -111,6 +149,8 @@ int update_part_success_test(void)
   _assert(db.rows[0].on_hand == 0);
   _assert(db.count == 1);
 
+  destroy_db(&db);
+
   return 0;
 }
 int update_part_fail_not_found_test(void)
@@ -124,6 +164,8 @@ int update_part_fail_not_found_test(void)
   _assert(update_part(&db, 89, 199) != 0);
   _assert(update_part(&db, 1, 199) != 0);
   _assert(db.count == 1);
+  destroy_db(&db);
+
   return 0;
 }
 int update_part_fail_invalid_test(void)
@@ -139,6 +181,8 @@ int update_part_fail_invalid_test(void)
   _assert(update_part(&db, 88, INT_MAX) != 0);
   _assert(db.rows[0].on_hand == 20);
   _assert(db.count == 1);
+  destroy_db(&db);
+
   return 0;
 }
 int sort_test(void)
@@ -159,6 +203,8 @@ int sort_test(void)
   _assert(db.rows[last].number == 1989776);
   _assert(strcmp(db.rows[last].name,"Tractor Beam cowl") == 0);
   _assert(db.rows[last].on_hand == 30);
+  destroy_db(&db);
+
   return 0;
 }
 
@@ -186,21 +232,24 @@ int iterate_test(void)
   _assert(db.rows[2].on_hand == 3);
   _assert(db.rows[3].on_hand == 2);
 
+  destroy_db(&db);
+
   return 0;
 }
 
 int all_tests(void)
 {
   _run(new_db_test);
+  _run(destroy_db_test);
   _run(insert_part_success_test);
   _run(insert_part_truncates_name_test);
   _run(find_part_test);
   _run(insert_part_fail_non_unique_test);
-  _run(insert_part_fail_max_records_test);
+  _run(insert_part_resize_test);
   _run(update_part_success_test);
   _run(update_part_fail_not_found_test);
   _run(update_part_fail_invalid_test);
-  _run(sort_test);
   _run(iterate_test);
+  _run(sort_test);
   return 0;
 }

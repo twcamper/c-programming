@@ -3,15 +3,36 @@
 void new_db(InventoryDatabase *db)
 {
   db->count = 0;
+  db->requested_row_allocation = INITIAL_SIZE;
+  db->rows = malloc(db->requested_row_allocation * sizeof(Part));
+
+  if (db->rows == NULL) {
+    fprintf(stderr, "Memory allocation failed: %s:%d (%s)\n", __FILE__, __LINE__, __func__);
+    exit(EXIT_FAILURE);
+  }
 }
-int db_size(InventoryDatabase *db)
+void destroy_db(InventoryDatabase *db)
 {
-  return (int) (sizeof(db->rows) / sizeof(db->rows[0]));
+  free(db->rows);
+  db->rows = NULL;
+  db->count = 0;
+}
+int resize_db_17_1(InventoryDatabase *db)
+{
+  db->requested_row_allocation *= 2;
+  Part *temp = realloc(db->rows, db->requested_row_allocation * sizeof(Part));
+  if (temp == NULL)
+    return -1;
+
+  db->rows = temp;
+  return 0;
 }
 int insert_part(InventoryDatabase *db, Part p)
 {
-  if (db->count == MAX_PARTS)
-    return -1;
+  if (db->count == (int)db->requested_row_allocation)
+    if ((resize_db_17_1(db) != 0)) {
+      return -1;
+    }
   if (find_part(db, p.number))
     return -2;
   if (validate_record(&p) != 0)

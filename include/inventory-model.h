@@ -3,9 +3,10 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define NAME_LEN 25
-#define MAX_PARTS 100
+#define INITIAL_SIZE 30000
 
 typedef struct Part {
   int number;
@@ -15,11 +16,13 @@ typedef struct Part {
 
 typedef struct InventoryDatabase {
   int count; 
-  Part rows[MAX_PARTS];
+  Part *rows;
+  size_t requested_row_allocation;
 } InventoryDatabase;
 
 void new_db(InventoryDatabase *db);
-int db_size(InventoryDatabase *db);
+void destroy_db(InventoryDatabase *db);
+int resize_db_17_1(InventoryDatabase *db);
 int insert_part(InventoryDatabase *db, Part p);
 int update_part(InventoryDatabase *db, int part_number, int change);
 Part *find_part(InventoryDatabase *db, int part_number);
