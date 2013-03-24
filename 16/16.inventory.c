@@ -41,10 +41,11 @@ int main(void)
                 break;
       case 'p': print(&db);
                 break;
-      case 'q': return 0;
+      case 'q':
+                destroy_db(&db);
+                return 0;
       default:  printf("Illegal code\n");
     }
     printf("\n");
   }
-  destroy_db(&db);
 }
