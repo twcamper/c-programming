@@ -46,4 +46,5 @@ int main(void)
     }
     printf("\n");
   }
+  destroy_db(&db);
 }

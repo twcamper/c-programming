@@ -12,11 +12,6 @@ void insert(InventoryDatabase *db)
 {
   Part p = {0, "", 0};
 
-  if (db->count == MAX_PARTS) {
-    printf("Database is full; can't add more parts.\n");
-    return;
-  }
-
   printf("Enter part number: ");
   if (read_int(&(p.number)) != 0) {
     printf("Invalid part number\n");
@@ -36,9 +31,13 @@ void insert(InventoryDatabase *db)
     return;
   }
 
-  if (insert_part(db,p) != 0) {
-    printf("Record rejected: invalid number.\n");
-    return;
+  switch(insert_part(db,p)) {
+    case -1:
+      printf("Memory allocation error.\n");
+      return;
+    case -3:
+      printf("Record rejected: invalid number.\n");
+      return;
   }
 }
 
