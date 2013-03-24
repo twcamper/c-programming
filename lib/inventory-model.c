@@ -119,9 +119,22 @@ void select_sort(InventoryDatabase *db, int n)
     select_sort(db, n - 1);
   }
 }
+int compare_parts_17_2(const void *p1, const void *p2)
+{
+  const Part *part1 = p1;
+  const Part *part2 = p2;
+
+  if (part1->number < part2->number)
+    return -1;
+  else if (part1->number == part2->number)
+    return 0;
+  else
+    return 1;
+}
 void sort_on_part_number(InventoryDatabase *db)
 {
-  select_sort(db, db->count);
+  /* select_sort(db, db->count); */
+  qsort(db->rows, (size_t)db->count, sizeof(Part), compare_parts_17_2);
 }
 void iterate(InventoryDatabase *db, void (*op)(Part *p))
 {
