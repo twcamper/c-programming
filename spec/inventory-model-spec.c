@@ -85,8 +85,12 @@ int insert_part_resize_test(void)
   InventoryDatabase db;
   new_db(&db);
   int i, rc = 0;
-  for (i = 0; i < INITIAL_SIZE; i++)
-    rc = insert_part(&db, (Part) {i, "name", 10});
+  /* manipulate rows and count directly because 30000 inserts that scan */
+  /* the whole array for duplicates takes over 4 seconds */
+  for (i = 0; i < INITIAL_SIZE - 1; i++)
+    db.rows[i] = (Part) {i, "name", 10};
+  db.count = INITIAL_SIZE - 1;
+  rc = insert_part(&db, (Part) {i, "name", 10});
 
   _assert(db.requested_row_allocation == INITIAL_SIZE);
   _assert(rc == 0);
@@ -104,12 +108,26 @@ int insert_part_resize_test(void)
   _assert(p->on_hand == 1020);
 
   size_t new_size = INITIAL_SIZE * 2;
-  for (i = db.count; i < (int)db.requested_row_allocation; i++)
-    rc = insert_part(&db, (Part) {i+1, "name", 10});
+  /* manipulate rows and count directly because 60000 inserts that scan */
+  /* the whole array for duplicates takes about 6 seconds */
+  for (i = db.count; i < (int)db.requested_row_allocation - 1; i++)
+    db.rows[i+1] = (Part) {i+1, "name", 10};
+  db.count = (int)db.requested_row_allocation - 1;
+  rc = insert_part(&db, (Part) {i+1, "name", 10});
 
   _assert(db.requested_row_allocation == new_size);
   _assert(rc == 0);
   _assert(db.count == (int)new_size);
+
+  part_number = db.count  + 1;
+  rc = insert_part(&db, (Part) {part_number, "Fairly unique name", 1021});
+  _assert(rc == 0);
+  _assert(db.requested_row_allocation == INITIAL_SIZE * 4);
+  _assert(db.count == 1 + (int) new_size);
+  p = find_part(&db, part_number);
+  _assert(p->number == part_number);
+  _assert(strcmp(p->name,"Fairly unique name") == 0);
+  _assert(p->on_hand == 1021);
 
   destroy_db(&db);
 
