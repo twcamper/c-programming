@@ -107,15 +107,7 @@ void select_sort(InventoryDatabase *db, int n)
 }
 int compare_parts_17_2(const void *p1, const void *p2)
 {
-  const Part *part1 = p1;
-  const Part *part2 = p2;
-
-  if (part1->number < part2->number)
-    return -1;
-  else if (part1->number == part2->number)
-    return 0;
-  else
-    return 1;
+  return ((Part *)p1)->number - ((Part *)p2)->number;
 }
 void sort_on_part_number(InventoryDatabase *db)
 {
