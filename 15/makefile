@@ -7,13 +7,10 @@ LINK    = $(LD) $^ -o $@
 
 all: 15.1.justify 15.3.qsort 15.5.RPN-calculator
 
-15.1.justify: 15.1.justify.o line.o word.o
+15.1.justify: 15.1.justify.o $(LIBS)/line.o $(LIBS)/word.o
 	$(LINK)
 
-15.1.justify.o: 15.1.justify.c line.h word.h
-	$(COMPILE)
-
-line.o word.o: %.o : %.c %.h
+15.1.justify.o: 15.1.justify.c $(INCS)/line.h $(INCS)/word.h
 	$(COMPILE)
 
 15.3.qsort: 15.3.qsort.o quicksort.o
@@ -35,3 +32,4 @@ stack.o tokenize.o: %.o : %.c %.h
 	$(COMPILE)
 
 include $(PREFIX)make/clean.mk
+include $(LIBS)/makefile
