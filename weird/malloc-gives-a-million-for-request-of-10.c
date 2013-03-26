@@ -16,7 +16,7 @@ int test_1(void)
   s[10] = 'A';
   assert(s[10] == 'A');
 
-  /* Threshhold on my machine */
+  /* Threshhold on my machine: note, binary MB, 2**20, == 1048576 */
   i = 1048447;  /* works */
   i = 1048448;  /* segfualts */
 
