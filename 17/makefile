@@ -1,13 +1,19 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./17.3-inventory.c ./17.4-line.c
+EXCLUDE = ./17.3-inventory.c ./17.4-line.c ./17.5-sort-words.c
 include $(PREFIX)make/generic.mk
 
-all: $(EXECUTABLES) ./17.3-inventory ./17.4-justify
+all: $(EXECUTABLES) ./17.3-inventory ./17.4-justify ./17.5-sort-words
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
+
+17.5-sort-words: 17.5-sort-words.o $(LIBS)/readline.o $(LIBS)/error.o
+	$(LINK)
+
+17.5-sort-words.o: 17.5-sort-words.c $(INCS)/readline.h $(INCS)/error.h
+	$(COMPILE)
 
 17.4-justify: 17.4-justify.o 17.4-line.o $(LIBS)/word.o
 	$(LINK)
