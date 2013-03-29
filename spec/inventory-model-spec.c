@@ -8,7 +8,7 @@ void print_record(Part p)
 }
 int new_db_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   _assert(db.count == 0);
@@ -21,7 +21,7 @@ int new_db_test(void)
 }
 int destroy_db_test(void)
 {
-  InventoryDatabase db; 
+  Parts db; 
   new_db(&db);
   _assert(db.rows != NULL);
   destroy_db(&db);
@@ -31,7 +31,7 @@ int destroy_db_test(void)
 }
 int insert_part_success_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   _assert(db.count == 0);
@@ -48,7 +48,7 @@ int insert_part_success_test(void)
 }
 int insert_part_maintains_order_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   insert_part(&db, (Part) {88, "Short Name", 200});
@@ -64,7 +64,7 @@ int insert_part_maintains_order_test(void)
 }
 int find_part_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   insert_part(&db, (Part) {88, "Short Name", 200});
@@ -80,7 +80,7 @@ int find_part_test(void)
 }
 int insert_part_fail_non_unique_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
   int rc = 0; 
 
@@ -98,7 +98,7 @@ int insert_part_fail_non_unique_test(void)
 }
 int insert_part_resize_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
   int i, rc = 0;
   /* manipulate rows and count directly because 30000 inserts that scan */
@@ -152,7 +152,7 @@ int insert_part_resize_test(void)
 #define LONG_WORD "Antidisestablishmentariani"
 int insert_part_truncates_name_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   int rc = insert_part(&db, (Part) {88, LONG_WORD, 200});
@@ -170,7 +170,7 @@ int insert_part_truncates_name_test(void)
 }
 int update_part_success_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   insert_part(&db, (Part) {88, "Ramen, Top", 200});
@@ -190,7 +190,7 @@ int update_part_success_test(void)
 int update_part_fail_not_found_test(void)
 {
 
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   insert_part(&db, (Part) {88, "Joystick, rotating", 200});
@@ -205,7 +205,7 @@ int update_part_fail_not_found_test(void)
 int update_part_fail_invalid_test(void)
 {
 
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   insert_part(&db, (Part) {88, "Mercy!", 20});
@@ -223,7 +223,7 @@ int update_part_fail_invalid_test(void)
 void for_iterate_test__(Part *p) { p->on_hand++; }
 int iterate_test(void)
 {
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   insert_part(&db, (Part) {88, "KNOBS", 1});

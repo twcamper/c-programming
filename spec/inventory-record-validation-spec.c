@@ -4,7 +4,7 @@
 int insert_part_fail_invalid_record_test(void)
 {
 
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   int rc = insert_part(&db, (Part) {-1, "n", 200});

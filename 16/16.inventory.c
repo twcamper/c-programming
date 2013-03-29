@@ -22,7 +22,7 @@ int main(void)
 {
   char code;
 
-  InventoryDatabase db;
+  Parts db;
   new_db(&db);
 
   load(&db);

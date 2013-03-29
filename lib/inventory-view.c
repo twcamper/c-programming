@@ -8,7 +8,7 @@
  *         prematurely if the part already exists or the  *
  *         database is full.                              *
  **********************************************************/
-void insert(InventoryDatabase *db)
+void insert(Parts *db)
 {
   Part p = {0, "", 0};
 
@@ -47,7 +47,7 @@ void insert(InventoryDatabase *db)
  *         exists, prints the name and quantity on hand;  *
  *         if not, prints an error message.               *
  **********************************************************/
-void search(InventoryDatabase *db)
+void search(Parts *db)
 {
   int number = 0;
   Part *p;
@@ -71,7 +71,7 @@ void search(InventoryDatabase *db)
  *         change in quantity on hand and updates the     *
  *         database.                                      *
  **********************************************************/
-void update(InventoryDatabase *db)
+void update(Parts *db)
 {
   int number, change;
   number = change = 0;
@@ -108,7 +108,7 @@ void print_line(Part *p)
 {
   printf("%7d       %-25s%11d\n", p->number, p->name, p->on_hand);
 }
-void print(InventoryDatabase *db)
+void print(Parts *db)
 {
   printf("Part Number   Part Name                   Quantity on Hand\n");
   iterate(db, print_line);

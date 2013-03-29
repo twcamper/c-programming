@@ -1,6 +1,6 @@
 #include "inventory-model.h"
 
-void new_db(InventoryDatabase *db)
+void new_db(Parts *db)
 {
   db->count = 0;
   db->requested_row_allocation = INITIAL_SIZE;
@@ -11,13 +11,13 @@ void new_db(InventoryDatabase *db)
     exit(EXIT_FAILURE);
   }
 }
-void destroy_db(InventoryDatabase *db)
+void destroy_db(Parts *db)
 {
   free(db->rows);
   db->rows = NULL;
   db->count = 0;
 }
-int resize_db_17_1(InventoryDatabase *db)
+int resize_db_17_1(Parts *db)
 {
   db->requested_row_allocation *= 2;
   Part *temp = realloc(db->rows, db->requested_row_allocation * sizeof(Part));
@@ -27,7 +27,7 @@ int resize_db_17_1(InventoryDatabase *db)
   db->rows = temp;
   return 0;
 }
-int insert_part(InventoryDatabase *db, Part p)
+int insert_part(Parts *db, Part p)
 {
   int i, j;
 
@@ -52,7 +52,7 @@ int insert_part(InventoryDatabase *db, Part p)
   db->count++;
   return 0;
 }
-int update_part(InventoryDatabase *db, int number, int change)
+int update_part(Parts *db, int number, int change)
 {
   int new_value;
   Part *p;
@@ -71,7 +71,7 @@ int update_part(InventoryDatabase *db, int number, int change)
  *            array. Returns the array index if the part  *
  *            number is found; otherwise, returns -1.     *
  **********************************************************/
-Part *find_part(InventoryDatabase *db, int part_number)
+Part *find_part(Parts *db, int part_number)
 {
   int i;
   for (i = 0; i < db->count; i++)
@@ -92,12 +92,12 @@ bool is_in_range(int field_value)
 
   return true;
 }
-void iterate(InventoryDatabase *db, void (*op)(Part *p))
+void iterate(Parts *db, void (*op)(Part *p))
 {
   for (int i = 0; i < db->count; i++)
     op(&db->rows[i]);
 }
-void load(InventoryDatabase *db)
+void load(Parts *db)
 {
   insert_part(db, (Part) {212, "Named Part, unlabled", 1});
   insert_part(db, (Part) {12, "Flex Wing Grooming Mower", 19});
