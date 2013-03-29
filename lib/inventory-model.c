@@ -29,17 +29,26 @@ int resize_db_17_1(InventoryDatabase *db)
 }
 int insert_part(InventoryDatabase *db, Part p)
 {
+  int i, j;
+
   if (db->count == (int)db->requested_row_allocation)
     if ((resize_db_17_1(db) != 0)) {
       return -1;
     }
-  if (find_part(db, p.number))
-    return -2;
+  /* find position to insert new record */
+  for (i = 0; db->rows[i].number <= p.number && i < db->count; i++)
+    if (db->rows[i].number == p.number)
+      return -2;  /* duplicate record */
+
   if (validate_record(&p) != 0)
     return -3;
 
-  p.name[NAME_LEN] = '\0';
-  db->rows[db->count] = p;
+  p.name[NAME_LEN] = '\0';  /* terminate string field, no matter what */
+  /* shift remaining records down by 1 */
+  for (j = db->count; j > i; j--)
+    db->rows[j] = db->rows[j-1];
+  /* insert our new record in the newly vacant hole */
+  db->rows[i] = p;
   db->count++;
   return 0;
 }
@@ -82,59 +91,6 @@ bool is_in_range(int field_value)
     return false;
 
   return true;
-}
-void select_sort(InventoryDatabase *db, int n)
-{
-  int i, index_of_max;
-  Part record_with_max_value;
-
-  if (n > 0) {
-    /*
-     * Find max value
-     */
-    record_with_max_value = db->rows[0];
-    index_of_max = 0;
-    for (i = 1; i < n; i++) {
-      if (db->rows[i].number > record_with_max_value.number) {
-        record_with_max_value = db->rows[i];
-        index_of_max = i;
-      }
-    }
-
-    /*
-     * Move max to end
-     *
-     * First, shift everything to the left,
-     * leaving the last element ( n - 1 ) open
-     */
-    for (i = index_of_max + 1; i < n; i++) {
-      db->rows[i - 1] = db->rows[i];
-    }
-    db->rows[n - 1] = record_with_max_value;
-
-    /*
-     * Next, sort the remainder of the array
-     * (everything before the max val we just moved to the end)
-     */
-    select_sort(db, n - 1);
-  }
-}
-int compare_parts_17_2(const void *p1, const void *p2)
-{
-  const Part *part1 = p1;
-  const Part *part2 = p2;
-
-  if (part1->number < part2->number)
-    return -1;
-  else if (part1->number == part2->number)
-    return 0;
-  else
-    return 1;
-}
-void sort_on_part_number(InventoryDatabase *db)
-{
-  /* select_sort(db, db->count); */
-  qsort(db->rows, (size_t)db->count, sizeof(Part), compare_parts_17_2);
 }
 void iterate(InventoryDatabase *db, void (*op)(Part *p))
 {

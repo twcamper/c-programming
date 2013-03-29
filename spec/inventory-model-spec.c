@@ -46,6 +46,22 @@ int insert_part_success_test(void)
 
   return 0;
 }
+int insert_part_maintains_order_test(void)
+{
+  InventoryDatabase db;
+  new_db(&db);
+
+  insert_part(&db, (Part) {88, "Short Name", 200});
+  insert_part(&db, (Part) {86, "Short Hair", 10});
+  insert_part(&db, (Part) {87, "Short Sales", 1});
+
+  _assert(db.rows[0].number == 86);
+  _assert(db.rows[1].number == 87);
+  _assert(db.rows[2].number == 88);
+  destroy_db(&db);
+
+  return 0;
+}
 int find_part_test(void)
 {
   InventoryDatabase db;
@@ -145,7 +161,7 @@ int insert_part_truncates_name_test(void)
   _assert(db.rows[0].name[NAME_LEN] == '\0');
   _assert(strlen(db.rows[0].name) == NAME_LEN);
 
-  insert_part(&db, (Part) {8, "Short", 20});
+  insert_part(&db, (Part) {89, "Short", 20});
   _assert(strlen(db.rows[1].name) == 5);
 
   destroy_db(&db);
@@ -203,28 +219,6 @@ int update_part_fail_invalid_test(void)
 
   return 0;
 }
-int sort_test(void)
-{
-  InventoryDatabase db;
-  new_db(&db);
-  load(&db);
-  sort_on_part_number(&db);
-  _assert(db.rows[0].number == 1);
-  _assert(strcmp(db.rows[0].name,"Fern Spore sorter, gross") == 0);
-  _assert(db.rows[0].on_hand == 100);
-
-  _assert(db.rows[7].number == 97);
-  _assert(strcmp(db.rows[7].name,"Sink, heat, fur") == 0);
-  _assert(db.rows[7].on_hand == 2147483647);
-
-  int last = db.count - 1;
-  _assert(db.rows[last].number == 1989776);
-  _assert(strcmp(db.rows[last].name,"Tractor Beam cowl") == 0);
-  _assert(db.rows[last].on_hand == 30);
-  destroy_db(&db);
-
-  return 0;
-}
 
 void for_iterate_test__(Part *p) { p->on_hand++; }
 int iterate_test(void)
@@ -243,7 +237,7 @@ int iterate_test(void)
   _assert(db.rows[2].on_hand == 2);
   _assert(db.count == 3);
 
-  insert_part(&db, (Part) {22, "None", 1});
+  insert_part(&db, (Part) {122, "None", 1});
   iterate(&db, for_iterate_test__);
   _assert(db.rows[0].on_hand == 3);
   _assert(db.rows[1].on_hand == 3);
@@ -261,13 +255,13 @@ int all_tests(void)
   _run(destroy_db_test);
   _run(insert_part_success_test);
   _run(insert_part_truncates_name_test);
-  _run(find_part_test);
   _run(insert_part_fail_non_unique_test);
+  _run(insert_part_maintains_order_test);
+  _run(find_part_test);
   _run(insert_part_resize_test);
   _run(update_part_success_test);
   _run(update_part_fail_not_found_test);
   _run(update_part_fail_invalid_test);
   _run(iterate_test);
-  _run(sort_test);
   return 0;
 }

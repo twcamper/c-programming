@@ -110,7 +110,6 @@ void print_line(Part *p)
 }
 void print(InventoryDatabase *db)
 {
-  sort_on_part_number(db);
   printf("Part Number   Part Name                   Quantity on Hand\n");
   iterate(db, print_line);
 }
