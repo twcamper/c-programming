@@ -22,10 +22,9 @@ int main(void)
 {
   char code;
 
-  Parts db;
-  new_db(&db);
+  Parts db = new_db(30);
 
-  load(&db);
+  load(db);
 
   for (;;) {
     printf("Enter operation code: ");
@@ -33,16 +32,16 @@ int main(void)
     while (getchar() != '\n')   /* skips to end of line */
       ;
     switch (code) {
-      case 'i': insert(&db);
+      case 'i': insert(db);
                 break;
-      case 's': search(&db);
+      case 's': search(db);
                 break;
-      case 'u': update(&db);
+      case 'u': update(db);
                 break;
-      case 'p': print(&db);
+      case 'p': print(db);
                 break;
       case 'q':
-                destroy_db(&db);
+                destroy_db(db);
                 return 0;
       default:  printf("Illegal code\n");
     }

@@ -5,8 +5,8 @@
 #include "readline.h"
 #include "inventory-model.h"
 
-void insert(Parts *db);
-void search(Parts *db);
-void update(Parts *db);
-void print(Parts *db);
+void insert(Parts db);
+void search(Parts db);
+void update(Parts db);
+void print(Parts db);
 #endif

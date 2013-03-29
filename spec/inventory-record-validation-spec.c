@@ -4,17 +4,17 @@
 int insert_part_fail_invalid_record_test(void)
 {
 
-  Parts db;
-  new_db(&db);
+  Parts db = new_db(100);
 
-  int rc = insert_part(&db, (Part) {-1, "n", 200});
+  int rc = insert_part(db, (Part) {-1, "n", 200});
   _assert(rc != 0);
-  _assert(db.count == 0);
-  _assert(db.rows[0].number != -1);
+  _assert(find_part(db, -1) == NULL);
 
-  rc = insert_part(&db, (Part) {1, "n", INT_MAX + 1});
+  rc = insert_part(db, (Part) {1, "n", INT_MAX + 1});
   _assert(rc != 0);
-  _assert(db.count == 0);
+  _assert(find_part(db, 1) == NULL);
+
+  destroy_db(db);
   return 0;
 }
 int validate_record_test(void)
@@ -27,7 +27,7 @@ int validate_record_test(void)
   _assert(validate_record(&(Part) {INT_MAX, "N", INT_MAX + 1}) != 0);
   _assert(validate_record(&(Part) {INT_MAX + 1, "N", INT_MAX + 1}) != 0);
   _assert(validate_record(&(Part) {INT_MAX + 1, "N", INT_MAX}) != 0);
-   
+
   return 0;
 }
 

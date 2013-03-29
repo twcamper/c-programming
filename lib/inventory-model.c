@@ -1,23 +1,37 @@
 #include "inventory-model.h"
 
-void new_db(Parts *db)
+struct parts_type {
+  int count;
+  Part *rows;
+  size_t requested_row_allocation;
+};
+
+static void exit_memory_error(char *file, unsigned int line, const char *function)
 {
+  fprintf(stderr, "Memory allocation failed: %s:%d (%s)\n", file, line, function);
+  exit(EXIT_FAILURE);
+}
+Parts new_db(int size)
+{
+  Parts db = malloc(sizeof(struct parts_type));
+  if (db == NULL)
+    exit_memory_error(__FILE__, __LINE__, __func__);
+
   db->count = 0;
-  db->requested_row_allocation = INITIAL_SIZE;
+  db->requested_row_allocation = size;
   db->rows = malloc(db->requested_row_allocation * sizeof(Part));
 
-  if (db->rows == NULL) {
-    fprintf(stderr, "Memory allocation failed: %s:%d (%s)\n", __FILE__, __LINE__, __func__);
-    exit(EXIT_FAILURE);
-  }
+  if (db->rows == NULL)
+    exit_memory_error(__FILE__, __LINE__, __func__);
+
+  return db;
 }
-void destroy_db(Parts *db)
+void destroy_db(Parts db)
 {
   free(db->rows);
-  db->rows = NULL;
-  db->count = 0;
+  free(db);
 }
-int resize_db_17_1(Parts *db)
+static int resize_db_17_1(Parts db)
 {
   db->requested_row_allocation *= 2;
   Part *temp = realloc(db->rows, db->requested_row_allocation * sizeof(Part));
@@ -27,7 +41,8 @@ int resize_db_17_1(Parts *db)
   db->rows = temp;
   return 0;
 }
-int insert_part(Parts *db, Part p)
+static bool is_in_range(int field_value);
+int insert_part(Parts db, Part p)
 {
   int i, j;
 
@@ -36,7 +51,7 @@ int insert_part(Parts *db, Part p)
       return -1;
     }
   /* find position to insert new record */
-  for (i = 0; db->rows[i].number <= p.number && i < db->count; i++)
+  for (i = 0; i < db->count && db->rows[i].number <= p.number; i++)
     if (db->rows[i].number == p.number)
       return -2;  /* duplicate record */
 
@@ -52,7 +67,7 @@ int insert_part(Parts *db, Part p)
   db->count++;
   return 0;
 }
-int update_part(Parts *db, int number, int change)
+int update_part(Parts db, int number, int change)
 {
   int new_value;
   Part *p;
@@ -71,7 +86,7 @@ int update_part(Parts *db, int number, int change)
  *            array. Returns the array index if the part  *
  *            number is found; otherwise, returns -1.     *
  **********************************************************/
-Part *find_part(Parts *db, int part_number)
+Part *find_part(Parts db, int part_number)
 {
   int i;
   for (i = 0; i < db->count; i++)
@@ -85,19 +100,19 @@ int validate_record(Part *p)
     return 0;
   return -1;
 }
-bool is_in_range(int field_value)
+static bool is_in_range(int field_value)
 {
   if (field_value < 0 || field_value > INT_MAX)
     return false;
 
   return true;
 }
-void iterate(Parts *db, void (*op)(Part *p))
+void iterate(Parts db, void (*op)(Part *p))
 {
   for (int i = 0; i < db->count; i++)
     op(&db->rows[i]);
 }
-void load(Parts *db)
+void load(Parts db)
 {
   insert_part(db, (Part) {212, "Named Part, unlabled", 1});
   insert_part(db, (Part) {12, "Flex Wing Grooming Mower", 19});
