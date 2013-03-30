@@ -9,7 +9,7 @@ all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.1.country-codes ./16.inventory
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
-16.inventory: 16.inventory.o $(LIBS)/parts.o $(LIBS)/inventory-view.o $(LIBS)/part.o $(LIBS)/readline.o $(LIBS)/error.o
+16.inventory: 16.inventory.o $(LIBS)/parts.o $(LIBS)/parts-array.o $(LIBS)/inventory-view.o $(LIBS)/part.o $(LIBS)/readline.o $(LIBS)/error.o
 	$(LINK)
 
 16.inventory.o: 16.inventory.c $(INCS)/parts.h $(INCS)/inventory-view.h $(INCS)/part.h $(INCS)/readline.h $(INCS)/error.h

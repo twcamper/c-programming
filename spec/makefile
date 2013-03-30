@@ -10,7 +10,7 @@ LINK = $(LD) $^ -o $@
 all: $(SPECS:.c=) parts-spec  part-spec
 	@for test in $(^); do echo $$test; ./$$test; done
 
-parts-spec: parts-spec.o $(LIBS)/parts.o $(LIBS)/part.o $(LIBS)/error.o
+parts-spec: parts-spec.o $(LIBS)/parts.o $(LIBS)/parts-array.o $(LIBS)/part.o $(LIBS)/error.o
 	$(LINK)
 
 parts-spec.o: parts-spec.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/error.h $(INCS)/test_runner.h
