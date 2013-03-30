@@ -23,4 +23,5 @@ Part *find_part(Parts, int part_number);
 int validate_record(Part *p);
 void load(Parts);
 void iterate(Parts, void (*op)(Part *));
+int size(Parts);
 #endif

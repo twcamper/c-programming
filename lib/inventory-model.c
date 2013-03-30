@@ -31,6 +31,10 @@ void destroy_db(Parts db)
   free(db->rows);
   free(db);
 }
+int size(Parts db)
+{
+  return db->count;
+}
 static int resize_db_17_1(Parts db)
 {
   db->requested_row_allocation *= 2;
