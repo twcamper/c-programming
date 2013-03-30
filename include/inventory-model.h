@@ -4,25 +4,19 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "part.h"
 #include "error.h"
 
 #define NAME_LEN 25
-
-typedef struct Part {
-  int number;
-  char name[NAME_LEN+1];
-  int on_hand;
-} Part;
 
 typedef struct parts_type *Parts;
 
 Parts new_db(int);
 void destroy_db(Parts);
 int insert_part(Parts, Part);
-int update_part(Parts, int part_number, int change);
-Part *find_part(Parts, int part_number);
-int validate_record(Part *p);
+int update_part(Parts, PartNumber part_number, PartQuantity change);
+Part find_part(Parts, PartNumber part_number);
 void load(Parts);
-void iterate(Parts, void (*op)(Part *));
+void iterate(Parts, void (*op)(Part));
 int size(Parts);
 #endif

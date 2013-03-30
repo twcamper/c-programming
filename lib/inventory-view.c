@@ -10,34 +10,39 @@
  **********************************************************/
 void insert(Parts db)
 {
-  Part p = {0, "", 0};
+  PartNumber n;
+  PartQuantity q;
+  char name[NAME_LEN+1];
 
   printf("Enter part number: ");
-  if (read_int(&(p.number)) != 0) {
+  if (read_int(&n) != 0) {
     printf("Invalid part number\n");
     return;
   }
-  if (find_part(db, p.number)) {
+  if (find_part(db, n)) {
     printf("Part already exists.\n");
     return;
   }
 
   printf("Enter part name: ");
-  read_line(p.name, NAME_LEN);
+  read_line(name, NAME_LEN);
 
   printf("Enter quantity on hand: ");
-  if (read_int(&(p.on_hand)) != 0) {
+  if (read_int(&q) != 0) {
     printf("Invalid quantity.\n");
     return;
   }
 
-  switch(insert_part(db,p)) {
-    case -1:
-      printf("Memory allocation error.\n");
-      return;
-    case -3:
-      printf("Record rejected: invalid number.\n");
-      return;
+  Part p = set_part(n, name, q);
+  if (!p) {
+    printf("Record rejected: invalid number.\n");
+    return;
+  }
+
+  if (insert_part(db,p) != 0) {
+    destroy_part(p);
+    printf("Memory allocation error.\n");
+    return;
   }
 }
 
@@ -49,8 +54,8 @@ void insert(Parts db)
  **********************************************************/
 void search(Parts db)
 {
-  int number = 0;
-  Part *p;
+  PartNumber number = 0;
+  Part p;
 
   printf("Enter part number: ");
   if (read_int(&number) != 0) {
@@ -58,8 +63,8 @@ void search(Parts db)
     return;
   }
   if ((p = find_part(db, number))) {
-    printf("Part name: %s\n", p->name);
-    printf("Quantity on hand: %d\n", p->on_hand);
+    printf("Part name: %s\n", get_part_name(p));
+    printf("Quantity on hand: %d\n", get_part_on_hand(p));
   } else
     printf("Part not found.\n");
 }
@@ -73,7 +78,8 @@ void search(Parts db)
  **********************************************************/
 void update(Parts db)
 {
-  int number, change;
+  PartNumber number;
+  PartQuantity change;
   number = change = 0;
 
   printf("Enter part number: ");
@@ -82,7 +88,7 @@ void update(Parts db)
     return;
   }
 
-  Part *p;
+  Part p;
   if ((p = find_part(db, number))) {
     printf("Enter change in quantity on hand: ");
     if (read_int(&change) != 0) {
@@ -90,7 +96,7 @@ void update(Parts db)
       return;
     }
     if (update_part(db, number, change) != 0) {
-      printf("Invalid new quantity: %d + %d\n", p->on_hand, change);
+      printf("Invalid new quantity: %d + %d\n", get_part_on_hand(p), change);
       return;
     }
   } else
@@ -104,9 +110,9 @@ void update(Parts db)
  *        order in which they were entered into the       *
  *        database.                                       *
  **********************************************************/
-void print_line(Part *p)
+void print_line(Part p)
 {
-  printf("%7d       %-25s%11d\n", p->number, p->name, p->on_hand);
+  printf("%7d       %-25s%11d\n", get_part_number(p), get_part_name(p), get_part_on_hand(p));
 }
 void print(Parts db)
 {
