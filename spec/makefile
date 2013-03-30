@@ -1,31 +1,38 @@
 PREFIX = ../
 include $(PREFIX)make/env.mk
-SPECS       = $(filter-out ./part-spec.c, $(shell find . -name '*-spec.c'))
+SPECS       = $(filter-out ./inventory-model-spec.c ./part-spec.c, $(shell find . -name '*-spec.c'))
 # for lib/foo.c and spec/foo-spec.c, this will be 'foo'
 BASE_NAMES  = $(notdir $(SPECS:-spec.c=))
 
-all: $(SPECS:.c=) part-spec
+COMPILE = $(CC) -c $(CFLAGS) $< -o $@
+LINK = $(LD) $^ -o $@
+
+all: $(SPECS:.c=) inventory-model-spec  part-spec
 	@for test in $(^); do echo $$test; ./$$test; done
 
-# This guy exists because of the annoying warnings about INT overflow, the handling of which
-# is what were testing.  Needs a custom rule because he doesn't fit the naming convention.
+inventory-model-spec: inventory-model-spec.o $(LIBS)/inventory-model.o $(LIBS)/part.o $(LIBS)/error.o
+	$(LINK)
+
+inventory-model-spec.o: inventory-model-spec.c $(INCS)/inventory-model.h $(INCS)/part.h $(INCS)/error.h $(INCS)/test_runner.h
+	$(COMPILE)
+
 part-spec: part-spec.o $(LIBS)/part.o $(LIBS)/error.o
-	$(LD) $^ -o $@
+	$(LINK)
 
 part-spec.o: part-spec.c $(INCS)/part.h $(INCS)/error.h $(INCS)/test_runner.h
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(COMPILE)
 
 # For each executable spec/foo-spec
 # # check if spec/foo-spec.o or the corresponding lib/foo.o has changed
 #
 # command line should only be: "gcc foo-spec.o ../lib/foo.o -o foo-spec"
 $(BASE_NAMES:=-spec) : %-spec : %-spec.o $(LIBS)/%.o
-	$(LD) $^ -o $@
+	$(LINK)
 
 # For each obj spec/foo-spec.o
     # check if the corresponding spec/foo-spec.c or the test runner has changed
 $(SPECS:.c=.o) : %.o : %.c $(INCS)/test_runner.h
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(COMPILE)
 
 # We end up here, in the lib/makefile, when lib/foo.c or include/foo.h has changed
 include $(LIBS)/makefile

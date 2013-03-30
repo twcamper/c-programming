@@ -6,23 +6,18 @@ struct parts_type {
   size_t requested_row_allocation;
 };
 
-static void exit_memory_error(char *file, unsigned int line, const char *function)
-{
-  fprintf(stderr, "Memory allocation failed: %s:%d (%s)\n", file, line, function);
-  exit(EXIT_FAILURE);
-}
 Parts new_db(int size)
 {
   Parts db = malloc(sizeof(struct parts_type));
   if (db == NULL)
-    exit_memory_error(__FILE__, __LINE__, __func__);
+    memory_error(__FILE__, __LINE__, __func__);
 
   db->count = 0;
   db->requested_row_allocation = size;
   db->rows = malloc(db->requested_row_allocation * sizeof(Part));
 
   if (db->rows == NULL)
-    exit_memory_error(__FILE__, __LINE__, __func__);
+    memory_error(__FILE__, __LINE__, __func__);
 
   return db;
 }
