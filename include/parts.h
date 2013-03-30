@@ -10,6 +10,15 @@
 #define NAME_LEN 25
 typedef struct parts_type *Parts;
 
+/*
+ * TODO:  add erase_part()  (see 17/17.3-inventory.c source)
+ *        for both array and list
+ *
+ *        price field
+ *
+ *        update price
+ */
+
 Parts new_db();
 void destroy_db(Parts);
 int insert_part(Parts, Part);

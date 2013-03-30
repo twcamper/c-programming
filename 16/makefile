@@ -9,6 +9,10 @@ all: 16.1.5-6 $(EXECUTABLES) 16.1.7.fraction ./16.1.country-codes ./16.inventory
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
+
+#############################################################################################################################################
+#  Same as 17/17.3-inventory, except we use lib/parts-array.c instead of lib/parts-list.c
+#############################################################################################################################################
 16.inventory: 16.inventory.o $(LIBS)/parts.o $(LIBS)/parts-array.o $(LIBS)/inventory-view.o $(LIBS)/part.o $(LIBS)/readline.o $(LIBS)/error.o
 	$(LINK)
 

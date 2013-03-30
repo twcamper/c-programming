@@ -25,11 +25,15 @@ LINK    = $(LD) $^ -o $@
 17.4-line.o: 17.4-line.c $(INCS)/line.h
 	$(COMPILE)
 
-17.3-inventory: 17.3-inventory.o $(LIBS)/readline.o
+################################################################################################################################################
+#  Same as 16/16.inventory, except we use lib/parts-list.c instead of lib/parts-array.c
+################################################################################################################################################
+17.3-inventory: 17.3-inventory.o $(LIBS)/parts.o $(LIBS)/parts-list.o $(LIBS)/inventory-view.o $(LIBS)/part.o $(LIBS)/readline.o $(LIBS)/error.o
 	$(LINK)
 
-17.3-inventory.o: 17.3-inventory.c $(INCS)/readline.h
-	$(COMPILE)
+16 = $(PREFIX)16/
+17.3-inventory.o: $(16)16.inventory.c $(INCS)/parts.h $(INCS)/inventory-view.h $(INCS)/part.h $(INCS)/readline.h $(INCS)/error.h
+	$(COMPILE) -o $@
 
 include $(PREFIX)make/clean.mk
 include $(LIBS)/makefile
