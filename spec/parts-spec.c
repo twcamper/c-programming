@@ -1,13 +1,10 @@
-#include <string.h>
 #include "parts.h"
 #include "test_runner.h"
 #include <assert.h>
 
-#define INITIAL_SIZE 10
-
 int new_db_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   _assert(size(db) == 0);
   destroy_db(db);
@@ -16,7 +13,7 @@ int new_db_test(void)
 }
 int insert_part_success_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   _assert(size(db) == 0);
 
@@ -49,7 +46,7 @@ void assert_for_order_test__(Part p)
 }
 int insert_part_maintains_order_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   insert_part(db, set_part(88, "Short Name", 200));
   insert_part(db, set_part(86, "Short Hair", 10));
@@ -62,7 +59,7 @@ int insert_part_maintains_order_test(void)
 }
 int find_part_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   insert_part(db, set_part(88, "Short Name", 200));
   insert_part(db, set_part(212, "Other Name", 2));
@@ -77,7 +74,7 @@ int find_part_test(void)
 }
 int insert_part_fail_non_unique_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
   int rc = 0; 
 
   insert_part(db, set_part(88, "Short Name", 200));
@@ -96,54 +93,10 @@ int insert_part_fail_non_unique_test(void)
 
   return 0;
 }
-int insert_part_resize_test(void)
-{
-  Parts db = new_db(INITIAL_SIZE);
-  int i, rc = 0;
-  for (i = 0; i < INITIAL_SIZE - 1; i++)
-    insert_part(db, set_part(i, "name", 10));
-
-  rc = insert_part(db, set_part(i, "name", 10));
-
-  _assert(rc == 0);
-  _assert(size(db) == INITIAL_SIZE);
-
-  Part p;
-  int part_number = size(db)  + 1;
-  rc = insert_part(db, set_part(part_number, "unique name", 1020));
-  _assert(rc == 0);
-  _assert(size(db) == INITIAL_SIZE + 1);
-  p = find_part(db, part_number);
-  _assert(get_part_number(p) == part_number);
-  _assert(strcmp(get_part_name(p),"unique name") == 0);
-  _assert(get_part_on_hand(p) == 1020);
-
-  size_t new_size = INITIAL_SIZE * 2;
-  for (i = size(db); i < (int)(new_size - 1); i++)
-    insert_part(db, set_part(i+1, "name", 10));
-
-  rc = insert_part(db, set_part(i+1, "name", 10));
-
-  _assert(rc == 0);
-  _assert(size(db) == (int)new_size);
-
-  part_number = size(db)  + 1;
-  rc = insert_part(db, set_part(part_number, "Fairly unique name", 1021));
-  _assert(rc == 0);
-  _assert(size(db) == 1 + (int) new_size);
-  p = find_part(db, part_number);
-  _assert(get_part_number(p) == part_number);
-  _assert(strcmp(get_part_name(p),"Fairly unique name") == 0);
-  _assert(get_part_on_hand(p) == 1021);
-
-  destroy_db(db);
-
-  return 0;
-}
 #define LONG_WORD "Antidisestablishmentariani"
 int insert_part_truncates_name_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   int rc = insert_part(db, set_part(88, LONG_WORD, 200));
 
@@ -161,7 +114,7 @@ int insert_part_truncates_name_test(void)
 }
 int update_part_success_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   insert_part(db, set_part(88, "Ramen, Top", 200));
   _assert(size(db) == 1);
@@ -181,7 +134,7 @@ int update_part_success_test(void)
 int update_part_fail_not_found_test(void)
 {
 
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   insert_part(db, set_part(88, "Joystick, rotating", 200));
   _assert(size(db) == 1);
@@ -195,7 +148,7 @@ int update_part_fail_not_found_test(void)
 int update_part_fail_invalid_test(void)
 {
 
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   insert_part(db, set_part(88, "Mercy!", 20));
   _assert(size(db) == 1);
@@ -227,7 +180,7 @@ void assert2_for_iterate_test__(Part p)
 }
 int iterate_test(void)
 {
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db();
 
   insert_part(db, set_part(88, "KNOBS", 1));
   insert_part(db, set_part(20, "Noodles", 1));
@@ -255,7 +208,6 @@ int all_tests(void)
   _run(insert_part_fail_non_unique_test);
   _run(insert_part_maintains_order_test);
   _run(find_part_test);
-  _run(insert_part_resize_test);
   _run(update_part_success_test);
   _run(update_part_fail_not_found_test);
   _run(update_part_fail_invalid_test);

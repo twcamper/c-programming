@@ -143,3 +143,4 @@ spec/inventory-record-validation-spec
 weird/malloc-gives-a-million-for-request-of-10
 spec/part-spec
 spec/parts-spec
+spec/parts-array-spec

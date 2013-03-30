@@ -22,7 +22,7 @@ int main(void)
 {
   char code;
 
-  Parts db = new_db(30);
+  Parts db = new_db();
 
   load(db);
 
