@@ -26,8 +26,11 @@ static void destroy_node(Node *n)
 }
 void destroy_db(Parts db)
 {
-  for (Node *n = db->head; n != NULL; n = n->next)
+  Node *next;
+  for (Node *n = db->head; n; n = next) {
+    next = n->next;
     destroy_node(n);
+  }
 
   free(db);
 }
