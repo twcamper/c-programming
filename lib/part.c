@@ -4,9 +4,9 @@
 
 struct part_type
 {
-  int number;
+  PartNumber number;
   char name[NAME_LEN+1];
-  int on_hand;
+  PartQuantity on_hand;
 };
 
 Part new_part(void)
@@ -17,7 +17,7 @@ Part new_part(void)
 
   return p;
 }
-Part set_part(int number, char * name, int on_hand)
+Part set_part(PartNumber number, char * name, PartQuantity on_hand)
 {
   Part p = new_part();
 
@@ -39,7 +39,7 @@ static bool is_in_range(int field_value)
 
   return true;
 }
-bool set_part_number(Part p, int number)
+bool set_part_number(Part p, PartNumber number)
 {
   if (is_in_range(number)) {
     p->number = number;
@@ -52,17 +52,17 @@ void set_part_name(Part p, char *name)
   strcpy(p->name,  name);
   p->name[NAME_LEN] = '\0';  /* terminate string field, no matter what */
 }
-bool set_part_on_hand(Part p, int quantity)
+bool set_part_on_hand(Part p, PartQuantity on_hand)
 {
-  if (is_in_range(quantity)) {
-    p->on_hand = quantity;
+  if (is_in_range(on_hand)) {
+    p->on_hand = on_hand;
     return true;
   }
   return false;
 }
-int get_part_number(Part p)  {return p->number; }
+PartNumber get_part_number(Part p)  {return p->number; }
 char * get_part_name(Part p) {return p->name; }
-int get_part_on_hand(Part p) {return p->on_hand; }
+PartQuantity get_part_on_hand(Part p) {return p->on_hand; }
 void destroy_part(Part p)
 {
   free(p);
