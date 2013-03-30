@@ -1,5 +1,16 @@
 #include "parts.h"
 
+int update_part(Parts db, PartNumber number, PartQuantity change)
+{
+  Part p;
+  if (!(p = find_part(db, number)))
+    return -1;
+
+  if (!set_part_on_hand(p, (get_part_on_hand(p) + change)))
+    return -2;
+
+  return 0;
+}
 void load(Parts db)
 {
   insert_part(db, set_part(212, "Named Part, unlabled", 1));

@@ -69,17 +69,6 @@ int insert_part(Parts db, Part p)
   db->count++;
   return 0;
 }
-int update_part(Parts db, PartNumber number, PartQuantity change)
-{
-  Part p;
-  if (!(p = find_part(db, number)))
-    return -1;
-
-  if (!set_part_on_hand(p, (get_part_on_hand(p) + change)))
-    return -2;
-
-  return 0;
-}
 /**********************************************************
  * find_part: Looks up a part number in the inventory     *
  *            array. Returns the array index if the part  *

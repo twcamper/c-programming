@@ -93,23 +93,14 @@ int insert_part_fail_non_unique_test(void)
 
   return 0;
 }
-#define LONG_WORD "Antidisestablishmentariani"
-int insert_part_truncates_name_test(void)
+int insert_part_fail_bad_part_test(void)
 {
   Parts db = new_db();
+  Part p = set_part(-1, "", -1);
 
-  int rc = insert_part(db, set_part(88, LONG_WORD, 200));
-
-  _assert(rc == 0);
-  Part p = find_part(db, 88);
-  _assert(get_part_name(p)[NAME_LEN] == '\0');
-  _assert(strlen(get_part_name(p)) == NAME_LEN);
-
-  insert_part(db, set_part(89, "Short", 20));
-  _assert(strlen(get_part_name(find_part(db, 89))) == 5);
+  _assert(insert_part(db, p) != 0);
 
   destroy_db(db);
-
   return 0;
 }
 int update_part_success_test(void)
@@ -167,17 +158,6 @@ void mutate_for_iterate_test__(Part p)
 {
   set_part_on_hand(p, get_part_on_hand(p) + 1);
 }
-void assert_for_iterate_test__(Part p) { assert(get_part_on_hand(p) == 2); }
-void assert2_for_iterate_test__(Part p)
-{
-  static int count = 0;
-  if (count == 3)
-    assert(get_part_on_hand(p) == 2);
-  else
-    assert(get_part_on_hand(p) == 3);
-
-  count++;
-}
 int iterate_test(void)
 {
   Parts db = new_db();
@@ -188,12 +168,17 @@ int iterate_test(void)
   _assert(size(db) == 3);
 
   iterate(db, mutate_for_iterate_test__);
-  iterate(db, assert_for_iterate_test__);
+  _assert(get_part_on_hand(find_part(db, 88)) == 2);
+  _assert(get_part_on_hand(find_part(db, 20)) == 2);
+  _assert(get_part_on_hand(find_part(db, 21)) == 2);
   _assert(size(db) == 3);
 
   insert_part(db, set_part(122, "None", 1));
   iterate(db, mutate_for_iterate_test__);
-  iterate(db, assert2_for_iterate_test__);
+  _assert(get_part_on_hand(find_part(db, 88)) == 3);
+  _assert(get_part_on_hand(find_part(db, 20)) == 3);
+  _assert(get_part_on_hand(find_part(db, 21)) == 3);
+  _assert(get_part_on_hand(find_part(db, 122)) == 2);
 
   destroy_db(db);
 
@@ -204,7 +189,7 @@ int all_tests(void)
 {
   _run(new_db_test);
   _run(insert_part_success_test);
-  _run(insert_part_truncates_name_test);
+  _run(insert_part_fail_bad_part_test);
   _run(insert_part_fail_non_unique_test);
   _run(insert_part_maintains_order_test);
   _run(find_part_test);
