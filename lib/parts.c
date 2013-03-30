@@ -1,4 +1,4 @@
-#include "inventory-model.h"
+#include "parts.h"
 
 struct parts_type {
   int count;

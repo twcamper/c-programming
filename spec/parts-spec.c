@@ -1,5 +1,5 @@
 #include <string.h>
-#include "inventory-model.h"
+#include "parts.h"
 #include "test_runner.h"
 #include <assert.h>
 

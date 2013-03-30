@@ -142,3 +142,4 @@ spec/inventory-record-validation-spec
 17/17.7-vstring-reminders
 weird/malloc-gives-a-million-for-request-of-10
 spec/part-spec
+spec/parts-spec

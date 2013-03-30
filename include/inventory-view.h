@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include "readline.h"
-#include "inventory-model.h"
+#include "parts.h"
 
 void insert(Parts db);
 void search(Parts db);
