@@ -38,9 +38,12 @@ int read_line(char str[], int n);
 #include <limits.h>
 int read_int(int *n);
 
-/************************************************************
- * read_double:  Works like read_int.
- ************************************************************/ 
-#include <float.h>
-int read_double(double *n);
+/************************************************************************
+ * read_dollars_write_cents: Reads a string possibly containing a $ and
+ *                          commas, and stores the digits provided they
+ *                          amount to a valid double.
+ *
+ *                          Returns 0 on success, non-zero for bad input.
+ ************************************************************************/ 
+int read_dollars_write_cents(int *n);
 #endif
