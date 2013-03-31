@@ -7,6 +7,7 @@ struct part_type
   PartNumber number;
   char name[NAME_LEN+1];
   PartQuantity on_hand;
+  PartPrice price;
 };
 
 Part new_part(void)
@@ -17,12 +18,13 @@ Part new_part(void)
 
   return p;
 }
-Part set_part(PartNumber number, char * name, PartQuantity on_hand)
+Part set_part(PartNumber number, char * name, PartQuantity on_hand, PartPrice price)
 {
   Part p = new_part();
 
   if (!( set_part_number(p, number) &&
-         set_part_on_hand(p, on_hand) ))
+         set_part_on_hand(p, on_hand) &&
+         set_part_price(p, price) ))
   {
     destroy_part(p);
     return NULL;
@@ -60,9 +62,18 @@ bool set_part_on_hand(Part p, PartQuantity on_hand)
   }
   return false;
 }
+bool set_part_price(Part p, PartPrice price)
+{
+  if (is_in_range(price)) {
+    p->price = price;
+    return true;
+  }
+  return false;
+}
 PartNumber get_part_number(Part p)  {return p->number; }
 char * get_part_name(Part p) {return p->name; }
 PartQuantity get_part_on_hand(Part p) {return p->on_hand; }
+PartPrice get_part_price(Part p)  {return p->price; }
 void destroy_part(Part p)
 {
   free(p);

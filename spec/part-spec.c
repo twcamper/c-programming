@@ -16,24 +16,31 @@ int new_part_test(void)
 
 int set_part_test(void)
 {
-  Part p = set_part(33, "It's a Part!", 1);
+  Part p = set_part(33, "It's a Part!", 1, 100);
   _assert(get_part_number(p) == 33);
   _assert(strcmp(get_part_name(p), "It's a Part!") == 0);
   _assert(get_part_on_hand(p) == 1);
+  _assert(get_part_price(p) == 100);
 
   destroy_part(p);
   return 0;
 }
 int set_part_invalid_number_test(void)
 {
-  _assert(set_part(-1, "", 0) == NULL);
+  _assert(set_part(-1, "", 0, 0) == NULL);
   return 0;
 }
 int set_part_invalid_on_hand_test(void)
 {
-  _assert(set_part(1, "", -1) == NULL);
+  _assert(set_part(1, "", -1, 0) == NULL);
   return 0;
 }
+int set_part_invalid_price_test(void)
+{
+  _assert(set_part(1, "", 1, -1) == NULL);
+  return 0;
+}
+
 int set_part_number_test(void)
 {
   Part p = new_part();
@@ -77,6 +84,19 @@ int set_part_on_hand_test(void)
 
   return 0;
 }
+int set_part_price_test(void)
+{
+  Part p = new_part();
+  _assert(set_part_price(p,  0) == true);
+  _assert(get_part_price(p) == 0);
+  _assert(set_part_price(p, INT_MAX) == true);
+  _assert(get_part_price(p) == INT_MAX);
+  _assert(set_part_price(p, -1) == false);
+  _assert(set_part_price(p,  INT_MAX + 1) == false);
+
+  destroy_part(p);
+  return 0;
+}
 
 int all_tests(void)
 {
@@ -88,5 +108,7 @@ int all_tests(void)
   _run(set_part_number_test);
   _run(set_part_name_truncates_test);
   _run(set_part_on_hand_test);
+  _run(set_part_price_test);
+  _run(set_part_invalid_price_test);
   return 0;
 }
