@@ -25,6 +25,8 @@ int read_line(char str[], int n)
   str[i] = '\0';
   return i;
 }
+#define INT_WIDTH 10
+#define SINT_WIDTH 11
 int read_int(int *n)
 {
   char *endptr, digits[SINT_WIDTH + 2];
@@ -62,5 +64,25 @@ int read_int(int *n)
     return -4;
 
   *n = (int)conversion;
+  return 0;
+}
+#define DBL_WIDTH 316
+int read_double(double *n)
+{
+  char *endptr, digits[DBL_WIDTH + 2];
+  int length_read, length_converted;
+  *n = 0.0;
+
+  length_read = read_line(digits, DBL_WIDTH + 2);
+
+  if (length_read > DBL_WIDTH)
+    return -1;
+
+  errno = 0;
+  *n = strtod(digits, &endptr);
+  length_converted = endptr - digits;
+  if (errno != 0 || length_converted != length_read)
+    return -2;
+
   return 0;
 }

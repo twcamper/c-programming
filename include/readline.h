@@ -36,7 +36,11 @@ int read_line(char str[], int n);
 #include <errno.h>
 #include <string.h>
 #include <limits.h>
-#define INT_WIDTH 10
-#define SINT_WIDTH 11
 int read_int(int *n);
+
+/************************************************************
+ * read_double:  Works like read_int.
+ ************************************************************/ 
+#include <float.h>
+int read_double(double *n);
 #endif
