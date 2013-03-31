@@ -70,6 +70,25 @@ int insert_part(Parts db, Part p)
   return 0;
 
 }
+int delete_part(Parts db, PartNumber number)
+{
+  Node *cur, *prev;
+
+  for (cur = db->head, prev = NULL;
+       cur != NULL && number != get_part_number(cur->part);
+       prev = cur, cur = cur->next)
+    ;
+  if (cur == NULL) /* not found */
+    return -1;
+  if (prev == NULL)  /* first */
+    db->head = db->head->next;
+  else
+    prev->next = cur->next;
+
+  destroy_node(cur);
+  db->count--;
+  return 0;
+}
 Part find_part(Parts db, PartNumber part_number)
 {
   for (Node *n = db->head; n != NULL; n = n->next)

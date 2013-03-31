@@ -6,6 +6,7 @@
 #include "parts.h"
 
 void insert(Parts db);
+void erase(Parts db);
 void search(Parts db);
 void update(Parts db);
 void print(Parts db);

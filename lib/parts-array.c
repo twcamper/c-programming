@@ -44,6 +44,28 @@ static int resize_db_17_1(Parts db)
   db->rows = temp;
   return 0;
 }
+int delete_part(Parts db, PartNumber number)
+{
+  int i;
+
+  for (i = 0; i < db->count; i++)
+    if (get_part_number(db->rows[i]) == number)
+      break;
+
+  /* not found */
+  if (i == db->count)
+    return -1;
+
+  destroy_part(db->rows[i]);
+  db->rows[i] = NULL;
+
+  for (;i < db->count; i++)
+    db->rows[i] = db->rows[i + 1];
+
+  db->rows[i] = NULL;
+  db->count--;
+  return 0;
+}
 int insert_part(Parts db, Part p)
 {
   int i, j;

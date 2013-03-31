@@ -185,6 +185,46 @@ int iterate_test(void)
   return 0;
 }
 
+void assert_for_delete_test__(Part p)
+{
+  static int count = 0;
+  switch(count) {
+    case 0:
+      assert(get_part_number(p) == 4);
+      break;
+    case 1:
+      assert(get_part_number(p) == 400);
+      break;
+    case 2:
+      assert(get_part_number(p) == 401);
+      break;
+  }
+  count++;
+}
+int delete_part_test(void)
+{
+  Parts db = new_db();
+  insert_part(db, set_part(4, "first", 1));
+  insert_part(db, set_part(40, "second", 1));
+  insert_part(db, set_part(400, "third", 1));
+  insert_part(db, set_part(401, "last", 1));
+
+  _assert(size(db) == 4);
+  _assert(delete_part(db, 40) == 0);
+  _assert(size(db) == 3);
+  _assert(delete_part(db, 40) != 0);
+  _assert(size(db) == 3);
+
+  iterate(db, assert_for_delete_test__);
+  _assert(delete_part(db, 4) == 0);
+  _assert(size(db) == 2);
+  _assert(delete_part(db, 401) == 0);
+  _assert(size(db) == 1);
+
+  destroy_db(db);
+
+  return 0;
+}
 int all_tests(void)
 {
   _run(new_db_test);
@@ -196,6 +236,7 @@ int all_tests(void)
   _run(update_part_success_test);
   _run(update_part_fail_not_found_test);
   _run(update_part_fail_invalid_test);
+  _run(delete_part_test);
   _run(iterate_test);
   return 0;
 }

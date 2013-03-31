@@ -1,5 +1,15 @@
 #include "inventory-view.h"
 
+static int enter_part_number(PartNumber *n)
+{
+  printf("Enter part number: ");
+  if (read_int(n) != 0) {
+    printf("Invalid part number.\n");
+    return -1;
+  }
+
+  return 0;
+}
 
 /**********************************************************
  * insert: Prompts the user for information about a new   *
@@ -14,11 +24,9 @@ void insert(Parts db)
   PartQuantity q;
   char name[NAME_LEN+1];
 
-  printf("Enter part number: ");
-  if (read_int(&n) != 0) {
-    printf("Invalid part number\n");
+  if (enter_part_number(&n) != 0)
     return;
-  }
+
   if (find_part(db, n)) {
     printf("Part already exists.\n");
     return;
@@ -57,11 +65,9 @@ void search(Parts db)
   PartNumber number = 0;
   Part p;
 
-  printf("Enter part number: ");
-  if (read_int(&number) != 0) {
-    printf("Invalid part number.\n");
+  if (enter_part_number(&number) != 0)
     return;
-  }
+
   if ((p = find_part(db, number))) {
     printf("Part name: %s\n", get_part_name(p));
     printf("Quantity on hand: %d\n", get_part_on_hand(p));
@@ -82,11 +88,8 @@ void update(Parts db)
   PartQuantity change;
   number = change = 0;
 
-  printf("Enter part number: ");
-  if (read_int(&number) != 0) {
-    printf("Invalid part number.\n");
+  if (enter_part_number(&number) != 0)
     return;
-  }
 
   Part p;
   if ((p = find_part(db, number))) {
@@ -110,7 +113,7 @@ void update(Parts db)
  *        order in which they were entered into the       *
  *        database.                                       *
  **********************************************************/
-void print_line(Part p)
+static void print_line(Part p)
 {
   printf("%7d       %-25s%11d\n", get_part_number(p), get_part_name(p), get_part_on_hand(p));
 }
@@ -118,4 +121,16 @@ void print(Parts db)
 {
   printf("Part Number   Part Name                   Quantity on Hand\n");
   iterate(db, print_line);
+}
+void erase(Parts db)
+{
+  PartNumber n;
+
+  if (enter_part_number(&n) != 0)
+    return;
+
+  if (delete_part(db, n) != 0) {
+    printf("Part not found.\n");
+    return;
+  }
 }

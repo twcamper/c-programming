@@ -34,6 +34,8 @@ int main(void)
     switch (code) {
       case 'i': insert(db);
                 break;
+      case 'e': erase(db);
+                break;
       case 's': search(db);
                 break;
       case 'u': update(db);

@@ -11,9 +11,7 @@
 typedef struct parts_type *Parts;
 
 /*
- * TODO:  add erase_part()  (see 17/17.3-inventory.c source)
- *        for both array and list
- *
+ * TODO:
  *        price field
  *
  *        update price
@@ -22,6 +20,7 @@ typedef struct parts_type *Parts;
 Parts new_db();
 void destroy_db(Parts);
 int insert_part(Parts, Part);
+int delete_part(Parts, PartNumber);
 int update_part(Parts, PartNumber part_number, PartQuantity change);
 Part find_part(Parts, PartNumber part_number);
 void load(Parts);
