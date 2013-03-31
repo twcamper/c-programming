@@ -11,6 +11,11 @@ static int enter_part_number(PartNumber *n)
   return 0;
 }
 
+static float dollars(Part p)
+{
+  return (float)(get_part_price(p) / 100.00f);
+}
+
 /**********************************************************
  * insert: Prompts the user for information about a new   *
  *         part and then inserts the part into the        *
@@ -22,6 +27,7 @@ void insert(Parts db)
 {
   PartNumber n;
   PartQuantity q;
+  PartPrice cents;
   char name[NAME_LEN+1];
 
   if (enter_part_number(&n) != 0)
@@ -35,13 +41,19 @@ void insert(Parts db)
   printf("Enter part name: ");
   read_line(name, NAME_LEN);
 
+  printf("Enter unit price: ");
+  if (read_dollars_write_cents(&cents) != 0) {
+    printf("Invalid dollar amount.\n");
+    return;
+  }
+
   printf("Enter quantity on hand: ");
   if (read_int(&q) != 0) {
     printf("Invalid quantity.\n");
     return;
   }
 
-  Part p = set_part(n, name, q);
+  Part p = set_part(n, name, q, cents);
   if (!p) {
     printf("Record rejected: invalid number.\n");
     return;
@@ -71,6 +83,7 @@ void search(Parts db)
   if ((p = find_part(db, number))) {
     printf("Part name: %s\n", get_part_name(p));
     printf("Quantity on hand: %d\n", get_part_on_hand(p));
+    printf("Unit price: $%.2f\n", dollars(p));
   } else
     printf("Part not found.\n");
 }
@@ -115,11 +128,15 @@ void update(Parts db)
  **********************************************************/
 static void print_line(Part p)
 {
-  printf("%7d       %-25s%11d\n", get_part_number(p), get_part_name(p), get_part_on_hand(p));
+  printf("%-11d       %-25s   %-11d       $%-.2f\n",
+         get_part_number(p),
+         get_part_name(p),
+         get_part_on_hand(p),
+         dollars(p));
 }
 void print(Parts db)
 {
-  printf("Part Number   Part Name                   Quantity on Hand\n");
+  printf("Part Number       Part Name                   Quantity on Hand  Unit Price\n");
   iterate(db, print_line);
 }
 void erase(Parts db)
