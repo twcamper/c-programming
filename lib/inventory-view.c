@@ -1,4 +1,6 @@
 #include "inventory-view.h"
+#include <monetary.h>
+#include <locale.h>
 
 static int enter_part_number(PartNumber *n)
 {
@@ -11,9 +13,13 @@ static int enter_part_number(PartNumber *n)
   return 0;
 }
 
-static float dollars(Part p)
+static char * dollars(Part p)
 {
-  return (float)(get_part_price(p) / 100.00f);
+  static char s[16];
+  setlocale(LC_ALL, "en_US");
+  strfmon(s, sizeof(s) - 1, "%n",  (double)(get_part_price(p) / 100.00));
+
+  return s;
 }
 
 /**********************************************************
@@ -83,7 +89,7 @@ void search(Parts db)
   if ((p = find_part(db, number))) {
     printf("Part name: %s\n", get_part_name(p));
     printf("Quantity on hand: %d\n", get_part_on_hand(p));
-    printf("Unit price: $%.2f\n", dollars(p));
+    printf("Unit price: %s\n", dollars(p));
   } else
     printf("Part not found.\n");
 }
@@ -128,7 +134,7 @@ void update(Parts db)
  **********************************************************/
 static void print_line(Part p)
 {
-  printf("%-11d       %-25s   %-11d       $%-.2f\n",
+  printf("%-11d       %-25s   %-11d       %-s\n",
          get_part_number(p),
          get_part_name(p),
          get_part_on_hand(p),
