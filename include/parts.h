@@ -12,8 +12,6 @@ typedef struct parts_type *Parts;
 
 /*
  * TODO:
- *        price field
- *
  *        update price
  */
 
@@ -21,7 +19,6 @@ Parts new_db();
 void destroy_db(Parts);
 int insert_part(Parts, Part);
 int delete_part(Parts, PartNumber);
-int update_part(Parts, PartNumber part_number, PartQuantity change);
 Part find_part(Parts, PartNumber part_number);
 void load(Parts);
 void iterate(Parts, void (*op)(Part));

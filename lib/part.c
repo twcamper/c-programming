@@ -62,6 +62,13 @@ bool set_part_on_hand(Part p, PartQuantity on_hand)
   }
   return false;
 }
+bool change_part_on_hand(Part p, PartQuantity change)
+{
+  if (set_part_on_hand(p, p->on_hand  + change))
+    return true;
+
+  return false;
+}
 bool set_part_price(Part p, PartPrice price)
 {
   if (is_in_range(price)) {

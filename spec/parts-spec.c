@@ -103,56 +103,6 @@ int insert_part_fail_bad_part_test(void)
   destroy_db(db);
   return 0;
 }
-int update_part_success_test(void)
-{
-  Parts db = new_db();
-
-  insert_part(db, set_part(88, "Ramen, Top", 200, 0));
-  _assert(size(db) == 1);
-  _assert(update_part(db, 88, 199) == 0);
-  Part p = find_part(db, 88);
-  _assert(get_part_on_hand(p) == 399);
-  _assert(update_part(db, 88, -99) == 0);
-  _assert(get_part_on_hand(p) == 300);
-  _assert(update_part(db, 88, -300) == 0);
-  _assert(get_part_on_hand(p) == 0);
-  _assert(size(db) == 1);
-
-  destroy_db(db);
-
-  return 0;
-}
-int update_part_fail_not_found_test(void)
-{
-
-  Parts db = new_db();
-
-  insert_part(db, set_part(88, "Joystick, rotating", 200, 0));
-  _assert(size(db) == 1);
-  _assert(update_part(db, 89, 199) != 0);
-  _assert(update_part(db, 1, 199) != 0);
-  _assert(size(db) == 1);
-  destroy_db(db);
-
-  return 0;
-}
-int update_part_fail_invalid_test(void)
-{
-
-  Parts db = new_db();
-
-  insert_part(db, set_part(88, "Mercy!", 20, 0));
-  _assert(size(db) == 1);
-  _assert(update_part(db, 88, -21) != 0);
-  Part p = find_part(db, 88);
-  _assert(get_part_on_hand(p) == 20);
-  _assert(update_part(db, 88, INT_MAX) != 0);
-  _assert(get_part_on_hand(p) == 20);
-  _assert(size(db) == 1);
-  destroy_db(db);
-
-  return 0;
-}
 
 void mutate_for_iterate_test__(Part p)
 {
@@ -233,9 +183,6 @@ int all_tests(void)
   _run(insert_part_fail_non_unique_test);
   _run(insert_part_maintains_order_test);
   _run(find_part_test);
-  _run(update_part_success_test);
-  _run(update_part_fail_not_found_test);
-  _run(update_part_fail_invalid_test);
   _run(delete_part_test);
   _run(iterate_test);
   return 0;

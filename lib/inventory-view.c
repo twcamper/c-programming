@@ -120,7 +120,7 @@ void update(Parts db)
       printf("Invalid quantity.\n");
       return;
     }
-    if (update_part(db, number, change) != 0) {
+    if (!change_part_on_hand(p, change)) {
       printf("Invalid new quantity: %d + %d\n", get_part_on_hand(p), change);
       return;
     }

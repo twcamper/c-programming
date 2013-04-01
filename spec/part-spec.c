@@ -98,6 +98,32 @@ int set_part_price_test(void)
   return 0;
 }
 
+int change_part_on_hand_success_test(void)
+{
+  Part p = set_part(88, "Ramen, Top", 200, 0);
+  _assert(change_part_on_hand(p, 199) == true);
+  _assert(get_part_on_hand(p) == 399);
+  _assert(change_part_on_hand(p, -99) == true);
+  _assert(get_part_on_hand(p) == 300);
+  _assert(change_part_on_hand(p, -300) == true);
+  _assert(get_part_on_hand(p) == 0);
+
+  destroy_part(p);
+
+  return 0;
+}
+int change_part_on_hand_fail_invalid_test(void)
+{
+  Part p = set_part(88, "Ramen, Top", 20, 0);
+  _assert(change_part_on_hand(p, -21) == false);
+  _assert(get_part_on_hand(p) == 20);
+  _assert(change_part_on_hand(p, INT_MAX) == false);
+  _assert(get_part_on_hand(p) == 20);
+
+  destroy_part(p);
+
+  return 0;
+}
 int all_tests(void)
 {
 
@@ -108,6 +134,8 @@ int all_tests(void)
   _run(set_part_number_test);
   _run(set_part_name_truncates_test);
   _run(set_part_on_hand_test);
+  _run(change_part_on_hand_success_test);
+  _run(change_part_on_hand_fail_invalid_test);
   _run(set_part_price_test);
   _run(set_part_invalid_price_test);
   return 0;
