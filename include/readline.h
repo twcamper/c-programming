@@ -46,4 +46,7 @@ int read_int(int *n);
  *                          Returns 0 on success, non-zero for bad input.
  ************************************************************************/ 
 int read_dollars_write_cents(int *n);
+
+#include <stdbool.h>
+bool yes(void);
 #endif

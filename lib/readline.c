@@ -111,3 +111,12 @@ int read_dollars_write_cents(int *n)
 
   return to_valid_int(n, digits, strlen(digits));
 }
+bool yes(void)
+{
+  static char response[2];
+  read_line(response, 2);
+  if (tolower(response[0]) == 'y')
+    return true;
+
+  return false;
+}

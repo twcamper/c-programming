@@ -108,21 +108,37 @@ void update(Parts db)
 {
   PartNumber number;
   PartQuantity change;
-  number = change = 0;
+  PartPrice price;
+  number = change = price = 0;
 
   if (enter_part_number(&number) != 0)
     return;
 
   Part p;
   if ((p = find_part(db, number))) {
-    printf("Enter change in quantity on hand: ");
-    if (read_int(&change) != 0) {
-      printf("Invalid quantity.\n");
-      return;
+    printf("\tUpdate quantity on hand? ");
+    if (yes()) {
+      printf("\t\tChange in quantity: ");
+      if (read_int(&change) != 0) {
+        printf("\t\tInvalid quantity.\n");
+        return;
+      }
+      if (!change_part_on_hand(p, change)) {
+        printf("\t\tNew quantity invalid: %d + %d\n", get_part_on_hand(p), change);
+        return;
+      }
     }
-    if (!change_part_on_hand(p, change)) {
-      printf("Invalid new quantity: %d + %d\n", get_part_on_hand(p), change);
-      return;
+    printf("\tUpdate price? ");
+    if (yes()) {
+      printf("\t\tprice: ");
+      if (read_dollars_write_cents(&price) != 0) {
+        printf("\t\tInvalid price.\n");
+        return;
+      }
+      if (!set_part_price(p, price)) {
+        printf("\t\tInvalid price.\n");
+        return;
+      }
     }
   } else
     printf("Part not found.\n");
