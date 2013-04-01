@@ -116,8 +116,7 @@ void update(Parts db)
 
   Part p;
   if ((p = find_part(db, number))) {
-    printf("\tUpdate quantity on hand? ");
-    if (yes()) {
+    if (yes("\tUpdate quantity on hand? ")) {
       printf("\t\tChange in quantity: ");
       if (read_int(&change) != 0) {
         printf("\t\tInvalid quantity.\n");
@@ -128,8 +127,7 @@ void update(Parts db)
         return;
       }
     }
-    printf("\tUpdate price? ");
-    if (yes()) {
+    if (yes("\tUpdate price? ")) {
       printf("\t\tprice: ");
       if (read_dollars_write_cents(&price) != 0) {
         printf("\t\tInvalid price.\n");

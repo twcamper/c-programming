@@ -111,9 +111,10 @@ int read_dollars_write_cents(int *n)
 
   return to_valid_int(n, digits, strlen(digits));
 }
-bool yes(void)
+bool yes(char *prompt)
 {
   static char response[2];
+  printf("%s", prompt);
   read_line(response, 2);
   if (tolower(response[0]) == 'y')
     return true;
