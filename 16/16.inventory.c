@@ -23,8 +23,8 @@ int main(void)
   char code;
 
   Parts db = new_db();
-
   load(db);
+  init_locale();
 
   for (;;) {
     printf("Enter operation code: ");

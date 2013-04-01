@@ -12,11 +12,14 @@ static int enter_part_number(PartNumber *n)
 
   return 0;
 }
-
+/* locale needed for currency formatting */
+void init_locale(void)
+{
+  setlocale(LC_ALL, "en_US");
+}
 static char * dollars(Part p)
 {
   static char s[16];
-  setlocale(LC_ALL, "en_US");
   strfmon(s, sizeof(s) - 1, "%n",  (double)(get_part_price(p) / 100.00));
 
   return s;

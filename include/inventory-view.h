@@ -5,6 +5,7 @@
 #include "readline.h"
 #include "parts.h"
 
+void init_locale(void);
 void insert(Parts db);
 void erase(Parts db);
 void search(Parts db);
