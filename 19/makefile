@@ -1,18 +1,18 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./queue.c
+EXCLUDE = ./19.3a.global-bounded-queue.c
 include $(PREFIX)make/generic.mk
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
-all: $(EXECUTABLES) queue
+all: $(EXECUTABLES) 19.3a.global-bounded-queue
 
-queue: queue.o
+19.3a.global-bounded-queue: 19.3a.global-bounded-queue.o $(LIBS)/global-bounded-queue.o
 	$(LINK)
 
-queue.o: queue.c ./queue.h
+19.3a.global-bounded-queue.o: %.o : %.c $(INCS)/global-queue.h
 	$(COMPILE)
 
 include $(PREFIX)make/clean.mk

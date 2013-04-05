@@ -44,6 +44,9 @@ void insert_item(Item i)
 }
 Item remove_item(void)
 {
+  if (_queue.size < 1)
+    exit_queue_underflow(__FILE__, __LINE__, __func__);
+
   Item item = _queue.data[_queue.front_position];
   increment_front_position();
   _queue.size--;
