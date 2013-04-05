@@ -147,3 +147,4 @@ spec/parts-array-spec
 spec/parts-array-resize-spec
 spec/parts-list-spec
 19/queue
+spec/global-queue-spec
