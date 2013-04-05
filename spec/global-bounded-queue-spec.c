@@ -75,30 +75,37 @@ int remove_item_past_upper_bound_test(void)
 {
   clear_queue();
   insert_item(200);
+  _assert(rear() == 200);
   _assert(remove_item() == 200);
   _assert(is_empty() == true);
 
   insert_item(201);
+  _assert(rear() == 201);
   _assert(remove_item() == 201);
   _assert(is_empty() == true);
 
   insert_item(202);
+  _assert(rear() == 202);
   _assert(remove_item() == 202);
   _assert(is_empty() == true);
 
   insert_item(203);
+  _assert(rear() == 203);
   _assert(remove_item() == 203);
   _assert(is_empty() == true);
 
   insert_item(101);
+  _assert(rear() == 101);
   _assert(remove_item() == 101);
   _assert(is_empty() == true);
 
   insert_item(102);
+  _assert(rear() == 102);
   _assert(remove_item() == 102);
   _assert(is_empty() == true);
 
   insert_item(103);
+  _assert(rear() == 103);
   _assert(remove_item() == 103);
   _assert(is_empty() == true);
 
@@ -114,18 +121,28 @@ int remove_item_past_upper_bound_test2(void)
   insert_item(204);
 
   _assert(remove_item() == 200);
+  _assert(front() == 201);
+  _assert(rear() == 204);
   _assert(remove_item() == 201);
+  _assert(front() == 202);
+  _assert(rear() == 204);
   _assert(remove_item() == 202);
+  _assert(front() == 203);
+  _assert(rear() == 204);
   _assert(remove_item() == 203);
+  _assert(front() == 204);
+  _assert(rear() == 204);
   _assert(remove_item() == 204);
   _assert(is_empty() == true);
 
   insert_item(102);
+  _assert(rear() == 102);
   insert_item(103);
   _assert(front() == 102);
   _assert(rear() == 103);
 
   _assert(remove_item() == 102);
+  _assert(rear() == 103);
   _assert(remove_item() == 103);
   _assert(is_empty() == true);
 
