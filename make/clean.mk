@@ -7,6 +7,7 @@ CLEAN_PATH = ./$(CLEAN)
 
 clean-obj:
 	@find $(CLEAN_PATH) -name '*.o' | $(XARGS_RM)
+	@find $(CLEAN_PATH) -name '*.gch' | $(XARGS_RM)
 
 clean-archives:
 	@find $(CLEAN_PATH) -name '*.a' | $(XARGS_RM)

@@ -1,13 +1,19 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE =
+EXCLUDE = ./queue.c
 include $(PREFIX)make/generic.mk
-
-all: $(EXECUTABLES) $(HEADERS)
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
+
+all: $(EXECUTABLES) queue
+
+queue: queue.o
+	$(LINK)
+
+queue.o: queue.c ./queue.h
+	$(COMPILE)
 
 include $(PREFIX)make/clean.mk
 include $(LIBS)/makefile
