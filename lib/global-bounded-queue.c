@@ -1,4 +1,4 @@
-#include "global-bounded-queue.h"
+#include "global-queue.h"
 #include <stdio.h>
 #include <stdlib.h>
 

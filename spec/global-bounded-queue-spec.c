@@ -1,4 +1,4 @@
-#include "global-bounded-queue.h"
+#include "global-queue.h"
 #include "test_runner.h"
 
 int insert_item_test(void)
