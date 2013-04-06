@@ -66,8 +66,10 @@ void insert_item(Queue q, Item i)
 }
 Item remove_item(Queue q)
 {
-  if (q->depth < 1)
+  if (q->depth < 1) {
+    destroy(q);
     exit_queue_underflow(__FILE__, __LINE__, __func__);
+  }
 
   Item item = q->data[q->front_position];
   increment_front_position(q);
@@ -76,14 +78,18 @@ Item remove_item(Queue q)
 }
 Item front(Queue q)
 {
-  if (q->depth < 1)
+  if (q->depth < 1) {
+    destroy(q);
     exit_queue_underflow(__FILE__, __LINE__, __func__);
+  }
   return q->data[q->front_position];
 }
 Item rear(Queue q)
 {
-  if (q->depth < 1)
+  if (q->depth < 1) {
+    destroy(q);
     exit_queue_underflow(__FILE__, __LINE__, __func__);
+  }
   return q->data[q->front_position + q->depth - 1];
 }
 bool is_empty(Queue q)

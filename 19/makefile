@@ -1,13 +1,13 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./19.3a.global-bounded-queue.c ./19.1-nester-tester.c ./19.2-RPN-calculator.c ./19.5-queue-client.c
+EXCLUDE = ./19.3a.bounded-queue.c ./19.1-nester-tester.c ./19.2-RPN-calculator.c ./19.5-queue-client.c
 include $(PREFIX)make/generic.mk
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
-all: $(EXECUTABLES) 19.3a.global-bounded-queue 19.1-nester-tester 19.2-RPN-calculator 19.5-queue-client
+all: $(EXECUTABLES) 19.3a.bounded-queue 19.1-nester-tester 19.2-RPN-calculator 19.5-queue-client
 
 SRC = $(PREFIX)src
 15 = $(PREFIX)15
@@ -30,10 +30,10 @@ stackADT3.o: $(SRC)/stackADT3.c $(SRC)/stackADT.h
 tokenize.o: $(15)/tokenize.c $(15)/tokenize.h
 	$(COMPILE) -I$(15)
 
-19.3a.global-bounded-queue: 19.3a.global-bounded-queue.o $(LIBS)/global-bounded-queue.o
+19.3a.bounded-queue: 19.3a.bounded-queue.o $(LIBS)/bounded-queue.o $(LIBS)/error.o
 	$(LINK)
 
-19.3a.global-bounded-queue.o: %.o : %.c $(INCS)/global-queue.h
+19.3a.bounded-queue.o: %.o : %.c $(INCS)/global-queue.h $(INCS)/error.h
 	$(COMPILE)
 
 include $(PREFIX)make/clean.mk
