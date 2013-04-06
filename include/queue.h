@@ -7,12 +7,13 @@
 typedef struct queue_type *Queue;
 typedef int Item;
 
-Queue create(void);
-void destroy(Queue q);
-void insert(Queue q, Item i);
-Item remove(Queue q);
-Item front(Queue q);
-Item rear(Queue q);
-bool is_empty(Queue q);
+Queue create_queue(void);
+void destroy(Queue);
+void insert_item(Queue, Item);
+Item remove_item(Queue);
+Item front(Queue);
+Item rear(Queue);
+bool is_empty(Queue);
+int depth(Queue);
 
 #endif
