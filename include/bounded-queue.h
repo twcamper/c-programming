@@ -1,5 +1,5 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef BOUNDED_QUEUE_H
+#define BOUNDED_QUEUE_H
 
 #include <stdbool.h>
 
@@ -7,13 +7,12 @@
 typedef struct queue_type *Queue;
 typedef int Item;
 
-Queue create_queue(void);
+Queue create_queue(int);
 void destroy(Queue);
 void insert_item(Queue, Item);
 Item remove_item(Queue);
 Item front(Queue);
 Item rear(Queue);
-void clear(Queue);
 bool is_empty(Queue);
 int depth(Queue);
 

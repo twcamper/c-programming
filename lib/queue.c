@@ -25,6 +25,14 @@ static Node * create_node(Item value)
   n->next = NULL;
   return n;
 }
+static void free_nodes(Queue q)
+{
+  Node *next = NULL;
+  for (Node *n = q->front; n; n = next) {
+    next = n->next;
+    free(n);
+  }
+}
 Queue create_queue(void)
 {
   Queue q = malloc(sizeof(struct queue_type));
@@ -70,13 +78,16 @@ bool is_empty(Queue q)
 {
   return q->depth == 0;
 }
+void clear(Queue q)
+{
+  free_nodes(q);
+  q->depth = 0;
+  q->front = NULL;
+  q->rear  = NULL;
+}
 void destroy(Queue q)
 {
-  Node *next = NULL;
-  for (Node *n = q->front; n; n = next) {
-    next = n->next;
-    free(n);
-  }
+  free_nodes(q);
   free(q);
 }
 int depth(Queue q)

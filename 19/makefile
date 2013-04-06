@@ -1,16 +1,22 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./19.3a.global-bounded-queue.c ./19.1-nester-tester.c ./19.2-RPN-calculator.c
+EXCLUDE = ./19.3a.global-bounded-queue.c ./19.1-nester-tester.c ./19.2-RPN-calculator.c ./19.5-queue-client.c
 include $(PREFIX)make/generic.mk
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
-all: $(EXECUTABLES) 19.3a.global-bounded-queue 19.1-nester-tester 19.2-RPN-calculator
+all: $(EXECUTABLES) 19.3a.global-bounded-queue 19.1-nester-tester 19.2-RPN-calculator 19.5-queue-client
 
 SRC = $(PREFIX)src
 15 = $(PREFIX)15
+
+19.5-queue-client: 19.5-queue-client.o $(LIBS)/queue.o $(LIBS)/error.o
+	$(LINK)
+
+19.5-queue-client.o: %.o : %.c $(INCS)/queue.h $(INCS)/error.h
+	$(COMPILE)
 
 19.1-nester-tester: 19.1-nester-tester.o stackADT3.o
 	$(LINK)
