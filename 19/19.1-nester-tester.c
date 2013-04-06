@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include "../src/stackADT.h"
 
-void exit_incorrect_nesting(void)
+void exit_incorrect_nesting(Stack s)
 {
   printf("Nesting is NOT correct\n");
+  destroy(s);
   exit(EXIT_SUCCESS);
 }
 int main(void)
@@ -22,11 +23,11 @@ int main(void)
         break;
       case ')':
         if (is_empty(s) || pop(s) != '(')
-          exit_incorrect_nesting();
+          exit_incorrect_nesting(s);
         break;
       case '}' :
         if (is_empty(s) || pop(s) != '{')
-          exit_incorrect_nesting();
+          exit_incorrect_nesting(s);
         break;
     }
   }
@@ -34,7 +35,8 @@ int main(void)
   if (is_empty(s))
     printf("Nesting is correct\n");
   else
-    exit_incorrect_nesting();
+    exit_incorrect_nesting(s);
 
+  destroy(s);
   return 0;
 }
