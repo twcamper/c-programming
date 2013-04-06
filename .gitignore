@@ -150,3 +150,4 @@ spec/parts-list-spec
 spec/global-queue-spec
 spec/global-bounded-queue-spec
 19/19.3a.global-bounded-queue
+19/19.1-nester-tester
