@@ -1,14 +1,21 @@
 PREFIX = ../
 include $(PREFIX)make/env.mk
-SPECS       = $(filter-out ./global-bounded-queue-spec.c ./parts-spec.c ./parts-array-resize-spec.c ./part-spec.c, $(shell find . -name '*-spec.c'))
+EXCLUDE     = ./global-bounded-queue-spec.c ./parts-spec.c ./parts-array-resize-spec.c ./part-spec.c ./global-queue-spec.c
+SPECS       = $(filter-out $(EXCLUDE), $(shell find . -name '*-spec.c'))
 # for lib/foo.c and spec/foo-spec.c, this will be 'foo'
 BASE_NAMES  = $(notdir $(SPECS:-spec.c=))
 
 COMPILE = $(CC) -c $(CFLAGS) $< -o $@
 LINK = $(LD) $^ -o $@
 
-all: $(SPECS:.c=) parts-array-spec global-bounded-queue-spec parts-array-resize-spec parts-list-spec part-spec
+all: $(SPECS:.c=) parts-array-spec global-queue-spec global-bounded-queue-spec parts-array-resize-spec parts-list-spec part-spec
 	@for test in $(^); do echo $$test; ./$$test; done
+
+global-queue-spec: global-queue-spec.o $(LIBS)/global-queue.o $(LIBS)/error.o
+	$(LINK)
+
+global-queue-spec.o: global-queue-spec.c $(LIBS)/global-queue.c $(INCS)/global-queue.h $(INCS)/error.h
+	$(COMPILE)
 
 global-bounded-queue-spec: global-bounded-queue-spec.o $(LIBS)/global-bounded-queue.o
 	$(LINK)
