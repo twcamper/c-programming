@@ -146,3 +146,5 @@ spec/rectangle-spec
 weird/fgets-buffer-overflow
 weird/malloc-gives-a-million-for-request-of-10
 weird/scanf-clobbers-adjacent-var
+20/swap_bytes
+20/20.1-exercises
