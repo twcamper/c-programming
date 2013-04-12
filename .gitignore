@@ -149,3 +149,4 @@ weird/scanf-clobbers-adjacent-var
 20/swap_bytes
 20/20.1-exercises
 21/21.1-offsetof
+22/22.2.3-fopen
