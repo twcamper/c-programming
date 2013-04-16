@@ -152,3 +152,4 @@ weird/scanf-clobbers-adjacent-var
 22/22.2.3-fopen
 22/22.3-formatted-io
 22/22.4-character-io
+22/22.5-line-io
