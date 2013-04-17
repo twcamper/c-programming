@@ -2,8 +2,15 @@
 #include <string.h>
 #include <assert.h>
 
-
-char *fugats(char *s, int n, FILE *stream)
+int fpoots(const char *s, FILE * restrict stream)
+{
+  while (*s) {
+    if ((fputc(*s++, stream)) == EOF || ferror(stream))
+      return EOF;
+  }
+  return 0;
+}
+char *fugats(char *s, int n, FILE * restrict stream)
 {
   int i = 0, ch;
   while (i < n - 1) {
@@ -79,7 +86,8 @@ int full_file(void)
   char line[255];
 
   while (fugats(line, 255, fp)) {
-    printf("%s", line);
+    /* printf("%s", line); */
+    fpoots(line, stdout);
   }
   return 0;
 }
