@@ -20,6 +20,10 @@ static void print_e(int e, char *program, char *file)
   fprintf(stderr, "%s: %s: %s\n", program, strerror(e), file);
 }
 
+static void print_n(int *lines)
+{
+  printf("%5d  ", (*lines)++);
+}
 static Options process_options(int *argc, char **argv[])
 {
   Options options = {false};
@@ -43,7 +47,7 @@ static Options process_options(int *argc, char **argv[])
 int main(int argc, char *argv[])
 {
   FILE *fp;
-  int ch;
+  int lines, ch;
   char *program = argv[0];
   Options o = process_options(&argc, &argv);
 
@@ -58,12 +62,27 @@ int main(int argc, char *argv[])
       continue;
     }
 
+    if (o.number)
+      lines = 1;
+
     for(;;) {
       if ((ch = fgetc(fp)) == EOF) {
         if (ferror(fp)) {
           print_e(errno, program, argv[i]);
         }
         break;
+      }
+      if (o.number) {
+        if (ftell(fp) == 1) {
+          print_n(&lines);
+        }
+        if (ch == '\n') {
+          putchar(ch);
+          if ((ch = fgetc(fp)) != EOF)
+            print_n(&lines);
+          ungetc(ch, fp);
+          continue;
+        }
       }
       putchar(ch);
     }
