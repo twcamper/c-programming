@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <errno.h>
 #include <string.h>
-#include <unistd.h>
+#include <getopt.h>
 
 typedef struct options
 {
@@ -26,7 +26,6 @@ static Options process_options(int *argc, char **argv[])
   int ch;
 
   while ((ch = getopt(*argc, *argv, "n")) != EOF) {
-    putchar(ch);
     switch(ch) {
       case 'n':
         options.number = true;
@@ -38,6 +37,7 @@ static Options process_options(int *argc, char **argv[])
   }
   *argc -= optind;
   *argv += optind;
+
   return options;
 }
 int main(int argc, char *argv[])
