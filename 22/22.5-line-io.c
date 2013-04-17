@@ -5,13 +5,13 @@
 
 char *fugats(char *s, int n, FILE *stream)
 {
-  int i = 0, ch = fgetc(stream);
-  if (ftell(stream) > 0 && (feof(stream) || ferror(stream)))
-    return NULL;
-  else
-    ungetc(ch, stream);
-
-  while (i < n - 1 && (ch = fgetc(stream)) != EOF) {
+  int i = 0, ch;
+  while (i < n - 1) {
+    if ((ch = fgetc(stream)) == EOF) {
+      if (i == 0 || ferror(stream))
+        return NULL;
+      break;
+    }
     s[i++] = ch;
     if (ch == '\n')
       break;
