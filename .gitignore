@@ -158,3 +158,4 @@ weird/scanf-clobbers-adjacent-var
 22/22.1-readable
 22/22.2-fupcase
 22/22.3-cat
+22/22.4-wc
