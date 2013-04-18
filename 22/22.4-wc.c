@@ -59,7 +59,8 @@ int main(int argc, char *argv[])
 
     wc(fp, &characters, &words, &lines);
 
-    fclose(fp);
+    if (fclose(fp) == EOF)
+      print_e(errno, argv[0], argv[i]);
 
     print_totals(characters, words, lines);
     printf("\t%s\n", argv[i]);
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
   if (argc > 2) {
     print_totals(c_total, w_total, l_total);
     printf("\ttotal\n");
-
   }
+
   return 0;
 }
