@@ -9,12 +9,12 @@ typedef struct options
 {
   bool number_all;
   bool number_non_blank;
+  bool squeeze;
 } Options;
-
 
 static void usage(char *pgm)
 {
-  fprintf(stderr, "Usage:\v$ %s [-nb] [file ...]\n", pgm);
+  fprintf(stderr, "Usage:\v$ %s [-nbs] [file ...]\n", pgm);
 }
 static void print_e(int e, char *program, char *file)
 {
@@ -27,16 +27,19 @@ static void print_n(int *lines)
 }
 static Options process_options(int *argc, char **argv[])
 {
-  Options options = {false, false};
+  Options options = {false, false, false};
   int ch;
 
-  while ((ch = getopt(*argc, *argv, "nb")) != EOF) {
+  while ((ch = getopt(*argc, *argv, "nbs")) != EOF) {
     switch(ch) {
       case 'n':
         options.number_all = true;
         break;
       case 'b':
         options.number_non_blank = true;
+        break;
+      case 's':
+        options.squeeze = true;
         break;
       default:
         usage(*argv[0]);
@@ -54,7 +57,8 @@ static Options process_options(int *argc, char **argv[])
 int main(int argc, char *argv[])
 {
   FILE *fp;
-  int lines, ch, next_char;
+  int lines, ch, next_char, newlines;
+  int second_newline = 0;
   char *program = argv[0];
   Options o = process_options(&argc, &argv);
 
@@ -79,13 +83,37 @@ int main(int argc, char *argv[])
         }
         break;
       }
+      if (o.squeeze && ch == '\n') {
+        newlines = 0;
+        while (ch == '\n') {
+          if (newlines++ == 2)
+            second_newline = ftell(fp);
+          if ((ch = fgetc(fp)) == EOF) {
+            if (ferror(fp)) {
+              print_e(errno, program, argv[i]);
+              break;
+            }
+          }
+        }
+        ungetc(ch, fp);
+        ch = '\n';
+        if (newlines > 2)
+          fseek(fp, second_newline, SEEK_SET);
+        if (newlines == 2)
+          fseek(fp, -1, SEEK_CUR);
+      }
       if (o.number_all) {
         if (ftell(fp) == 1) {
           print_n(&lines);
         }
         if (ch == '\n') {
           putchar(ch);
-          next_char = fgetc(fp);
+          if ((next_char = fgetc(fp)) == EOF) {
+            if (ferror(fp)) {
+              print_e(errno, program, argv[i]);
+              break;
+            }
+          }
           ungetc(next_char, fp);
           if (next_char != EOF)
             print_n(&lines);
@@ -93,7 +121,12 @@ int main(int argc, char *argv[])
         }
       }
       if (o.number_non_blank) {
-        next_char = fgetc(fp);
+        if ((next_char = fgetc(fp)) == EOF) {
+          if (ferror(fp)) {
+            print_e(errno, program, argv[i]);
+            break;
+          }
+        }
         ungetc(next_char, fp);
         if (ch == '\n') {  /* this could be the first the line also */
           putchar(ch);
