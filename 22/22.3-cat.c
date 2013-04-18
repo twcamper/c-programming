@@ -5,6 +5,12 @@
 #include <string.h>
 #include <getopt.h>
 
+#ifdef DEBUG
+#define PRINT_POS(l, c, n) fprintf(stderr, "%4d:\t%2ld\t'%d'\t%d\n", (l), ftell(fp), (c), (n))
+#else
+#define PRINT_POS(l, c, n)
+#endif
+
 typedef struct options
 {
   bool number_all;
@@ -57,8 +63,7 @@ static Options process_options(int *argc, char **argv[])
 int main(int argc, char *argv[])
 {
   FILE *fp;
-  int lines, ch, next_char, newlines;
-  int second_newline = 0;
+  int lines, ch, next_char, newlines = 0;
   char *program = argv[0];
   Options o = process_options(&argc, &argv);
 
@@ -85,22 +90,25 @@ int main(int argc, char *argv[])
       }
       if (o.squeeze && ch == '\n') {
         newlines = 0;
+        PRINT_POS(__LINE__, ch, newlines);
         while (ch == '\n') {
-          if (newlines++ == 2)
-            second_newline = ftell(fp);
+          newlines++;
+          PRINT_POS(__LINE__, ch, newlines);
           if ((ch = fgetc(fp)) == EOF) {
             if (ferror(fp)) {
               print_e(errno, program, argv[i]);
               break;
             }
           }
+          PRINT_POS(__LINE__, ch, newlines);
         }
         ungetc(ch, fp);
+        PRINT_POS(__LINE__, ch, newlines);
         ch = '\n';
-        if (newlines > 2)
-          fseek(fp, second_newline, SEEK_SET);
-        if (newlines == 2)
+        if (newlines >= 2) {
           fseek(fp, -1, SEEK_CUR);
+          PRINT_POS(__LINE__, ch, newlines);
+        }
       }
       if (o.number_all) {
         if (ftell(fp) == 1) {
