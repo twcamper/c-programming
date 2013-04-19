@@ -29,7 +29,7 @@ static void encode(FILE *in, FILE *out)
 
     if ((n_written = fwrite(outbuffer, sizeof(outbuffer[0]), n_read, out)) < n_read) {
       if (ferror(out)) {
-        print_error(errno, __FILE__, "fread(out)");
+        print_error(errno, __FILE__, "fwrite(out)");
         return;
       }
     }
