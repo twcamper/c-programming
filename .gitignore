@@ -161,3 +161,4 @@ weird/scanf-clobbers-adjacent-var
 22/22.4-wc
 22/22.5-xor
 22/22.6-xxd
+22/22.7-encode
