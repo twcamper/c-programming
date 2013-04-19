@@ -23,10 +23,7 @@ static void print_line(char *line)
 
 int main(int argc, char *argv[])
 {
-  char header[2][LINE_LENGTH] = {
-    "Offset              Bytes              Characters",
-    "______  _____________________________  __________" };
-  char line[LINE_LENGTH + 1] = {' '};
+  char line[LINE_LENGTH + 1];
 
   int ch;
   int character = 0;
@@ -43,8 +40,8 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
-  printf("%s\n", header[0]);
-  printf("%s\n", header[1]);
+  printf("Offset              Bytes              Characters\n");
+  printf("------  -----------------------------  ----------\n");
 
   while ((ch = fgetc(fp)) != EOF) {
     if (character == 0) {
