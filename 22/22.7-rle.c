@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include "error.h"
 
 /* Run Length Encoding */
@@ -9,10 +10,12 @@
 static void encode(FILE *in, FILE *out)
 {
   /* fread proved unreliable with int elements */
-  char inbuffer[BUFFER_SIZE] = {0};
-  char outbuffer[BUFFER_SIZE] = {0};
-  size_t i;
-  size_t n_read = 0, n_written = 0;
+  unsigned char inbuffer[BUFFER_SIZE] = {0};
+  /* encoded output can be up to 2x the input */
+  unsigned char outbuffer[BUFFER_SIZE * 2] = {0};
+  size_t i, n_read = 0, n_written = 0;
+  unsigned char previous, occurrences;
+  unsigned int n_encoded;
 
   for (;;) {
     if ((n_read = fread(inbuffer, sizeof(inbuffer[0]), BUFFER_SIZE, in)) < BUFFER_SIZE) {
@@ -24,14 +27,26 @@ static void encode(FILE *in, FILE *out)
         break;
     }
 
-    for (i = 0; i < n_read; i++)
-      outbuffer[i] = inbuffer[i];
-
-    if ((n_written = fwrite(outbuffer, sizeof(outbuffer[0]), n_read, out)) < n_read) {
-      if (ferror(out)) {
-        print_error(errno, __FILE__, "fwrite(out)");
-        return;
+    previous = inbuffer[0];
+    for (n_encoded = 0, i = 0; i < n_read; i++) {
+      if (previous == inbuffer[i]) {
+        if (occurrences == 255) {
+          fprintf(stderr, "Consecutive character run count exceeds 255 byte max.\n");
+          exit(EXIT_FAILURE);
+        }
+        occurrences++;
+      } else {
+        outbuffer[n_encoded++] = occurrences;
+        outbuffer[n_encoded++] = previous;
+        occurrences = 1;
       }
+      previous = inbuffer[i];
+    }
+
+    n_written = fwrite(outbuffer, sizeof(outbuffer[0]), n_encoded, out);
+    if (n_written < n_encoded || ferror(out)) {
+      print_error(errno, __FILE__, "fwrite(out)");
+      return;
     }
   }
 }
