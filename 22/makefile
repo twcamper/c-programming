@@ -9,10 +9,10 @@ LINK    = $(LD) $^ -o $@
 
 all: $(EXECUTABLES) 22.7-rle
 
-22.7-rle: 22.7-rle.o $(LIBS)/error.o
+22.7-rle: 22.7-rle.o $(LIBS)/error.o $(LIBS)/run-length-encoding.o
 	$(LINK)
 
-22.7-rle.o: %.o : %.c $(INCS)/error.h
+22.7-rle.o: %.o : %.c $(INCS)/error.h $(INCS)/run-length-encoding.h
 	$(COMPILE)
 
 include $(PREFIX)make/clean.mk
