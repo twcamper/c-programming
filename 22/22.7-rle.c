@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <string.h>
-#include <assert.h>
+#include <limits.h>
 #include "error.h"
 
 /* Run Length Encoding */
 #define EXT ".rle"
 #define EXT_LEN 4
 #define BUFFER_SIZE BUFSIZ
+#define MAX_RUN UCHAR_MAX
 static void encode(FILE *in, FILE *out)
 {
   /* fread proved unreliable with int elements */
@@ -29,11 +30,11 @@ static void encode(FILE *in, FILE *out)
 
     previous = inbuffer[0];
     for (n_encoded = 0, i = 0; i < n_read; i++) {
-      if (previous == inbuffer[i]) {
-        if (occurrences == 255) {
-          fprintf(stderr, "Consecutive character run count exceeds 255 byte max.\n");
-          exit(EXIT_FAILURE);
-        }
+      if (previous == inbuffer[i] && occurrences < MAX_RUN) {
+        /*
+         * keep counting as long as the byte value doesn't change
+         * and we have room in the 'occurrences' variable
+         */
         occurrences++;
       } else {
         outbuffer[n_encoded++] = occurrences;
@@ -41,6 +42,12 @@ static void encode(FILE *in, FILE *out)
         occurrences = 1;
       }
       previous = inbuffer[i];
+    }
+
+    /* store data on the last run, which the loop can't handle */
+    if (i) {
+      outbuffer[n_encoded++] = occurrences;
+      outbuffer[n_encoded++] = previous;
     }
 
     n_written = fwrite(outbuffer, sizeof(outbuffer[0]), n_encoded, out);
