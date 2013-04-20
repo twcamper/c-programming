@@ -50,4 +50,30 @@ void encode_rle(FILE *in, FILE *out)
     }
   }
 }
+void decode_rle(FILE *in, FILE *out)
+{
+  puts("decoding");
+}
+#define EXT ".rle"
+#define EXT_LEN strlen(EXT)
 
+bool is_rle_file(char *filename)
+{
+  if (strcmp((filename + strlen(filename)) - EXT_LEN, EXT) == 0)
+    return true;
+  return false;
+}
+char *build_output_file_name(char *input)
+{
+  char *output = malloc(sizeof(char) * (strlen(input) + EXT_LEN + 1));
+  if (!output)
+    memory_error(__FILE__, __LINE__, __func__);
+
+  if (is_rle_file(input))
+    strncpy(output, input, strlen(input) - EXT_LEN);
+  else {
+    strcpy(output, input);
+    strncat(output, EXT, EXT_LEN + 1);
+  }
+  return output;
+}

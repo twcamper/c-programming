@@ -2,48 +2,44 @@
 #include <string.h>
 #include "run-length-encoding.h"
 
-/* Run Length Encoding */
-#define EXT ".rle"
-#define EXT_LEN 4
-
 int main(int argc, char *argv[])
 {
   if (argc != 2)
     invocation_error(argv[0], "[file]");
+  char *program = argv[0];
 
+  char *iname  = argv[1];
   FILE *istream;
-  if ((istream = fopen(argv[1], "rb")) == NULL)
-    exit_error(errno, argv[0], argv[1]);
+  if ((istream = fopen(iname, "rb")) == NULL)
+    exit_error(errno, program, iname);
 
-  /*
-   * Build output file name
-   */
-  char outfile_name[strlen(argv[1]) + EXT_LEN + 1];
-
-  strcpy(outfile_name, argv[1]);
-  strncat(outfile_name, EXT, EXT_LEN + 1);
-
+  char *oname = build_output_file_name(iname);
   FILE *ostream;
-  if ((ostream = fopen(outfile_name, "wb")) == NULL) {
-    print_error(errno, argv[0], outfile_name);
+  if ((ostream = fopen(oname, "wb")) == NULL) {
+    print_error(errno, program, oname);
     if (fclose(istream) == EOF)
-      exit_error(errno, argv[0], argv[1]);
+      exit_error(errno, program, iname);
     exit(EXIT_FAILURE);
   }
 
   /*
    * Process
    */
-  encode_rle(istream, ostream);
+  if (is_rle_file(oname))
+    encode_rle(istream, ostream);
+  else
+    decode_rle(istream, ostream);
 
   /*
-   * Close Files
+   * Clean up
    */
+  free(oname);
+
   if (fclose(istream) == EOF)
-    print_error(errno, argv[0], argv[1]);
+    print_error(errno, program, iname);
 
   if (fclose(ostream) == EOF)
-    exit_error(errno, argv[0], outfile_name);
+    exit_error(errno, program, oname);
 
   return 0;
 }
