@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
   FILE *ostream;
   if ((ostream = fopen(oname, "wb")) == NULL) {
     print_error(errno, program, oname);
+    free(oname);
     if (fclose(istream) == EOF)
       exit_error(errno, program, iname);
     exit(EXIT_FAILURE);
