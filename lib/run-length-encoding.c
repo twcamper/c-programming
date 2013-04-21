@@ -63,7 +63,7 @@ static unsigned int
 encode(unsigned char *inbuffer, size_t n_read, unsigned char *outbuffer, size_t outbuffer_size)
 {
   unsigned int n_encoded;
-  unsigned char previous, occurrences;
+  unsigned char previous, occurrences = 0;
   size_t i;
   previous = inbuffer[0];
   for (n_encoded = 0, i = 0; i < n_read; i++) {
