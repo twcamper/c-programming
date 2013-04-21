@@ -26,8 +26,7 @@ accidental
 accurate
 acoustic
 acrid
-ad
-hoc
+ad-hoc
 adamant
 adaptable
 addicted
