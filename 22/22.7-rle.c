@@ -4,9 +4,9 @@
 
 int main(int argc, char *argv[])
 {
-  if (argc != 2)
-    invocation_error(argv[0], "[file]");
   char *program = argv[0];
+  if (argc != 2)
+    invocation_error(program, "[file]");
 
   char *iname  = argv[1];
   FILE *istream;
