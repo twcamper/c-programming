@@ -62,7 +62,6 @@ process_buffers(FILE *in, FILE *out,
 static unsigned int
 encode(unsigned char *inbuffer, size_t n_read, unsigned char *outbuffer, size_t outbuffer_size)
 {
-
   unsigned int n_encoded;
   unsigned char previous, occurrences;
   size_t i;
@@ -96,15 +95,37 @@ encode(unsigned char *inbuffer, size_t n_read, unsigned char *outbuffer, size_t 
   return n_encoded;
 }
 
-  void
+static unsigned int
+decode(unsigned char *inbuffer, size_t n_read, unsigned char *outbuffer, size_t outbuffer_size)
+{
+  unsigned int n_decoded;
+  size_t run_count, i, byte;
+
+  for (n_decoded = 0, run_count = 0, byte = 1;
+      byte < n_read;
+      run_count += 2, byte += 2) {
+    for (i = 0; i < inbuffer[run_count]; i++) {
+      if (n_decoded + 1 >= outbuffer_size) {
+        if (resize_buffer(&outbuffer, &outbuffer_size) != 0) {
+          return -1;
+        }
+      }
+      outbuffer[n_decoded++] = inbuffer[byte];
+    }
+  }
+
+  return n_decoded;
+}
+
+void
 encode_rle(FILE *in, FILE *out)
 {
   process_buffers(in, out, encode);
 }
-  void
+void
 decode_rle(FILE *in, FILE *out)
 {
-  puts("decoding");
+  process_buffers(in, out, decode);
 }
 #define EXT ".rle"
 #define EXT_LEN strlen(EXT)
