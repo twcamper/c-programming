@@ -165,3 +165,4 @@ weird/scanf-clobbers-adjacent-var
 22/generate-parts
 spec/part-structs-array-spec
 22/22.inventory
+spec/parts-io-spec

@@ -1,6 +1,15 @@
 PREFIX = ../
 include $(PREFIX)make/env.mk
-EXCLUDE     = ./bounded-queue-spec.c ./parts-spec.c ./parts-array-spec.c ./part-structs-array-spec.c ./parts-array-resize-spec.c ./part-spec.c ./global-queue-spec.c ./queue-spec.c
+EXCLUDE     = ./bounded-queue-spec.c\
+							./parts-spec.c\
+							./parts-array-spec.c\
+							./part-structs-array-spec.c\
+							./parts-array-resize-spec.c\
+							./part-spec.c\
+							./global-queue-spec.c\
+							./queue-spec.c\
+							./parts-io-spec.c
+
 SPECS       = $(filter-out $(EXCLUDE), $(shell find . -name '*-spec.c'))
 # for lib/foo.c and spec/foo-spec.c, this will be 'foo'
 BASE_NAMES  = $(notdir $(SPECS:-spec.c=))
@@ -8,8 +17,23 @@ BASE_NAMES  = $(notdir $(SPECS:-spec.c=))
 COMPILE = $(CC) -c $(CFLAGS) $< -o $@
 LINK = $(LD) $^ -o $@
 
-all: $(SPECS:.c=) parts-array-spec global-queue-spec bounded-queue-spec part-structs-array-spec parts-array-resize-spec parts-list-spec part-spec queue-spec
+all: $(SPECS:.c=)\
+	parts-array-spec \
+	global-queue-spec \
+	bounded-queue-spec \
+	part-structs-array-spec \
+	parts-array-resize-spec \
+	parts-list-spec \
+	part-spec \
+	queue-spec
 	@for test in $(^); do echo $$test; ./$$test; done
+	@echo DO NOT FORGET parts-io-spec, because GNU Make does not like that spec in 'all'
+
+parts-io-spec: parts-io-spec.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
+	$(LINK) -lssl -lcrypto
+
+part-io-spec.o: parts-io-spec.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/error.h $(INCS)/test_runner.h
+	$(COMPILE)
 
 queue-spec: queue-spec.o $(LIBS)/queue.o $(LIBS)/error.o
 	$(LINK)
@@ -30,28 +54,28 @@ bounded-queue-spec.o: bounded-queue-spec.c $(LIBS)/bounded-queue.c $(INCS)/globa
 	$(COMPILE)
 
 part-structs-array-spec: part-structs-array-spec.o $(LIBS)/parts.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
-	$(LINK)
+	$(LINK) -lssl -lcrypto
 
 # NOTE: Just one test file for the array and the list implementations!!
 part-structs-array-spec.o: parts-spec.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/error.h $(INCS)/test_runner.h
 	$(COMPILE)
 
 parts-array-spec: parts-array-spec.o $(LIBS)/parts.o $(LIBS)/parts-array.o $(LIBS)/part.o $(LIBS)/error.o
-	$(LINK)
+	$(LINK) -lssl -lcrypto
 
 # NOTE: Just one test file for the array and the list implementations!!
 parts-array-spec.o: parts-spec.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/error.h $(INCS)/test_runner.h
 	$(COMPILE)
 
 parts-list-spec: parts-list-spec.o $(LIBS)/parts.o $(LIBS)/parts-list.o $(LIBS)/part.o $(LIBS)/error.o
-	$(LINK)
+	$(LINK) -lssl -lcrypto
 
 # NOTE: Just one test file for the array and the list implementations!!
 parts-list-spec.o: parts-spec.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/error.h $(INCS)/test_runner.h
 	$(COMPILE)
 
 parts-array-resize-spec: parts-array-resize-spec.o $(LIBS)/parts.o $(LIBS)/parts-array.o $(LIBS)/part.o $(LIBS)/error.o
-	$(LINK)
+	$(LINK) -lssl -lcrypto
 
 parts-array-resize-spec.o: parts-array-resize-spec.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/error.h $(INCS)/test_runner.h
 	$(COMPILE)

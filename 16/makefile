@@ -14,7 +14,7 @@ LINK    = $(LD) $^ -o $@
 #  Same as 17/17.3-inventory, except we use lib/parts-array.c instead of lib/parts-list.c
 #############################################################################################################################################
 16.inventory: 16.inventory.o $(LIBS)/parts.o $(LIBS)/parts-array.o $(LIBS)/inventory-view.o $(LIBS)/part.o $(LIBS)/readline.o $(LIBS)/error.o
-	$(LINK)
+	$(LINK) -lssl -lcrypto
 
 16.inventory.o: 16.inventory.c $(INCS)/parts.h $(INCS)/inventory-view.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/readline.h $(INCS)/error.h
 	$(COMPILE)

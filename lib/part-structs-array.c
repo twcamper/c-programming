@@ -23,6 +23,19 @@ Parts new_db(size_t initial_size)
 
   return db;
 }
+#define CHECKSUM_LEN  MD5_DIGEST_LENGTH * 2
+char *checksum(Parts db)
+{
+  int i, b;
+  unsigned char md5[MD5_DIGEST_LENGTH]; 
+  static char md5_string[CHECKSUM_LEN];
+  MD5((unsigned char *)db->rows, db->count * sizeof(db->rows[0]), md5);
+
+  for (b = 0, i = 0; i < CHECKSUM_LEN; b++, i +=2 )
+    sprintf(md5_string + i, "%.2x", (int)*(md5 + b));
+
+  return md5_string;
+}
 void destroy_db(Parts db)
 {
   free(db->rows);
