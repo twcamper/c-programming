@@ -1,6 +1,6 @@
 #include "parts.h"
 #include "test_runner.h"
-#define INITIAL_SIZE 30
+#define INITIAL_SIZE 10
 
 int insert_part_resize_test(void)
 {
