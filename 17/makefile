@@ -32,7 +32,7 @@ LINK    = $(LD) $^ -o $@
 	$(LINK)
 
 16 = $(PREFIX)16/
-17.3-inventory.o: $(16)16.inventory.c $(INCS)/parts.h $(INCS)/inventory-view.h $(INCS)/part.h $(INCS)/readline.h $(INCS)/error.h
+17.3-inventory.o: $(16)16.inventory.c $(INCS)/parts.h $(INCS)/inventory-view.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/readline.h $(INCS)/error.h
 	$(COMPILE) -o $@
 
 include $(PREFIX)make/clean.mk

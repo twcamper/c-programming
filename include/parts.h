@@ -1,5 +1,5 @@
-#ifndef INVENTORY_MODEL_H
-#define INVENTORY_MODEL_H
+#ifndef PARTS_H
+#define PARTS_H
 #include <limits.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -16,6 +16,8 @@ int insert_part(Parts, Part);
 int delete_part(Parts, PartNumber);
 Part find_part(Parts, PartNumber part_number);
 void load(Parts);
+int dump(char *, Parts);
+Parts restore(char *);
 void iterate(Parts, void (*op)(Part));
 int size(Parts);
 #endif

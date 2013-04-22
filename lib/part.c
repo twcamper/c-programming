@@ -1,14 +1,7 @@
 #include <stdlib.h>
 #include "error.h"
-#include "part.h"
+#include "part-type.h"
 
-struct part_type
-{
-  PartNumber number;
-  char name[NAME_LEN+1];
-  PartQuantity on_hand;
-  PartPrice price;
-};
 
 Part new_part(void)
 {
