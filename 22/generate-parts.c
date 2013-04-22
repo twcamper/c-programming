@@ -1,6 +1,5 @@
 #include "parts.h"
 #include "inventory-view.h"
-#include <assert.h>
 
 static void print_line(Part p)
 {

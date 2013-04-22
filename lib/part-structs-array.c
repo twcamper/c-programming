@@ -32,7 +32,7 @@ int size(Parts db)
 {
   return db->count;
 }
-static int resize_db_17_1(Parts db)
+static int resize_db(Parts db)
 {
   db->requested_row_allocation *= 2;
   struct part_type *temp = realloc(db->rows, db->requested_row_allocation * sizeof(struct part_type));
@@ -65,7 +65,7 @@ int insert_part(Parts db, Part p)
   int i, j;
 
   if (db->count == (int)db->requested_row_allocation)
-    if ((resize_db_17_1(db) != 0)) {
+    if ((resize_db(db) != 0)) {
       return -1;
     }
   /* invalid record? */
@@ -131,7 +131,8 @@ Parts restore(char *infile)
   Parts db = new_db();
 
   for (;;) {
-    if ((n_read = fread(db->rows, sizeof(db->rows[0]), db->requested_row_allocation, istream)) < db->requested_row_allocation) {
+    n_read = fread(db->rows + db->count, sizeof(db->rows[0]), db->requested_row_allocation, istream);
+    if (n_read < db->requested_row_allocation) {
       if (ferror(istream)) {
         destroy_db(db);
         return NULL;
@@ -140,6 +141,12 @@ Parts restore(char *infile)
         break;
     }
     db->count += n_read;
+    if ((size_t)db->count >= db->requested_row_allocation) {
+      if (resize_db(db) != 0) {
+        destroy_db(db);
+        return NULL;
+      }
+    }
   }
 
   if (fclose(istream) == EOF) {
