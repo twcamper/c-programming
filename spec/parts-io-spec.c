@@ -5,42 +5,32 @@
   #define CMD "md5"
 #endif
 
-#include <unistd.h>
+#include <stdio.h>
 #include "parts.h"
 #include "test_runner.h"
 
 #define PRINT(l,s) printf("%d: %s\n", (l), (s))
 
+#define MD5_LEN 32
 static char *disk_checksum(char *filename)
 {
-  int fd[2];
-  if (pipe(fd) == -1) {
-    fprintf(stderr, "Error creating pipe: %s:%d %s()\n", __FILE__, __LINE__, __func__);
-    exit(EXIT_FAILURE);
-  }
-  pid_t pid = fork();
-  if (pid == -1) {
-    fprintf(stderr, "Error forking process: %s:%d %s()\n", __FILE__, __LINE__, __func__);
+  FILE *pipe;
+  static char md5[MD5_LEN + 1];  /* static so we can return it */
+  char cmd[255];
+
+  sprintf(cmd, "%s %s | grep -Eo '[a-f0-9]{32}'", CMD, filename);
+
+  if ((pipe = popen(cmd, "r")) == NULL) {
+    fprintf(stderr, "popen(%s, \"r\")\n %s:%d %s()\n", cmd, __FILE__, __LINE__, __func__);
     exit(EXIT_FAILURE);
   }
 
-  if (!pid) {/* child */
-    dup2(fd[1], 1);  /* write end is now stdout */
-    close(fd[0]);    /* read end is now closed  */
-    
-    char cmd[255];
-    sprintf(cmd, "%s %s | grep -Eo '[a-f0-9]{32}'", CMD, filename);
-    if (system(cmd) == -1) {
-      fprintf(stderr, "Error executing child '%s': %s:%d %s()\n", CMD, __FILE__, __LINE__, __func__);
-      exit(EXIT_FAILURE);
-    }
-  }
-  /* parent */
-  dup2(fd[0],0);     /* read end is now stdin */
-  close(fd[1]);      /* parent needs no write end */
-  
-  static char md5[33];
-  fgets(md5, 33, stdin);
+  if (fgets(md5, MD5_LEN + 1, pipe) == NULL)
+    print_error(errno, __FILE__, filename);
+
+  if (pclose(pipe) == EOF)
+    print_error(errno, __FILE__, filename);
+
   return md5;
 }
 
