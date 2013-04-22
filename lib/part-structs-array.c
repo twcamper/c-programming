@@ -35,7 +35,7 @@ size_t size(Parts db)
 static int resize_db(Parts db)
 {
   db->requested_row_allocation *= 2;
-  struct part_type *temp = realloc(db->rows, db->requested_row_allocation * sizeof(struct part_type));
+  struct part_type *temp = realloc(db->rows, db->requested_row_allocation * sizeof(db->rows[0]));
   if (temp == NULL)
     return -1;
 
@@ -65,7 +65,7 @@ int insert_part(Parts db, Part p)
   size_t i, j;
 
   if (db->count == db->requested_row_allocation)
-    if ((resize_db(db) != 0)) {
+    if (resize_db(db) != 0) {
       return -1;
     }
   /* invalid record? */
