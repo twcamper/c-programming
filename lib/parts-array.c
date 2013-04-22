@@ -2,7 +2,7 @@
 #define INITIAL_SIZE 30
 
 struct parts_type {
-  int count;
+  size_t count;
   Part *rows;
   size_t requested_row_allocation;
 };
@@ -24,13 +24,13 @@ Parts new_db()
 }
 void destroy_db(Parts db)
 {
-  for (int i = 0; i < db->count; i++)
+  for (size_t i = 0; i < db->count; i++)
     free(db->rows[i]);
 
   free(db->rows);
   free(db);
 }
-int size(Parts db)
+size_t size(Parts db)
 {
   return db->count;
 }
@@ -46,7 +46,7 @@ static int resize_db_17_1(Parts db)
 }
 int delete_part(Parts db, PartNumber number)
 {
-  int i;
+  size_t i;
 
   for (i = 0; i < db->count; i++)
     if (get_part_number(db->rows[i]) == number)
@@ -68,9 +68,9 @@ int delete_part(Parts db, PartNumber number)
 }
 int insert_part(Parts db, Part p)
 {
-  int i, j;
+  size_t i, j;
 
-  if (db->count == (int)db->requested_row_allocation)
+  if (db->count == db->requested_row_allocation)
     if ((resize_db_17_1(db) != 0)) {
       return -1;
     }
@@ -98,7 +98,7 @@ int insert_part(Parts db, Part p)
  **********************************************************/
 Part find_part(Parts db, PartNumber part_number)
 {
-  int i;
+  size_t i;
   for (i = 0; i < db->count; i++)
     if (get_part_number(db->rows[i]) == part_number)
       return db->rows[i];
@@ -106,6 +106,6 @@ Part find_part(Parts db, PartNumber part_number)
 }
 void iterate(Parts db, void (*op)(Part p))
 {
-  for (int i = 0; i < db->count; i++)
+  for (size_t i = 0; i < db->count; i++)
     op(db->rows[i]);
 }

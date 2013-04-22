@@ -5,7 +5,9 @@
 int insert_part_resize_test(void)
 {
   Parts db = new_db();
-  int i, rc = 0;
+  size_t i;
+  int rc = 0;
+
   for (i = 0; i < INITIAL_SIZE - 1; i++)
     insert_part(db, set_part(i, "name", 10, 0));
 
@@ -25,18 +27,18 @@ int insert_part_resize_test(void)
   _assert(get_part_on_hand(p) == 1020);
 
   size_t new_size = INITIAL_SIZE * 2;
-  for (i = size(db); i < (int)(new_size - 1); i++)
+  for (i = size(db); i < (new_size - 1); i++)
     insert_part(db, set_part(i+1, "name", 10, 0));
 
   rc = insert_part(db, set_part(i+1, "name", 10, 0));
 
   _assert(rc == 0);
-  _assert(size(db) == (int)new_size);
+  _assert(size(db) == new_size);
 
   part_number = size(db)  + 1;
   rc = insert_part(db, set_part(part_number, "Fairly unique name", 1021, 0));
   _assert(rc == 0);
-  _assert(size(db) == 1 + (int) new_size);
+  _assert(size(db) == 1 + new_size);
   p = find_part(db, part_number);
   _assert(get_part_number(p) == part_number);
   _assert(strcmp(get_part_name(p),"Fairly unique name") == 0);

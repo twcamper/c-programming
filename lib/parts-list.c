@@ -5,7 +5,7 @@ typedef struct node {
   struct node *next;
 } Node;
 struct parts_type {
-  int count;
+  size_t count;
   struct node *head;
 };
 Parts new_db(void)
@@ -102,7 +102,7 @@ void iterate(Parts db, void (*op)(Part p))
   for (Node *n = db->head; n != NULL; n = n->next)
     op(n->part);
 }
-int size(Parts db)
+size_t size(Parts db)
 {
   return db->count;
 }

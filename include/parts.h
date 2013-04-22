@@ -19,5 +19,5 @@ void load(Parts);
 int dump(char *, Parts);
 Parts restore(char *);
 void iterate(Parts, void (*op)(Part));
-int size(Parts);
+size_t size(Parts);
 #endif
