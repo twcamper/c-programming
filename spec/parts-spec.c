@@ -2,9 +2,11 @@
 #include "test_runner.h"
 #include <assert.h>
 
+#define INITIAL_SIZE 30
+
 int new_db_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
 
   _assert(size(db) == 0);
   destroy_db(db);
@@ -13,7 +15,7 @@ int new_db_test(void)
 }
 int insert_part_success_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
 
   _assert(size(db) == 0);
 
@@ -46,7 +48,7 @@ void assert_for_order_test__(Part p)
 }
 int insert_part_maintains_order_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
 
   insert_part(db, set_part(88, "Short Name", 200, 0));
   insert_part(db, set_part(86, "Short Hair", 10, 0));
@@ -59,7 +61,7 @@ int insert_part_maintains_order_test(void)
 }
 int find_part_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
 
   insert_part(db, set_part(88, "Short Name", 200, 0));
   insert_part(db, set_part(212, "Other Name", 2, 0));
@@ -74,7 +76,7 @@ int find_part_test(void)
 }
 int insert_part_fail_non_unique_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
   int rc = 0; 
 
   insert_part(db, set_part(88, "Short Name", 200, 0));
@@ -95,7 +97,7 @@ int insert_part_fail_non_unique_test(void)
 }
 int insert_part_fail_bad_part_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
   Part p = set_part(-1, "", -1, 0);
 
   _assert(insert_part(db, p) != 0);
@@ -110,7 +112,7 @@ void mutate_for_iterate_test__(Part p)
 }
 int iterate_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
 
   insert_part(db, set_part(88, "KNOBS", 1, 0));
   insert_part(db, set_part(20, "Noodles", 1, 0));
@@ -153,7 +155,7 @@ void assert_for_delete_test__(Part p)
 }
 int delete_part_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
   insert_part(db, set_part(4, "first", 1, 0));
   insert_part(db, set_part(40, "second", 1, 0));
   insert_part(db, set_part(400, "third", 1, 0));

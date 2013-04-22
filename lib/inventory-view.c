@@ -174,3 +174,16 @@ void erase(Parts db)
     return;
   }
 }
+Parts prompt_for_db()
+{
+  int s;
+  printf("Enter database size: ");
+  if (read_int(&s) != 0) {
+    printf("Invalid size.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  Parts db = new_db((size_t)s);
+  load(db);
+  return db;
+}

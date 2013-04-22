@@ -10,7 +10,7 @@
 #define NAME_LEN 25
 typedef struct parts_type *Parts;
 
-Parts new_db();
+Parts new_db(size_t);
 void destroy_db(Parts);
 int insert_part(Parts, Part);
 int delete_part(Parts, PartNumber);

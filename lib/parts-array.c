@@ -7,14 +7,14 @@ struct parts_type {
   size_t requested_row_allocation;
 };
 
-Parts new_db()
+Parts new_db(size_t initial_size)
 {
   Parts db = malloc(sizeof(struct parts_type));
   if (db == NULL)
     memory_error(__FILE__, __LINE__, __func__);
 
   db->count = 0;
-  db->requested_row_allocation = INITIAL_SIZE;
+  db->requested_row_allocation = initial_size;
   db->rows = malloc(db->requested_row_allocation * sizeof(Part));
 
   if (db->rows == NULL)

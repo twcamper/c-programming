@@ -4,7 +4,7 @@
 
 int insert_part_resize_test(void)
 {
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
   size_t i;
   int rc = 0;
 

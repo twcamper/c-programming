@@ -8,14 +8,14 @@ struct parts_type {
   size_t requested_row_allocation;
 };
 
-Parts new_db()
+Parts new_db(size_t initial_size)
 {
   Parts db = malloc(sizeof(struct parts_type));
   if (db == NULL)
     memory_error(__FILE__, __LINE__, __func__);
 
   db->count = 0;
-  db->requested_row_allocation = INITIAL_SIZE;
+  db->requested_row_allocation = initial_size;
   db->rows = malloc(db->requested_row_allocation * sizeof(struct part_type));
 
   if (db->rows == NULL)
@@ -128,7 +128,7 @@ Parts restore(char *infile)
   if ((istream = fopen(infile, "rb")) == NULL)
     return NULL;
 
-  Parts db = new_db();
+  Parts db = new_db(INITIAL_SIZE);
 
   for (;;) {
     n_read = fread(db->rows + db->count, sizeof(db->rows[0]), db->requested_row_allocation, istream);

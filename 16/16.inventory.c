@@ -22,8 +22,7 @@ int main(void)
 {
   char code;
 
-  Parts db = new_db();
-  load(db);
+  Parts db = prompt_for_db();
   init_locale();
 
   for (;;) {

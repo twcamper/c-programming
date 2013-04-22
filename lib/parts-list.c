@@ -8,8 +8,16 @@ struct parts_type {
   size_t count;
   struct node *head;
 };
-Parts new_db(void)
+Parts new_db(size_t initial_size)
 {
+  if (initial_size)
+    ;
+    /* Taking this arg is a hack to stay polymorphic while enabling
+     * variable initial sizes for the array
+     * implementations.
+     *
+     * The empty if just quiets the compiler.
+     */
   Parts db = malloc(sizeof(struct parts_type));
   if (db == NULL)
     memory_error(__FILE__, __LINE__, __func__);
