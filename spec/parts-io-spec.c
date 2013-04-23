@@ -1,5 +1,6 @@
 /* enable strdup() declaration in string.h */
 #if defined(__linux__) || defined(__linux) || defined(__gnu_linux__)
+  #define _BSD_SOURCE 1  /* for popen and pclose */
   #define CMD "md5sum"
 #else
   #define CMD "md5"
@@ -20,16 +21,14 @@ static char *disk_checksum(char *filename)
 
   sprintf(cmd, "%s %s | grep -Eo '[a-f0-9]{32}'", CMD, filename);
 
-  if ((pipe = popen(cmd, "r")) == NULL) {
-    fprintf(stderr, "popen(%s, \"r\")\n %s:%d %s()\n", cmd, __FILE__, __LINE__, __func__);
-    exit(EXIT_FAILURE);
-  }
+  if ((pipe = popen(cmd, "r")) == NULL)
+    exit_error(errno, __FILE__, cmd);
 
   if (fgets(md5, MD5_LEN + 1, pipe) == NULL)
-    print_error(errno, __FILE__, filename);
+    print_error(errno, __FILE__, filename); /* don't exit: try to close the pipe */
 
   if (pclose(pipe) == EOF)
-    print_error(errno, __FILE__, filename);
+    exit_error(errno, __FILE__, filename);
 
   return md5;
 }
