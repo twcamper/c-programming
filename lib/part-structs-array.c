@@ -122,8 +122,10 @@ int dump(char *outfile, Parts db)
 {
   FILE *ostream;
   size_t n_written = 0;
-  if ((ostream = fopen(outfile, "wb")) == NULL)
+  if ((ostream = fopen(outfile, "wb")) == NULL) {
+    print_error(errno, __FILE__, outfile);
     return -1;
+  }
 
   n_written = fwrite(db->rows, sizeof(db->rows[0]), db->count, ostream);
   if (n_written < db->count || ferror(ostream))
@@ -136,10 +138,13 @@ int dump(char *outfile, Parts db)
 }
 Parts restore(char *infile)
 {
+
   FILE *istream;
   size_t n_read = 0;
-  if ((istream = fopen(infile, "rb")) == NULL)
+  if ((istream = fopen(infile, "rb")) == NULL) {
+    print_error(errno, __FILE__, infile);
     return NULL;
+  }
 
   Parts db = new_db(INITIAL_SIZE);
 
