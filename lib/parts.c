@@ -19,4 +19,8 @@ void load(Parts db)
   insert_part(db, set_part(35, "Stabilizers, horiz,(pair)", 90, 3000000));
   insert_part(db, set_part(97, "Sink, heat, fur", 2147483647, 123220));
   insert_part(db, set_part(401, "Tension Mount", 10, 1039));
+  insert_part(db, set_part(3, "Gas Ring, Occipital", 10, 8995));
+  insert_part(db, set_part(33, "System Rotator", 8, 1301));
+  insert_part(db, set_part(53, "Stabilizers, vert,(pair)", 90, 280000));
+  insert_part(db, set_part(3497, "Sink, burbling", 47, 12720));
 }
