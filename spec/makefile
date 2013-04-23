@@ -24,10 +24,10 @@ all: $(SPECS:.c=)\
 	part-structs-array-spec \
 	parts-array-resize-spec \
 	parts-list-spec \
+	parts-io-spec \
 	part-spec \
 	queue-spec
 	@for test in $(^); do echo $$test; ./$$test; done
-	@echo DO NOT FORGET parts-io-spec, because GNU Make does not like that spec in 'all'
 
 parts-io-spec: parts-io-spec.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
 	$(LINK) -lssl -lcrypto

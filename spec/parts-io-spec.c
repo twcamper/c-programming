@@ -36,7 +36,9 @@ static char *disk_checksum(char *filename)
 
 int read_one_part_test(void)
 {
-  Parts db = restore("data/one-part.dat");
+  Parts db = restore("../data/one-part.dat");
+  if (!db)
+    print_error(errno, __FILE__, "read_one_part_test");
   Part p;
   _assert(size(db) == 1);
   _assert((p = find_part(db, 10)));
@@ -52,7 +54,7 @@ int read_one_part_test(void)
 int write_one_part_test(void)
 {
   Parts db = new_db(10);
-  char *file = "data/test.dat";
+  char *file = "../data/test.dat";
   char *md5;
   insert_part(db, set_part(13, "Bat fruit", 1, 1200));
   md5 = checksum(db);
@@ -65,7 +67,9 @@ int write_one_part_test(void)
 }
 int read_two_parts_test(void)
 {
-  Parts db = restore("data/two-parts.dat");
+  Parts db = restore("../data/two-parts.dat");
+  if (!db)
+    print_error(errno, __FILE__, "read_two_parts_test");
   _assert(size(db) == 2);
 
   Part p;
@@ -78,7 +82,7 @@ int read_two_parts_test(void)
 int write_two_parts_test(void)
 {
   Parts db = new_db(10);
-  char *file = "data/test.dat";
+  char *file = "../data/test.dat";
   char *md5;
   insert_part(db, set_part(13, "Bat fruit", 1, 1200));
   insert_part(db, set_part(19, "Bat Wing Hammer", 1000, 13200));
@@ -92,7 +96,9 @@ int write_two_parts_test(void)
 }
 int read_several_parts_test(void)
 {
-  Parts db = restore("data/21-parts.dat"); 
+  Parts db = restore("../data/21-parts.dat"); 
+  if (!db)
+    print_error(errno, __FILE__, "read_several_parts_test");
 
   _assert(size(db) == 21);
   _assert(strcmp(checksum(db), "964934987768b516aac8163b47235358") == 0);
@@ -111,7 +117,7 @@ int write_several_parts_test(void)
   insert_part(db, set_part(2, "Gas Ring, Municipal", 18, 214798900));
 
   char *md5 = checksum(db);
-  char *file = "data/test.dat";
+  char *file = "../data/test.dat";
   dump(file, db);
   _assert(strcmp(disk_checksum(file), md5) == 0);
 
