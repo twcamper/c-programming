@@ -1,5 +1,9 @@
+#include <time.h>
+#include <stdlib.h>
 #include "parts.h"
+#include "part.h"
 #include "inventory-view.h"
+#include "tokenize.h"
 
 static void print_line(Part p)
 {
@@ -9,6 +13,37 @@ static void print_line(Part p)
          get_part_on_hand(p),
          get_part_price(p));
 }
+size_t jagged_sequence(size_t previous)
+{
+  return previous + (rand() % 13);
+}
+char *noun(void)
+{
+
+}
+char *adjective(void)
+{
+}
+char *random_part_name(void)
+{
+  static char name[NAME_LEN + 1]; /* static so we can return it */
+  static FILE *nouns;
+  static FILE *adjectives;
+
+  sprintf(name, "%s, %s %s", noun(), adjective(), adjective());
+
+  return name;
+}
+PartQuantity random_part_quantity(void)
+{
+  return rand() % INT_MAX;
+}
+
+PartPrice random_part_price(void)
+{
+  return rand() % INT_MAX;
+}
+
 int main(int argc, char *argv[])
 {
   if (argc != 3)
@@ -16,27 +51,24 @@ int main(int argc, char *argv[])
 
   char *output_file = argv[1];
   size_t records = atol(argv[2]);
+  size_t i, part_number;
 
-  Parts db1 = new_db(10);
-  Parts db2;
+  Parts db = new_db(records);
 
-  /* insert_part(db1, set_part(10, "Ball Washer", 198, 7000)); */
-  load(db1);
-
-  printf("%s\n",checksum(db1));
-  if (dump(output_file, db1) != 0) {
-    destroy_db(db1);
-    exit_error(errno, argv[0], output_file);
-  }
-  destroy_db(db1);
-
-  if ((db2 = restore(output_file)) == NULL) {
-    exit_error(errno, argv[0], output_file);
+  srand((unsigned int) time(NULL));
+  for (part_number = 0, i = 0; i < records; i++) {
+    part_number = jagged_sequence(part_number);
+    insert_part(db, set_part(part_number,
+          random_part_name(),
+          random_part_quantity(),
+          random_part_price()));
   }
 
-  insert_part(db2, set_part(31, "winky, putrescent", 33, 4999));
-  iterate(db2, print_line);
+  if (dump(output_file, db) != 0) {
+    destroy_db(db);
+    exit_error(errno, argv[0], output_file);
+  }
+  destroy_db(db);
 
-  destroy_db(db2);
   return 0;
 }

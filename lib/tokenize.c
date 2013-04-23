@@ -1,9 +1,9 @@
 #include "tokenize.h"
 
-void tokenize(char *string, char **tokens, int *token_count)
+size_t tokenize(char *string, char **tokens)
 {
   register bool in_token = false;
-  int t;
+  size_t t;
   char *ch_ptr;
   for (t = 0, ch_ptr = string; *ch_ptr; ch_ptr++)  {
     if (isspace(*ch_ptr))  {
@@ -20,5 +20,5 @@ void tokenize(char *string, char **tokens, int *token_count)
         in_token = true;
       }
   }
-  *token_count = t;
+  return  t;
 }

@@ -39,12 +39,13 @@ void multiply(Stack s)
 
 int evaluate(Stack s, char *expression)
 {
-  int i, token_count, value;
+  int value;
+  size_t token_count, i;
   char *t_ptr;
   char *token_pointers[TOKENS];   /* list of addresses within the expression string */
 
   /* pepper our expression input string with terminators (NULL chars) */
-  tokenize(expression, token_pointers, &token_count);
+  token_count = tokenize(expression, token_pointers);
 
   for (i = 0; i < token_count; i++) {
     /* the next substring in our NULL delimited input string */
