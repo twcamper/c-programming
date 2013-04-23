@@ -19,10 +19,10 @@ all: $(EXECUTABLES) 22.7-rle generate-parts 22.inventory
 22.inventory.o: $(16)16.inventory.c $(INCS)/parts.h $(INCS)/inventory-view.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/readline.h $(INCS)/error.h
 	$(COMPILE) -o $@
 
-generate-parts: generate-parts.o $(LIBS)/parts.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
+generate-parts: generate-parts.o $(LIBS)/parts.o $(LIBS)/tokenize.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
 	$(LINK) -lssl -lcrypto
 
-generate-parts.o: %.o : %.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/error.h
+generate-parts.o: %.o : %.c $(INCS)/parts.h $(INCS)/tokenize.h $(INCS)/part.h $(INCS)/error.h
 	$(COMPILE)
 
 22.7-rle: 22.7-rle.o $(LIBS)/error.o $(LIBS)/run-length-encoding.o
