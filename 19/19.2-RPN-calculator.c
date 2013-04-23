@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../15/tokenize.h"
+#include "tokenize.h"
 #include "../src/stackADT.h"
 
 #define BUFFER_SIZE 255

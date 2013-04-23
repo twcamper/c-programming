@@ -22,10 +22,10 @@ all: 15.1.justify 15.3.qsort 15.5.RPN-calculator
 quicksort.o: %.o : %.c %.h
 	$(COMPILE)
 
-15.5.RPN-calculator: 15.5.RPN-calculator.o tokenize.o stack.o
+15.5.RPN-calculator: 15.5.RPN-calculator.o $(LIBS)/tokenize.o stack.o
 	$(LINK)
 
-15.5.RPN-calculator.o: 15.5.RPN-calculator.c tokenize.h stack.h
+15.5.RPN-calculator.o: 15.5.RPN-calculator.c $(INCS)/tokenize.h stack.h
 	$(COMPILE)
 
 stack.o tokenize.o: %.o : %.c %.h
