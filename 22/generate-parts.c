@@ -16,9 +16,10 @@
 static void print_line(Part p)
 {
   static size_t i = 0;
-  printf("%9ld: %-11d       %-25s   %-11d       %-d\n",
+  printf("%9ld: %-11d       %-*s   %-11d       %-d\n",
          ++i,
          get_part_number(p),
+         NAME_LEN,
          get_part_name(p),
          get_part_on_hand(p),
          get_part_price(p));

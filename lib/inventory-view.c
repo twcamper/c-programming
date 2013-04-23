@@ -151,15 +151,16 @@ void update(Parts db)
  **********************************************************/
 static void print_line(Part p)
 {
-  printf("%-11d       %-25s   %-11d       %-s\n",
+  printf("%-11d       %-*s   %-11d       %-s\n",
          get_part_number(p),
+         NAME_LEN,
          get_part_name(p),
          get_part_on_hand(p),
          dollars(p));
 }
 void print(Parts db)
 {
-  printf("Part Number       Part Name                   Quantity on Hand  Unit Price\n");
+  printf("Part Number       Part Name                                            Quantity on Hand  Unit Price\n");
   iterate(db, print_line);
 }
 void erase(Parts db)

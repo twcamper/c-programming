@@ -8,7 +8,6 @@
 #include "part.h"
 #include "error.h"
 
-#define NAME_LEN 25
 typedef struct parts_type *Parts;
 
 Parts new_db(size_t);

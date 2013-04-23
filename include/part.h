@@ -4,7 +4,7 @@
 #include <limits.h>
 #include <string.h>
 #include <stdbool.h>
-#define NAME_LEN 25
+#define NAME_LEN 50
 
 typedef struct part_type *Part;
 typedef int PartNumber;
