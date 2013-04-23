@@ -305,7 +305,6 @@ canoe
 canvas
 cap
 capital
-cappelletti
 capricorn
 captain
 caption
@@ -384,13 +383,10 @@ chill
 chime
 chimpanzee
 chin
-china
-chinese
 chive
 chocolate
 chord
 christmas
-christopher
 chronometer
 church
 cicada

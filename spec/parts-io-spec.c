@@ -47,7 +47,7 @@ int read_one_part_test(void)
   _assert(get_part_price(p) == 7000);
   _assert(strcmp(get_part_name(p), "Ball Washer") == 0);
 
-  _assert(strcmp(checksum(db), "e6e10bb82703cc94788490dffe1d057c") == 0);
+  _assert(strcmp(checksum(db), "49542e9f9c2c3df4c236c81e8931a169") == 0);
   destroy_db(db);
   return 0;
 }
@@ -75,7 +75,7 @@ int read_two_parts_test(void)
   Part p;
   _assert((p = find_part(db, 97)));
   _assert(get_part_price(p) == 123220);
-  _assert(strcmp(checksum(db), "85a7c0923e8824238964f0e9353ee792") == 0);
+  _assert(strcmp(checksum(db), "728d3660a3b5c3cdbaaa18379d72986c") == 0);
   destroy_db(db);
   return 0;
 }
@@ -101,7 +101,7 @@ int read_several_parts_test(void)
     print_error(errno, __FILE__, "read_several_parts_test");
 
   _assert(size(db) == 21);
-  _assert(strcmp(checksum(db), "964934987768b516aac8163b47235358") == 0);
+  _assert(strcmp(checksum(db), "d1de97e54b5be68a83f25420d412398c") == 0);
   destroy_db(db);
   return 0;
 }

@@ -1,6 +1,4 @@
 #include "inventory-view.h"
-#include <monetary.h>
-#include <locale.h>
 
 static int enter_part_number(PartNumber *n)
 {
@@ -11,18 +9,6 @@ static int enter_part_number(PartNumber *n)
   }
 
   return 0;
-}
-/* locale needed for currency formatting */
-void init_locale(void)
-{
-  setlocale(LC_ALL, "en_US");
-}
-static char * dollars(Part p)
-{
-  static char s[16];
-  strfmon(s, sizeof(s) - 1, "%n",  (double)(get_part_price(p) / 100.00));
-
-  return s;
 }
 
 /**********************************************************
@@ -149,19 +135,10 @@ void update(Parts db)
  *        order in which they were entered into the       *
  *        database.                                       *
  **********************************************************/
-static void print_line(Part p)
-{
-  printf("%-11d       %-*s   %-11d       %-s\n",
-         get_part_number(p),
-         NAME_LEN,
-         get_part_name(p),
-         get_part_on_hand(p),
-         dollars(p));
-}
 void print(Parts db)
 {
   printf("Part Number       Part Name                                            Quantity on Hand  Unit Price\n");
-  iterate(db, print_line);
+  iterate(db, print_part);
 }
 void erase(Parts db)
 {

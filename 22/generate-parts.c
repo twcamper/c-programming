@@ -11,19 +11,8 @@
 #define NOUN_BYTES 18000
 #define ADJ_FILE "data/adjectives.txt"
 #define ADJ_MAX    1000
-#define ADJ_BYTES  6000
+#define ADJ_BYTES  9000
 
-static void print_line(Part p)
-{
-  static size_t i = 0;
-  printf("%9ld: %-11d       %-*s   %-11d       %-d\n",
-         ++i,
-         get_part_number(p),
-         NAME_LEN,
-         get_part_name(p),
-         get_part_on_hand(p),
-         get_part_price(p));
-}
 static size_t jagged_sequence(size_t previous)
 {
   return previous + (rand() % 13) + 1;
@@ -81,6 +70,7 @@ int main(int argc, char *argv[])
   noun_count = get_word_pointers(nouns, NOUN_FILE, noun_file_content, NOUN_BYTES);
   adj_count = get_word_pointers(adjectives, ADJ_FILE, adj_file_content, ADJ_BYTES);
 
+  init_locale();
   srand((unsigned int) time(NULL));
   for (part_number = 0, i = 0; i < records; i++) {
     part_number = jagged_sequence(part_number);
@@ -96,7 +86,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  iterate(db, print_line);
+  iterate(db, print_part);
 
   if (dump(output_file, db) != 0) {
     destroy_db(db);

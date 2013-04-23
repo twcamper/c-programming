@@ -54,7 +54,7 @@ int set_part_number_test(void)
   destroy_part(p);
   return 0;
 }
-#define LONG_WORD "Antidisestablishmentariani"
+#define LONG_WORD "123456789012345678901234567890123456789012345678901"
 int set_part_name_truncates_test(void)
 {
   Part p = new_part();

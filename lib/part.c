@@ -78,3 +78,24 @@ void destroy_part(Part p)
 {
   free(p);
 }
+void print_part(Part p)
+{
+  printf("%-11d       %-*s   %-11d       %-s\n",
+         get_part_number(p),
+         NAME_LEN,
+         get_part_name(p),
+         get_part_on_hand(p),
+         dollars(p));
+}
+/* locale needed for currency formatting */
+void init_locale(void)
+{
+  setlocale(LC_ALL, "en_US");
+}
+char * dollars(Part p)
+{
+  static char s[16];
+  strfmon(s, sizeof(s) - 1, "%n",  (double)(get_part_price(p) / 100.00));
+
+  return s;
+}
