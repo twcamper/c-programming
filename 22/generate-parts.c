@@ -22,9 +22,9 @@ static char *random_part_name(char *n[], size_t n_count, char *a[], size_t a_cou
 {
   static char name[NAME_LEN + 1]; /* static so we can return it */
   snprintf(name, NAME_LEN + 1, "%s, %s %s",
-      n[(rand() % n_count-1)],
-      a[(rand() % a_count-1)],
-      a[(rand() % a_count-1)]);
+      n[(rand() % n_count)],
+      a[(rand() % a_count)],
+      a[(rand() % a_count)]);
 
   name[0] = toupper(name[0]);
   return name;
