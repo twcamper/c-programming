@@ -12,7 +12,7 @@
 #define ADJ_FILE "data/adjectives.txt"
 #define ADJ_MAX    1000
 #define ADJ_BYTES  9000
-#define CHUNK_SIZE 5000
+#define CHUNK_SIZE 200
 
 static size_t jagged_sequence(size_t previous)
 {
