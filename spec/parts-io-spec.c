@@ -125,11 +125,11 @@ int write_several_parts_test(void)
 int read_many_parts_test(void)
 {
   Parts db;
-  _assert((db = restore("../data/500k-parts.dat", 250000)));
+  _assert((db = restore("../data/100k-parts.dat", 100010)));
 
-  _assert(size(db) == 500000);
-  _assert(find_part(db, 3501785));
-  _assert(strcmp(checksum(db), "517c0484ff78c09cbc081c19a74c439e") == 0);
+  _assert(size(db) == 100000);
+  _assert(find_part(db, 701235));
+  _assert(strcmp(checksum(db), "c7b297af8ed3055f245879a1a921ddb9") == 0);
   destroy_db(db);
   return 0;
 }
