@@ -28,14 +28,13 @@ static char *random_part_name(char *n[], size_t n_count, char *a[], size_t a_cou
   name[0] = toupper(name[0]);
   return name;
 }
-static PartQuantity random_part_quantity(void)
-{
-  return rand() % (INT_MAX / 8);
-}
 
-static PartPrice random_part_price(void)
+#define RANGES 10
+static int random_int(void)
 {
-  return rand() % (INT_MAX / 20);
+  static int ranges[RANGES] = {128, 512, 1024, 4096, 4096, 4096, 8192, 32765, 100000, INT_MAX / 4};
+
+  return rand() % ranges[rand() % RANGES];
 }
 static size_t get_word_pointers(char **tokens, char *filename, char *content, size_t byte_max)
 {
@@ -64,6 +63,7 @@ int main(int argc, char *argv[])
   char *nouns[NOUN_MAX], noun_file_content[NOUN_BYTES];
   char *adjectives[ADJ_MAX], adj_file_content[ADJ_BYTES];
   int rc;
+  Part p;
 
   Parts db = new_db(records);
 
@@ -74,19 +74,19 @@ int main(int argc, char *argv[])
   srand((unsigned int) time(NULL));
   for (part_number = 0, i = 0; i < records; i++) {
     part_number = jagged_sequence(part_number);
-    rc = insert_part(db, set_part(part_number,
+    p = set_part(part_number,
           random_part_name(nouns, noun_count, adjectives, adj_count),
-          random_part_quantity(),
-          random_part_price()));
-    if (rc) {
+          random_int(),
+          random_int());
+    printf("%9ld:  ", i + 1);
+    print_part(p);
+    if ((rc = insert_part(db, p))) {
       fprintf(stderr, "%s: %d  insert_part() failed: return code %d on iteration %ld\n",
           __FILE__, __LINE__, rc, i);
       destroy_db(db);
       exit(EXIT_FAILURE);
     }
   }
-
-  iterate(db, print_part);
 
   if (dump(output_file, db) != 0) {
     destroy_db(db);
