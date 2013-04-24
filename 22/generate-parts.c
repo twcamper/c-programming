@@ -12,6 +12,7 @@
 #define ADJ_FILE "data/adjectives.txt"
 #define ADJ_MAX    1000
 #define ADJ_BYTES  9000
+#define CHUNK_SIZE 5000
 
 static size_t jagged_sequence(size_t previous)
 {
@@ -65,13 +66,15 @@ int main(int argc, char *argv[])
   int rc;
   Part p;
 
-  Parts db = new_db(records);
+  Parts db = new_db(CHUNK_SIZE);
 
   noun_count = get_word_pointers(nouns, NOUN_FILE, noun_file_content, NOUN_BYTES);
   adj_count = get_word_pointers(adjectives, ADJ_FILE, adj_file_content, ADJ_BYTES);
 
   init_locale();
   srand((unsigned int) time(NULL));
+  remove(output_file);
+
   for (part_number = 0, i = 0; i < records; i++) {
     part_number = jagged_sequence(part_number);
     p = set_part(part_number,
@@ -86,9 +89,15 @@ int main(int argc, char *argv[])
       destroy_db(db);
       exit(EXIT_FAILURE);
     }
+    if (i % CHUNK_SIZE == 0) {
+      if (flush_to_disk(output_file, db) != 0) {
+        destroy_db(db);
+        exit_error(errno, argv[0], output_file);
+      }
+    }
   }
 
-  if (dump(output_file, db) != 0) {
+  if (flush_to_disk(output_file, db) != 0) {
     destroy_db(db);
     exit_error(errno, argv[0], output_file);
   }
