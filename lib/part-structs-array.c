@@ -136,7 +136,7 @@ int dump(char *outfile, Parts db)
 
   return 0;
 }
-Parts restore(char *infile)
+Parts restore(char *infile, size_t initial_allocation)
 {
 
   FILE *istream;
@@ -146,10 +146,17 @@ Parts restore(char *infile)
     return NULL;
   }
 
-  Parts db = new_db(INITIAL_SIZE);
+  Parts db = new_db(initial_allocation);
 
   for (;;) {
-    n_read = fread(db->rows + db->count, sizeof(db->rows[0]), db->requested_row_allocation, istream);
+    n_read = fread(
+        /* append to existing rows */
+        db->rows + db->count,
+        sizeof(db->rows[0]),
+        /* keep shrinking the amount to read so we don't
+         * read past the allocated buffer */
+        db->requested_row_allocation - db->count,
+        istream);
     if (n_read < db->requested_row_allocation) {
       if (ferror(istream)) {
         destroy_db(db);
@@ -158,7 +165,10 @@ Parts restore(char *infile)
       if (feof(istream) && n_read == 0)
         break;
     }
+    /* accumulate record count */
     db->count += n_read;
+
+    /* grow the array if necessary */
     if (db->count >= db->requested_row_allocation) {
       if (resize_db(db) != 0) {
         destroy_db(db);

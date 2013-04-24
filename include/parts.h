@@ -18,7 +18,7 @@ int delete_part(Parts, PartNumber);
 Part find_part(Parts, PartNumber part_number);
 void load(Parts);
 int dump(char *, Parts);
-Parts restore(char *);
+Parts restore(char *, size_t);
 void iterate(Parts, void (*op)(Part));
 size_t size(Parts);
 #endif

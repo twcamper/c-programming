@@ -36,7 +36,7 @@ static char *disk_checksum(char *filename)
 
 int read_one_part_test(void)
 {
-  Parts db = restore("../data/one-part.dat");
+  Parts db = restore("../data/one-part.dat", 10);
   if (!db)
     print_error(errno, __FILE__, "read_one_part_test");
   Part p;
@@ -67,7 +67,7 @@ int write_one_part_test(void)
 }
 int read_two_parts_test(void)
 {
-  Parts db = restore("../data/two-parts.dat");
+  Parts db = restore("../data/two-parts.dat", 10);
   if (!db)
     print_error(errno, __FILE__, "read_two_parts_test");
   _assert(size(db) == 2);
@@ -96,7 +96,7 @@ int write_two_parts_test(void)
 }
 int read_several_parts_test(void)
 {
-  Parts db = restore("../data/21-parts.dat"); 
+  Parts db = restore("../data/21-parts.dat", 10); 
   if (!db)
     print_error(errno, __FILE__, "read_several_parts_test");
 
@@ -127,12 +127,30 @@ int write_several_parts_test(void)
 }
 int read_many_parts_test(void)
 {
+  Parts db = restore("../data/500k-parts.dat", 250000);
+  if (!db)
+    print_error(errno, __FILE__, "read_many_parts_test");
 
+  _assert(size(db) == 500000);
+  _assert(find_part(db, 3501785));
+  _assert(strcmp(checksum(db), "517c0484ff78c09cbc081c19a74c439e") == 0);
+  destroy_db(db);
   return 0;
 }
 int write_many_parts_test(void)
 {
+  Parts db = restore("../data/100k-parts.dat", 100100);
+  if (!db)
+    print_error(errno, __FILE__, "write_many_parts_test");
 
+  _assert(size(db) == 100000);
+  char *md5 = checksum(db);
+  char *file = "../data/test.dat";
+  dump(file, db);
+  _assert(strcmp(disk_checksum(file), md5) == 0);
+
+  destroy_db(db);
+  remove(file);
   return 0;
 }
 int all_tests(void)
