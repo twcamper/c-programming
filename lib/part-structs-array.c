@@ -118,12 +118,12 @@ void iterate(Parts db, void (*op)(Part p))
     op(&db->rows[i]);
 }
 
-int dump(char *outfile, Parts db)
+static int write_db(char *filename, Parts db, char *write_mode)
 {
   FILE *ostream;
   size_t n_written = 0;
-  if ((ostream = fopen(outfile, "wb")) == NULL) {
-    print_error(errno, __FILE__, outfile);
+  if ((ostream = fopen(filename, write_mode)) == NULL) {
+    print_error(errno, __FILE__, filename);
     return -1;
   }
 
@@ -136,9 +136,22 @@ int dump(char *outfile, Parts db)
 
   return 0;
 }
+/* write contents to file, which is overwritten if it existed */
+int dump(char *outfile, Parts db)
+{
+  return write_db(outfile, db, "wb");
+}
+/* append contents to file and reset count to 0 */
+int flush_to_disk(char *file, Parts db)
+{
+  int rc = 0;
+  if ((rc = write_db(file, db, "ab")) == 0)
+    db->count = 0;
+
+  return rc;
+}
 Parts restore(char *infile, size_t initial_allocation)
 {
-
   FILE *istream;
   size_t n_read = 0;
   if ((istream = fopen(infile, "rb")) == NULL) {

@@ -36,9 +36,8 @@ static char *disk_checksum(char *filename)
 
 int read_one_part_test(void)
 {
-  Parts db = restore("../data/one-part.dat", 10);
-  if (!db)
-    print_error(errno, __FILE__, "read_one_part_test");
+  Parts db;
+  _assert((db = restore("../data/one-part.dat", 10)));
   Part p;
   _assert(size(db) == 1);
   _assert((p = find_part(db, 10)));
@@ -58,7 +57,7 @@ int write_one_part_test(void)
   char *md5;
   insert_part(db, set_part(13, "Bat fruit", 1, 1200));
   md5 = checksum(db);
-  dump(file, db);
+  _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
 
   destroy_db(db);
@@ -67,9 +66,8 @@ int write_one_part_test(void)
 }
 int read_two_parts_test(void)
 {
-  Parts db = restore("../data/two-parts.dat", 10);
-  if (!db)
-    print_error(errno, __FILE__, "read_two_parts_test");
+  Parts db;
+  _assert((db = restore("../data/two-parts.dat", 10)));
   _assert(size(db) == 2);
 
   Part p;
@@ -87,7 +85,7 @@ int write_two_parts_test(void)
   insert_part(db, set_part(13, "Bat fruit", 1, 1200));
   insert_part(db, set_part(19, "Bat Wing Hammer", 1000, 13200));
   md5 = checksum(db);
-  dump(file, db);
+  _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
 
   destroy_db(db);
@@ -96,9 +94,8 @@ int write_two_parts_test(void)
 }
 int read_several_parts_test(void)
 {
-  Parts db = restore("../data/21-parts.dat", 10); 
-  if (!db)
-    print_error(errno, __FILE__, "read_several_parts_test");
+  Parts db;
+  _assert((db = restore("../data/21-parts.dat", 10)));
 
   _assert(size(db) == 21);
   _assert(strcmp(checksum(db), "d1de97e54b5be68a83f25420d412398c") == 0);
@@ -118,7 +115,7 @@ int write_several_parts_test(void)
 
   char *md5 = checksum(db);
   char *file = "../data/test.dat";
-  dump(file, db);
+  _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
 
   destroy_db(db);
@@ -127,9 +124,8 @@ int write_several_parts_test(void)
 }
 int read_many_parts_test(void)
 {
-  Parts db = restore("../data/500k-parts.dat", 250000);
-  if (!db)
-    print_error(errno, __FILE__, "read_many_parts_test");
+  Parts db;
+  _assert((db = restore("../data/500k-parts.dat", 250000)));
 
   _assert(size(db) == 500000);
   _assert(find_part(db, 3501785));
@@ -139,18 +135,65 @@ int read_many_parts_test(void)
 }
 int write_many_parts_test(void)
 {
-  Parts db = restore("../data/100k-parts.dat", 100100);
-  if (!db)
-    print_error(errno, __FILE__, "write_many_parts_test");
+  Parts db;
+  _assert((db = restore("../data/100k-parts.dat", 100100)));
 
   _assert(size(db) == 100000);
   char *md5 = checksum(db);
   char *file = "../data/test.dat";
-  dump(file, db);
+  _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
 
   destroy_db(db);
   remove(file);
+  return 0;
+}
+#define FLUSH_FILE "../data/flush-parts.dat"
+int flush_to_disk_test(void)
+{
+  Parts dbA, dbB;
+  dbA = new_db(10);
+  char *original_md5;
+
+  remove(FLUSH_FILE);
+  insert_part(dbA, set_part(1, "A", 1, 100));
+  _assert(size(dbA) == 1);
+
+  original_md5 = checksum(dbA);
+  _assert(flush_to_disk(FLUSH_FILE, dbA) == 0);
+  destroy_db(dbA);
+  _assert(strcmp(disk_checksum(FLUSH_FILE), original_md5) == 0);
+
+  dbB = new_db(10);
+  insert_part(dbB, set_part(2, "B", 2, 200));
+  _assert(size(dbB) == 1);
+
+  _assert(flush_to_disk(FLUSH_FILE, dbB) == 0);
+  _assert(strcmp(disk_checksum(FLUSH_FILE), original_md5) != 0);
+  _assert(size(dbB) == 0);
+
+  _assert((dbA = restore(FLUSH_FILE, 10)));
+  _assert(size(dbA) == 2);
+  _assert(find_part(dbA, 1));
+  _assert(find_part(dbA, 2));
+  destroy_db(dbA);
+
+  insert_part(dbB, set_part(3, "C", 3, 300));
+  _assert(size(dbB) == 1);
+
+  _assert(flush_to_disk(FLUSH_FILE, dbB) == 0);
+  _assert(size(dbB) == 0);
+  destroy_db(dbB);
+
+  _assert((dbA = restore(FLUSH_FILE, 10)));
+  _assert(size(dbA) == 3);
+  _assert(find_part(dbA, 1));
+  _assert(find_part(dbA, 2));
+  _assert(find_part(dbA, 3));
+  destroy_db(dbA);
+
+  remove(FLUSH_FILE);
+
   return 0;
 }
 int all_tests(void)
@@ -163,6 +206,7 @@ int all_tests(void)
   _run(write_several_parts_test);
   _run(read_many_parts_test);
   _run(write_many_parts_test);
+  _run(flush_to_disk_test);
 
   return 0;
 }
