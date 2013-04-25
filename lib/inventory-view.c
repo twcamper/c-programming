@@ -154,19 +154,19 @@ void erase(Parts db)
 }
 Parts prompt_for_db()
 {
-  int len, s = 0;
+  int len = 0;
   char line[1024];
   Parts db;
 
-  printf("Enter database size for a blank database, or a file name to load records from disk: ");
+  printf("Enter a file name to load records from disk (or <ENTER> for blank DB): ");
   len = read_line(line, (int)(sizeof(line) / sizeof(line[0])));
-  if (to_valid_int(&s, line, len) == 0) {
-    return new_db((size_t)s);
+  if (len == '\n') {
+    return new_db(20);
   } else if (len > 0) {
     if ((db = restore(line)) == NULL) exit(EXIT_FAILURE);
     return db;
   } else {
-    printf("Invalid input.\n");
+    printf("Invalid input. (%s)\n", line);
     exit(EXIT_FAILURE);
   }
 }

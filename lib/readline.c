@@ -15,6 +15,10 @@ int read_line(char str[], int n)
 {
   int ch, i = 0;
 
+  if ((ch = getchar()) == '\n')
+    return ch;
+  ungetc(ch, stdin);
+
   while (isspace(ch = getchar()))
     ;
   while (ch != '\n' && ch != EOF) {
