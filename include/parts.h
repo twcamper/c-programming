@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <openssl/md5.h>
+#include <sys/stat.h>
 #include "part.h"
 #include "error.h"
 
@@ -19,7 +20,7 @@ Part find_part(Parts, PartNumber part_number);
 void load(Parts);
 int dump(char *, Parts);
 int flush_to_disk(char *, Parts);
-Parts restore(char *, size_t);
+Parts restore(char *);
 void iterate(Parts, void (*op)(Part));
 size_t size(Parts);
 #endif

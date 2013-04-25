@@ -150,7 +150,7 @@ int flush_to_disk(char *file, Parts db)
 
   return rc;
 }
-Parts restore(char *infile, size_t initial_allocation)
+Parts restore(char *infile)
 {
   FILE *istream;
   size_t n_read = 0;
@@ -159,7 +159,21 @@ Parts restore(char *infile, size_t initial_allocation)
     return NULL;
   }
 
-  Parts db = new_db(initial_allocation);
+  struct stat infile_stat;
+  if (stat(infile, &infile_stat) != 0) {
+    print_error(errno, __FILE__, infile);
+    return NULL;
+  }
+  off_t record_size = (off_t)sizeof(struct part_type);
+  if (infile_stat.st_size % record_size) {
+    fprintf(stderr, "Corrupt file '%s': size must be multiple of %ld\n",
+        infile,
+        sizeof(struct part_type));
+    return NULL;
+  }
+  /* EOF is not set if the file is exactly the size of what we ask for in fread */
+    /* so we must add an extra records worth */
+  Parts db = new_db((infile_stat.st_size / record_size) + record_size);
 
   for (;;) {
     n_read = fread(
@@ -172,6 +186,7 @@ Parts restore(char *infile, size_t initial_allocation)
         istream);
     if (n_read < db->requested_row_allocation) {
       if (ferror(istream)) {
+        print_error(errno, __FILE__, infile);
         destroy_db(db);
         return NULL;
       }
@@ -180,14 +195,6 @@ Parts restore(char *infile, size_t initial_allocation)
     }
     /* accumulate record count */
     db->count += n_read;
-
-    /* grow the array if necessary */
-    if (db->count >= db->requested_row_allocation) {
-      if (resize_db(db) != 0) {
-        destroy_db(db);
-        return NULL;
-      }
-    }
   }
 
   if (fclose(istream) == EOF) {

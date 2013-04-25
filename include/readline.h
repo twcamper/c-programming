@@ -49,4 +49,6 @@ int read_dollars_write_cents(int *n);
 
 #include <stdbool.h>
 bool yes(char *);
+
+int to_valid_int(int *, char *, int);
 #endif

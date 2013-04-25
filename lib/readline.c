@@ -27,7 +27,7 @@ int read_line(char str[], int n)
 }
 #define INT_WIDTH 10
 #define SINT_WIDTH 11
-static int to_valid_int(int *n, char *str, int length)
+int to_valid_int(int *n, char *str, int length)
 {
   char *endptr;
   int length_converted;
