@@ -118,23 +118,52 @@ void iterate(Parts db, void (*op)(Part p))
     op(&db->rows[i]);
   }
 }
-Part approximate_part(Parts db, PartNumber part_number)
+static size_t approximate_part_index(Parts db, PartNumber part_number)
 {
   size_t i = 0;
   PartNumber pn;
 
-  if (db->count == 0)
-    return NULL;
+  if (db->count == 0) {
+    fprintf(stderr, "%s: %d Trying to get index from empty array\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+  }
 
   /* return first if the target is smaller than all */
   if (get_part_number(&db->rows[0]) > part_number)
-    return &db->rows[0];
+    return 0;
 
   /* find whichever the exact part or the next greatest */
   while ( i < db->count && (pn = get_part_number(&db->rows[i])) < part_number)
      ++i;
   /* return the exact part or the next smallest */
-  return &db->rows[(pn == part_number ? i : i - 1)];
+  return (pn == part_number ? i : i - 1);
+}
+void iterate_by_page(Parts db, size_t page_size, void (*record_op)(Part), int(*interval_op)(void))
+{
+  size_t i;
+  int rc = 0;
+  record_op(&db->rows[0]);
+  for (i = 1; i < db->count; i++) {
+    record_op(&db->rows[i]);
+    if (i % page_size == 0) {
+      if ((rc = interval_op()) == -2)
+        return;
+      else if (rc == -3) {
+        i = db->count - page_size;
+      } else if (rc > -1) {
+        i = approximate_part_index(db, rc);
+        i--;
+      }
+    }
+  }
+
+}
+Part approximate_part(Parts db, PartNumber part_number)
+{
+  if (db->count == 0)
+    return NULL;
+
+  return &db->rows[approximate_part_index(db, part_number)];
 }
 
 static int write_db(char *filename, Parts db, char *write_mode)

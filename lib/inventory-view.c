@@ -135,10 +135,30 @@ void update(Parts db)
  *        order in which they were entered into the       *
  *        database.                                       *
  **********************************************************/
+static int prompt_for_page(void)
+{
+  PartNumber n;
+  char response[2];
+  while (read_line(response, 2) != '\n') {
+    switch (tolower(response[0])) {
+      case 'q':
+        return -2;
+      case 's':
+        if (enter_part_number(&n) != 0)
+          break;
+        return n;
+      case 'e':
+        return -3;
+      default:
+        return -1;
+    }
+  }
+  return -1;
+}
 void print(Parts db)
 {
   printf("Part Number       Part Name                                            Quantity on Hand  Unit Price\n");
-  iterate(db, print_part);
+  iterate_by_page(db, 40, print_part, prompt_for_page);
 }
 void erase(Parts db)
 {
