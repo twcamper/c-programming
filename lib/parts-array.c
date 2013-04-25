@@ -109,3 +109,21 @@ void iterate(Parts db, void (*op)(Part p))
   for (size_t i = 0; i < db->count; i++)
     op(db->rows[i]);
 }
+Part approximate_part(Parts db, PartNumber part_number)
+{
+  size_t i = 0;
+  PartNumber pn;
+
+  if (db->count == 0)
+    return NULL;
+
+  /* return first if the target is smaller than all */
+  if (get_part_number(db->rows[0]) > part_number)
+    return db->rows[0];
+
+  /* find whichever the exact part or the next greatest */
+  while ( i < db->count && (pn = get_part_number(db->rows[i])) < part_number)
+     ++i;
+  /* return the exact part or the next smallest */
+  return db->rows[(pn == part_number ? i : i - 1)];
+}

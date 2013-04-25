@@ -114,3 +114,27 @@ size_t size(Parts db)
 {
   return db->count;
 }
+Part approximate_part(Parts db, PartNumber part_number)
+{
+  PartNumber pn;
+  Node *previous, *current;
+
+  if (db->count == 0)
+    return NULL;
+
+  /* return first if the target is smaller than all */
+  if (get_part_number(db->head->part) > part_number)
+    return db->head->part;
+
+  /* find whichever the exact part or the next greatest */
+  current = db->head;
+  while ( current && (pn = get_part_number(current->part)) < part_number) {
+    previous = current;
+    current  = current->next;
+  }
+  /* return the exact part or the next smallest */
+  if (pn == part_number)
+    return current->part;
+  else
+    return previous->part;
+}

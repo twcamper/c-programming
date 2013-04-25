@@ -177,6 +177,67 @@ int delete_part_test(void)
 
   return 0;
 }
+int next_test(void)
+{
+
+  return 0;
+}
+int approximate_part_exact_test(void)
+{
+  Parts db = new_db(INITIAL_SIZE);
+  insert_part(db, set_part(1, "A", 1, 100));
+  insert_part(db, set_part(3, "C", 1, 100));
+  insert_part(db, set_part(9, "I", 1, 100));
+  Part p;
+  _assert((p = approximate_part(db, 3)));
+  _assert(get_part_number(p) == 3);
+  destroy_db(db);
+
+  return 0;
+}
+int approximate_part_greater_than_last_test(void)
+{
+  Parts db = new_db(INITIAL_SIZE);
+  insert_part(db, set_part(1, "A", 1, 100));
+  insert_part(db, set_part(3, "C", 1, 100));
+  Part p;
+  _assert((p = approximate_part(db, 4)));
+  _assert(get_part_number(p) == 3);
+  destroy_db(db);
+
+
+  return 0;
+}
+int approximate_part_greater_than_first_test(void)
+{
+  Parts db = new_db(INITIAL_SIZE);
+  insert_part(db, set_part(1, "A", 1, 100));
+  insert_part(db, set_part(3, "C", 1, 100));
+  Part p;
+  _assert((p = approximate_part(db, 2)));
+  _assert(get_part_number(p) == 1);
+  destroy_db(db);
+
+  return 0;
+}
+int approximate_part_less_than_first_test(void)
+{
+  Parts db = new_db(10);
+  insert_part(db, set_part(10, "A", 1, 100));
+  insert_part(db, set_part(30, "C", 1, 100));
+  Part p;
+  _assert((p = approximate_part(db, 1)));
+  _assert(get_part_number(p) == 10);
+  destroy_db(db);
+  return 0;
+}
+int approximate_part_empty_db_test(void)
+{
+  Parts db = new_db(1);
+  _assert(approximate_part(db, 1) == NULL);
+  destroy_db(db);
+  return 0;
+}
 int all_tests(void)
 {
   _run(new_db_test);
@@ -187,5 +248,11 @@ int all_tests(void)
   _run(find_part_test);
   _run(delete_part_test);
   _run(iterate_test);
+  _run(next_test);
+  _run(approximate_part_exact_test);
+  _run(approximate_part_greater_than_first_test);
+  _run(approximate_part_greater_than_last_test);
+  _run(approximate_part_less_than_first_test);
+  _run(approximate_part_empty_db_test);
   return 0;
 }
