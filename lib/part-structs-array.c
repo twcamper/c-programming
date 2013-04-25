@@ -171,31 +171,15 @@ Parts restore(char *infile)
         sizeof(struct part_type));
     return NULL;
   }
-  /* EOF is not set if the file is exactly the size of what we ask for in fread */
-    /* so we must add an extra records worth */
-  Parts db = new_db((infile_stat.st_size / record_size) + record_size);
+  Parts db = new_db((infile_stat.st_size / record_size));
 
-  for (;;) {
-    n_read = fread(
-        /* append to existing rows */
-        db->rows + db->count,
-        sizeof(db->rows[0]),
-        /* keep shrinking the amount to read so we don't
-         * read past the allocated buffer */
-        db->requested_row_allocation - db->count,
-        istream);
-    if (n_read < db->requested_row_allocation) {
-      if (ferror(istream)) {
-        print_error(errno, __FILE__, infile);
-        destroy_db(db);
-        return NULL;
-      }
-      if (feof(istream) && n_read == 0)
-        break;
-    }
-    /* accumulate record count */
-    db->count += n_read;
+  n_read = fread( db->rows, sizeof(db->rows[0]), db->requested_row_allocation, istream);
+  if (n_read < db->requested_row_allocation) {
+    print_error(errno, __FILE__, infile);
+    destroy_db(db);
+    return NULL;
   }
+  db->count = n_read;
 
   if (fclose(istream) == EOF) {
     destroy_db(db);
