@@ -144,8 +144,14 @@ static size_t approximate_part_index(Parts db, PartNumber part_number)
 }
 void iterate_by_page(Parts db, size_t page_size, void (*record_op)(Part), int(*interval_op)(void))
 {
+  if (db->count == 0)
+    return;
+
   size_t i;
   int rc = 0;
+  /* print first outside of loop to avoid a pause after the first;
+   * otherwise we'd have to test for > 0 every iteration
+   */
   record_op(&db->rows[0]);
   for (i = 1; i < db->count; i++) {
     record_op(&db->rows[i]);
