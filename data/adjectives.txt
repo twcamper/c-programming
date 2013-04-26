@@ -292,7 +292,6 @@ half-duplex
 hallowed
 halting
 handsome
-handsomely
 hapless
 happy
 harmonious
