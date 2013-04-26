@@ -28,4 +28,5 @@ Parts restore(char *);
 void iterate(Parts, void (*)(Part));
 void iterate_by_page(Parts, size_t, void (*)(Part), int (*)(void));
 size_t size(Parts);
+Part last_part(Parts);
 #endif

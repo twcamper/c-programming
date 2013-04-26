@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include "parts.h"
 #include "part.h"
-#include "inventory-view.h"
 #include "tokenize.h"
 
 #define NOUN_FILE "data/nouns.txt"

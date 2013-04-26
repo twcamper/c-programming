@@ -1,13 +1,13 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./22.7-rle.c ./generate-parts.c ./22.inventory.c
+EXCLUDE = ./22.7-rle.c ./generate-parts.c ./22.inventory.c ./load-parts.c
 include $(PREFIX)make/generic.mk
 
 COMPILE = $(CC) -c $(CFLAGS) $<
 LINK    = $(LD) $^ -o $@
 
-all: $(EXECUTABLES) 22.7-rle generate-parts 22.inventory
+all: $(EXECUTABLES) 22.7-rle generate-parts 22.inventory load-parts
 
 ################################################################################################################################################
 #  Same as 16/16.inventory, except we use lib/part-structs-array.c instead of lib/parts-array.c
@@ -23,6 +23,12 @@ generate-parts: generate-parts.o $(LIBS)/parts.o $(LIBS)/tokenize.o $(LIBS)/part
 	$(LINK) -lssl -lcrypto
 
 generate-parts.o: %.o : %.c $(INCS)/parts.h $(INCS)/tokenize.h $(INCS)/part.h $(INCS)/error.h
+	$(COMPILE)
+
+load-parts: load-parts.o $(LIBS)/parts.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
+	$(LINK) -lssl -lcrypto
+
+load-parts.o: %.o : %.c $(INCS)/parts.h $(INCS)/tokenize.h $(INCS)/part.h $(INCS)/error.h
 	$(COMPILE)
 
 22.7-rle: 22.7-rle.o $(LIBS)/error.o $(LIBS)/run-length-encoding.o

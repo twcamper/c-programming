@@ -45,6 +45,10 @@ size_t size(Parts db)
 {
   return db->count;
 }
+Part last_part(Parts db)
+{
+  return &db->rows[db->count - 1];
+}
 static int resize_db(Parts db)
 {
   db->requested_row_allocation *= 2;

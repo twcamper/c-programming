@@ -166,3 +166,4 @@ weird/scanf-clobbers-adjacent-var
 spec/part-structs-array-spec
 22/22.inventory
 spec/parts-io-spec
+22/load-parts
