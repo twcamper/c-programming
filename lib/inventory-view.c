@@ -1,5 +1,7 @@
 #include "inventory-view.h"
 
+static char file_name[FILENAME_MAX + 1];
+
 static int enter_part_number(PartNumber *n)
 {
   printf("Enter part number: ");
@@ -174,12 +176,11 @@ void erase(Parts db)
 }
 Parts load_db(Parts old_db)
 {
-  char line[1024];
   Parts new_db;
 
   printf("Enter a data file name: ");
-  if (read_line(line, (int)(sizeof(line) / sizeof(line[0])))) {
-    if ((new_db = load_parts(line)) == NULL) {
+  if (read_line(file_name, (int)(sizeof(file_name) / sizeof(file_name[0])))) {
+    if ((new_db = load_parts(file_name)) == NULL) {
       if (is_file_name_error(errno)) {
         errno = 0;
         return old_db;
@@ -191,15 +192,16 @@ Parts load_db(Parts old_db)
     destroy_db(old_db);
     return new_db;
   } else {
-    printf("Invalid input. (%s)\n", line);
+    printf("Invalid input. (%s)\n", file_name);
     return old_db;
   }
 }
 Parts init_db(char *file)
 {
   Parts db;
-  if (strlen(file)) {
-    if ((db = load_parts(file)) == NULL) exit(EXIT_FAILURE);
+  strncpy(file_name, file, FILENAME_MAX + 1);
+  if (strlen(file_name)) {
+    if ((db = load_parts(file_name)) == NULL) exit(EXIT_FAILURE);
     return db;
   } else {
     return new_db(20);
@@ -207,10 +209,18 @@ Parts init_db(char *file)
 }
 void save_db(Parts db)
 {
-  char line[1024];
-  printf("Enter a data file name: ");
-  if (read_line(line, (int)(sizeof(line) / sizeof(line[0])))) {
-    if ((dump(line, db)) != 0) {
+  char temp[FILENAME_MAX + 1];
+  char prompt[FILENAME_MAX + 11];
+  snprintf(prompt, strlen(file_name) + 11, "Save to %s? ", file_name);
+
+  if (yes(prompt)) {
+    strncpy(temp, file_name, FILENAME_MAX + 1);
+  } else {
+    printf("Enter a data file name: ");
+    read_line(temp, (int)(sizeof(temp) / sizeof(temp[0])));
+  }
+  if (strlen(temp)) {
+    if ((dump(temp, db)) != 0) {
       if (is_file_name_error(errno)) {
         errno = 0;
         return;
@@ -218,8 +228,9 @@ void save_db(Parts db)
         exit(EXIT_FAILURE);
       }
     }
+    strncpy(file_name, temp, FILENAME_MAX + 1);
   } else {
-    printf("Invalid input. (%s)\n", line);
+    printf("Invalid input. (%s)\n", temp);
     return;
   }
 }

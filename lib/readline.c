@@ -119,8 +119,7 @@ bool yes(char *prompt)
 {
   static char response[2];
   printf("%s", prompt);
-  read_line(response, 2);
-  if (tolower(response[0]) == 'y')
+  if (read_line(response, 2) == '\n' || tolower(response[0]) == 'y')
     return true;
 
   return false;
