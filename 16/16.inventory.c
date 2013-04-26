@@ -18,11 +18,17 @@
  *       command 'q'. Prints an error message if the user *
  *       enters an illegal code.                          *
  **********************************************************/
-int main(void)
+int main(int argc, char *argv[])
 {
   char code;
 
-  Parts db = prompt_for_db();
+  Parts db;
+  if (argc > 2)
+    invocation_error(argv[0], "<file>");
+  if (argc == 2)
+    db = restore(argv[1]);
+  else
+    db = new_db(20);
   init_locale();
 
   for (;;) {
