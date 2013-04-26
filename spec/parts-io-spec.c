@@ -128,8 +128,8 @@ int read_many_parts_test(void)
   _assert((db = load_parts("../data/100k-parts.dat")));
 
   _assert(size(db) == 100000);
-  _assert(find_part(db, 701235));
-  _assert(strcmp(checksum(db), "c7b297af8ed3055f245879a1a921ddb9") == 0);
+  _assert(find_part(db, 700500));
+  _assert(strcmp(checksum(db), "b69837f88ba23802c94519f4087fc6bc") == 0);
   destroy_db(db);
   return 0;
 }
