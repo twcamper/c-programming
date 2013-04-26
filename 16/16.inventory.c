@@ -20,15 +20,12 @@
  **********************************************************/
 int main(int argc, char *argv[])
 {
-  char code;
-
   Parts db;
+  char code;
   if (argc > 2)
     invocation_error(argv[0], "<file>");
-  if (argc == 2)
-    db = load_parts(argv[1]);
-  else
-    db = new_db(20);
+
+  db = init_db((argc == 2 ? argv[1] : ""));
   init_locale();
 
   for (;;) {

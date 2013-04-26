@@ -172,7 +172,7 @@ void erase(Parts db)
     return;
   }
 }
-Parts prompt_for_db()
+Parts prompt_for_db(void)
 {
   int len = 0;
   char line[1024];
@@ -188,5 +188,15 @@ Parts prompt_for_db()
   } else {
     printf("Invalid input. (%s)\n", line);
     exit(EXIT_FAILURE);
+  }
+}
+Parts init_db(char *file)
+{
+  Parts db;
+  if (strlen(file)) {
+    if ((db = load_parts(file)) == NULL) exit(EXIT_FAILURE);
+    return db;
+  } else {
+    return new_db(20);
   }
 }

@@ -10,5 +10,6 @@ void erase(Parts db);
 void search(Parts db);
 void update(Parts db);
 void print(Parts db);
-Parts prompt_for_db();
+Parts prompt_for_db(void);
+Parts init_db(char *);
 #endif
