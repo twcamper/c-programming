@@ -24,7 +24,7 @@ Part approximate_part(Parts, PartNumber);
 void load(Parts);
 int dump(char *, Parts);
 int flush_to_disk(char *, Parts);
-Parts restore(char *);
+Parts load_parts(char *);
 void iterate(Parts, void (*)(Part));
 void iterate_by_page(Parts, size_t, void (*)(Part), int (*)(void));
 size_t size(Parts);

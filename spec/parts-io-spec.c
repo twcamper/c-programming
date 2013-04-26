@@ -37,7 +37,7 @@ static char *disk_checksum(char *filename)
 int read_one_part_test(void)
 {
   Parts db;
-  _assert((db = restore("../data/one-part.dat")));
+  _assert((db = load_parts("../data/one-part.dat")));
   Part p;
   _assert(size(db) == 1);
   _assert((p = find_part(db, 10)));
@@ -67,7 +67,7 @@ int write_one_part_test(void)
 int read_two_parts_test(void)
 {
   Parts db;
-  _assert((db = restore("../data/two-parts.dat")));
+  _assert((db = load_parts("../data/two-parts.dat")));
   _assert(size(db) == 2);
 
   Part p;
@@ -95,7 +95,7 @@ int write_two_parts_test(void)
 int read_several_parts_test(void)
 {
   Parts db;
-  _assert((db = restore("../data/21-parts.dat")));
+  _assert((db = load_parts("../data/21-parts.dat")));
 
   _assert(size(db) == 21);
   _assert(strcmp(checksum(db), "d1de97e54b5be68a83f25420d412398c") == 0);
@@ -125,7 +125,7 @@ int write_several_parts_test(void)
 int read_many_parts_test(void)
 {
   Parts db;
-  _assert((db = restore("../data/100k-parts.dat")));
+  _assert((db = load_parts("../data/100k-parts.dat")));
 
   _assert(size(db) == 100000);
   _assert(find_part(db, 701235));
@@ -136,7 +136,7 @@ int read_many_parts_test(void)
 int write_many_parts_test(void)
 {
   Parts db;
-  _assert((db = restore("../data/100k-parts.dat")));
+  _assert((db = load_parts("../data/100k-parts.dat")));
 
   _assert(size(db) == 100000);
   char *md5 = checksum(db);
@@ -172,7 +172,7 @@ int flush_to_disk_test(void)
   _assert(strcmp(disk_checksum(FLUSH_FILE), original_md5) != 0);
   _assert(size(dbB) == 0);
 
-  _assert((dbA = restore(FLUSH_FILE)));
+  _assert((dbA = load_parts(FLUSH_FILE)));
   _assert(size(dbA) == 2);
   _assert(find_part(dbA, 1));
   _assert(find_part(dbA, 2));
@@ -185,7 +185,7 @@ int flush_to_disk_test(void)
   _assert(size(dbB) == 0);
   destroy_db(dbB);
 
-  _assert((dbA = restore(FLUSH_FILE)));
+  _assert((dbA = load_parts(FLUSH_FILE)));
   _assert(size(dbA) == 3);
   _assert(find_part(dbA, 1));
   _assert(find_part(dbA, 2));

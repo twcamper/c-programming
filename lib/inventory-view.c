@@ -183,7 +183,7 @@ Parts prompt_for_db()
   if (len == '\n') {
     return new_db(20);
   } else if (len > 0) {
-    if ((db = restore(line)) == NULL) exit(EXIT_FAILURE);
+    if ((db = load_parts(line)) == NULL) exit(EXIT_FAILURE);
     return db;
   } else {
     printf("Invalid input. (%s)\n", line);

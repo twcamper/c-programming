@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
   if (argc > 2)
     invocation_error(argv[0], "<file>");
   if (argc == 2)
-    db = restore(argv[1]);
+    db = load_parts(argv[1]);
   else
     db = new_db(20);
   init_locale();

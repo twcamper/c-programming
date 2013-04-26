@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     invocation_error(argv[0], "[filename]");
 
   Parts db;
-  if ((db = restore(argv[1])) == NULL)
+  if ((db = load_parts(argv[1])) == NULL)
     print_error(errno, __FILE__, "NeverTheLess!");
 
   printf("%ld\n", size(db));

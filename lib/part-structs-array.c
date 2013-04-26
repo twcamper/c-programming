@@ -208,7 +208,7 @@ int flush_to_disk(char *file, Parts db)
 
   return rc;
 }
-Parts restore(char *infile)
+Parts load_parts(char *infile)
 {
   FILE *istream;
   size_t n_read = 0;
