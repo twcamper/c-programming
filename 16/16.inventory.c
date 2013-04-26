@@ -38,6 +38,8 @@ int main(int argc, char *argv[])
                 break;
       case 'e': erase(db);
                 break;
+      case 'l': db = load_db(db);
+                break;
       case 's': search(db);
                 break;
       case 'u': update(db);

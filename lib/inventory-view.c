@@ -172,22 +172,27 @@ void erase(Parts db)
     return;
   }
 }
-Parts prompt_for_db(void)
+Parts load_db(Parts old_db)
 {
-  int len = 0;
   char line[1024];
-  Parts db;
+  Parts new_db;
 
-  printf("Enter a file name to load records from disk (or <ENTER> for blank DB): ");
-  len = read_line(line, (int)(sizeof(line) / sizeof(line[0])));
-  if (len == '\n') {
-    return new_db(20);
-  } else if (len > 0) {
-    if ((db = load_parts(line)) == NULL) exit(EXIT_FAILURE);
-    return db;
+  printf("Enter a data file name: ");
+  if (read_line(line, (int)(sizeof(line) / sizeof(line[0])))) {
+    if ((new_db = load_parts(line)) == NULL) {
+      if (is_file_name_error(errno)) {
+        errno = 0;
+        return old_db;
+      } else {
+        destroy_db(old_db);
+        exit(EXIT_FAILURE);
+      }
+    }
+    destroy_db(old_db);
+    return new_db;
   } else {
     printf("Invalid input. (%s)\n", line);
-    exit(EXIT_FAILURE);
+    return old_db;
   }
 }
 Parts init_db(char *file)

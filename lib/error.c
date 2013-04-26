@@ -21,3 +21,11 @@ void exit_error(int e, char *program, char *s2)
   print_error(e, program, s2);
   exit(EXIT_FAILURE);
 }
+int is_file_name_error(int e)
+{
+  if ((strcmp(strerror(e), "No such file or directory") == 0) ||
+      (strcmp(strerror(e), "Is a directory") == 0) ||
+      (strcmp(strerror(e), "File name too long") == 0))
+    return 1;
+  return 0;
+}

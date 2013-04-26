@@ -5,11 +5,12 @@
 #include "readline.h"
 #include "parts.h"
 
-void insert(Parts db);
-void erase(Parts db);
-void search(Parts db);
-void update(Parts db);
-void print(Parts db);
-Parts prompt_for_db(void);
+void insert(Parts);
+void erase(Parts);
+void search(Parts);
+void update(Parts);
+void print(Parts);
+Parts load_db(Parts);
+void save_db(Parts);
 Parts init_db(char *);
 #endif
