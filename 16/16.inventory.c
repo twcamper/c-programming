@@ -34,21 +34,22 @@ int main(int argc, char *argv[])
     while (getchar() != '\n')   /* skips to end of line */
       ;
     switch (code) {
-      case 'i': insert(db);
-                break;
       case 'e': erase(db);
+                break;
+      case 'i': insert(db);
                 break;
       case 'l': db = load_db(db);
                 break;
+      case 'p': print(db);
+                break;
+      case 'q': destroy_db(db);
+                return 0;
       case 's': search(db);
                 break;
       case 'u': update(db);
                 break;
-      case 'p': print(db);
+      case 'w': save_db(db);
                 break;
-      case 'q':
-                destroy_db(db);
-                return 0;
       default:  printf("Illegal code\n");
     }
     printf("\n");

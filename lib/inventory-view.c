@@ -205,3 +205,21 @@ Parts init_db(char *file)
     return new_db(20);
   }
 }
+void save_db(Parts db)
+{
+  char line[1024];
+  printf("Enter a data file name: ");
+  if (read_line(line, (int)(sizeof(line) / sizeof(line[0])))) {
+    if ((dump(line, db)) != 0) {
+      if (is_file_name_error(errno)) {
+        errno = 0;
+        return;
+      } else {
+        exit(EXIT_FAILURE);
+      }
+    }
+  } else {
+    printf("Invalid input. (%s)\n", line);
+    return;
+  }
+}
