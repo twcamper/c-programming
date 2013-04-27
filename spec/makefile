@@ -27,7 +27,7 @@ all: $(SPECS:.c=)\
 	parts-io-spec \
 	part-spec \
 	queue-spec
-	@for test in $(^); do echo $$test; ./$$test; done
+	@time for test in $(^); do ./$$test; done
 
 parts-io-spec: parts-io-spec.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
 	$(LINK) -lssl -lcrypto
