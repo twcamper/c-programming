@@ -57,3 +57,15 @@ Parts read_parts_file(char *infile, int(*process_records)(Parts, FILE *, off_t))
 
   return db;
 }
+int read_to_db(Parts db, FILE *fp, off_t record_size);
+Parts load_parts(char *infile)
+{
+  return read_parts_file(infile, read_to_db);
+
+}
+int write_db(char *filename, Parts db, char *write_mode);
+/* write contents to file, which is overwritten if it existed */
+int dump(char *outfile, Parts db)
+{
+  return write_db(outfile, db, "wb");
+}

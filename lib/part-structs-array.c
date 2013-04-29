@@ -161,7 +161,7 @@ Part approximate_part(Parts db, PartNumber part_number)
   return &db->rows[approximate_part_index(db, part_number)];
 }
 
-static int write_db(char *filename, Parts db, char *write_mode)
+int write_db(char *filename, Parts db, char *write_mode)
 {
   FILE *ostream;
   size_t n_written = 0;
@@ -179,11 +179,6 @@ static int write_db(char *filename, Parts db, char *write_mode)
 
   return 0;
 }
-/* write contents to file, which is overwritten if it existed */
-int dump(char *outfile, Parts db)
-{
-  return write_db(outfile, db, "wb");
-}
 /* append contents to file and reset count to 0 */
 int flush_to_disk(char *file, Parts db)
 {
@@ -193,14 +188,10 @@ int flush_to_disk(char *file, Parts db)
 
   return rc;
 }
-static int read_to_db(Parts db, FILE *fp, off_t record_size)
+int read_to_db(Parts db, FILE *fp, off_t record_size)
 {
   db->count = db->requested_row_allocation;
   if (fread(db->rows, record_size, db->count, fp) < db->count)
     return -1;
   return 0;
-}
-Parts load_parts(char *infile)
-{
-  return read_parts_file(infile, read_to_db);
 }
