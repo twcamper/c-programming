@@ -117,7 +117,7 @@ size_t size(Parts db)
 {
   return db->count;
 }
-Part approximate_part(Parts db, PartNumber part_number)
+static Node *approximate_node(Parts db, PartNumber part_number)
 {
   PartNumber pn;
   Node *previous, *current;
@@ -127,7 +127,7 @@ Part approximate_part(Parts db, PartNumber part_number)
 
   /* return first if the target is smaller than all */
   if (get_part_number(db->head->part) > part_number)
-    return db->head->part;
+    return db->head;
 
   /* find whichever the exact part or the next greatest */
   current = db->head;
@@ -137,9 +137,41 @@ Part approximate_part(Parts db, PartNumber part_number)
   }
   /* return the exact part or the next smallest */
   if (pn == part_number)
-    return current->part;
+    return current;
   else
-    return previous->part;
+    return previous;
+}
+void iterate_by_page(Parts db, size_t page_size, void (*record_op)(Part), int(*interval_op)(void))
+{
+  if (db->count == 0)
+    return;
+
+  int rc = 0;
+  Node *n;
+  size_t i;
+  /* print first outside of loop to avoid a pause after the first;
+   * otherwise we'd have to test for > 0 every iteration
+   */
+  record_op(db->head->part);
+  for (i = 1, n = db->head->next; n != NULL; n = n->next, i++) {
+    if (i % page_size == 0) {
+      if ((rc = interval_op()) == -2) {
+        return;
+      } else if (rc == -3) {
+        continue; /* 'end' function will require doubly linked list */
+      } else if (rc > -1) {
+        n = approximate_node(db, rc);
+      }
+    }
+    record_op(n->part);
+  }
+}
+Part approximate_part(Parts db, PartNumber part_number)
+{
+  if (db->count == 0)
+    return NULL;
+
+  return approximate_node(db, part_number)->part;
 }
 int write_db(char *filename, Parts db, char *write_mode)
 {
