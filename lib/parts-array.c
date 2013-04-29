@@ -147,7 +147,6 @@ void iterate_by_page(Parts db, size_t page_size, void (*record_op)(Part), int(*i
    */
   record_op(db->rows[0]);
   for (i = 1; i < db->count; i++) {
-    record_op(db->rows[i]);
     if (i % page_size == 0) {
       if ((rc = interval_op()) == -2)
         return;
@@ -155,9 +154,9 @@ void iterate_by_page(Parts db, size_t page_size, void (*record_op)(Part), int(*i
         i = db->count - page_size;
       } else if (rc > -1) {
         i = approximate_part_index(db, rc);
-        i--;
       }
     }
+    record_op(db->rows[i]);
   }
 
 }
