@@ -2,12 +2,17 @@
 #include "error.h"
 #include "part-type.h"
 
-
 Part new_part(void)
 {
   Part p = malloc(sizeof(struct part_type));
   if (!p)
     memory_error(__FILE__, __LINE__, __func__);
+
+  /*
+  Initializing the string ensures consistent checksums in the tests.
+  */
+  for (int i = 0; i < (int)(sizeof(p->name)/sizeof(p->name[0])); i++)
+    p->name[i] = '\0';
 
   return p;
 }
@@ -44,7 +49,7 @@ bool set_part_number(Part p, PartNumber number)
 }
 void set_part_name(Part p, char *name)
 {
-  strcpy(p->name,  name);
+  strncpy(p->name,  name, strlen(name) + 1);
   p->name[NAME_LEN] = '\0';  /* terminate string field, no matter what */
 }
 bool set_part_on_hand(Part p, PartQuantity on_hand)
@@ -70,6 +75,7 @@ bool set_part_price(Part p, PartPrice price)
   }
   return false;
 }
+size_t get_part_record_size(void) { return sizeof(struct part_type); }
 PartNumber get_part_number(Part p)  {return p->number; }
 char * get_part_name(Part p) {return p->name; }
 PartQuantity get_part_on_hand(Part p) {return p->on_hand; }
@@ -92,10 +98,11 @@ void init_locale(void)
 {
   setlocale(LC_ALL, "en_US");
 }
+#define CURRENCY_MAX 16
 char * dollars(Part p)
 {
-  static char s[16];
-  strfmon(s, sizeof(s) - 1, "%n",  (double)(get_part_price(p) / 100.00));
+  static char s[CURRENCY_MAX + 1];
+  strfmon(s, CURRENCY_MAX, "%n",  (double)(get_part_price(p) / 100.00));
 
   return s;
 }

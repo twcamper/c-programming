@@ -1,6 +1,5 @@
 #include "parts.h"
 #include "part-type.h"
-#define INITIAL_SIZE 30
 
 struct parts_type {
   size_t count;
@@ -13,28 +12,14 @@ Parts new_db(size_t initial_size)
   Parts db = malloc(sizeof(struct parts_type));
   if (db == NULL)
     memory_error(__FILE__, __LINE__, __func__);
-
-  db->count = 0;
   db->requested_row_allocation = initial_size;
-  db->rows = malloc(db->requested_row_allocation * sizeof(struct part_type));
+  db->rows = malloc(db->requested_row_allocation * get_part_record_size());
 
   if (db->rows == NULL)
     memory_error(__FILE__, __LINE__, __func__);
+  db->count = 0;
 
   return db;
-}
-#define CHECKSUM_LEN  MD5_DIGEST_LENGTH * 2
-char *checksum(Parts db)
-{
-  int i, b;
-  unsigned char md5[MD5_DIGEST_LENGTH]; 
-  static char md5_string[CHECKSUM_LEN];
-  MD5((unsigned char *)db->rows, db->count * sizeof(db->rows[0]), md5);
-
-  for (b = 0, i = 0; i < CHECKSUM_LEN; b++, i +=2 )
-    sprintf(md5_string + i, "%.2x", (int)*(md5 + b));
-
-  return md5_string;
 }
 void destroy_db(Parts db)
 {
@@ -52,7 +37,7 @@ Part last_part(Parts db)
 static int resize_db(Parts db)
 {
   db->requested_row_allocation *= 2;
-  struct part_type *temp = realloc(db->rows, db->requested_row_allocation * sizeof(db->rows[0]));
+  Part temp = realloc(db->rows, db->requested_row_allocation * sizeof(db->rows[0]));
   if (temp == NULL)
     return -1;
 
@@ -208,41 +193,14 @@ int flush_to_disk(char *file, Parts db)
 
   return rc;
 }
+static int read_to_db(Parts db, FILE *fp, off_t record_size)
+{
+  db->count = db->requested_row_allocation;
+  if (fread(db->rows, record_size, db->count, fp) < db->count)
+    return -1;
+  return 0;
+}
 Parts load_parts(char *infile)
 {
-  FILE *istream;
-  size_t n_read = 0;
-  if ((istream = fopen(infile, "rb")) == NULL) {
-    print_error(errno, __FILE__, infile);
-    return NULL;
-  }
-
-  struct stat infile_stat;
-  if (stat(infile, &infile_stat) != 0) {
-    print_error(errno, __FILE__, infile);
-    return NULL;
-  }
-  off_t record_size = (off_t)sizeof(struct part_type);
-  if (infile_stat.st_size % record_size) {
-    fprintf(stderr, "Corrupt file '%s': size must be multiple of %ld\n",
-        infile,
-        sizeof(struct part_type));
-    return NULL;
-  }
-  Parts db = new_db((infile_stat.st_size / record_size));
-
-  n_read = fread( db->rows, sizeof(db->rows[0]), db->requested_row_allocation, istream);
-  if (n_read < db->requested_row_allocation) {
-    print_error(errno, __FILE__, infile);
-    destroy_db(db);
-    return NULL;
-  }
-  db->count = n_read;
-
-  if (fclose(istream) == EOF) {
-    destroy_db(db);
-    return NULL;
-  }
-
-  return db;
+  return read_parts_file(infile, read_to_db);
 }

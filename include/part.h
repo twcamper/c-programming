@@ -20,6 +20,7 @@ void set_part_name(Part, char *);
 bool set_part_on_hand(Part, PartQuantity);
 bool change_part_on_hand(Part, PartQuantity);
 bool set_part_price(Part, PartPrice);
+size_t get_part_record_size(void);
 PartNumber get_part_number(Part);
 char * get_part_name(Part);
 PartQuantity get_part_on_hand(Part);

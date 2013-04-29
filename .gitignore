@@ -167,3 +167,5 @@ spec/part-structs-array-spec
 22/22.inventory
 spec/parts-io-spec
 22/load-parts
+spec/part-structs-io-spec
+spec/parts-array-io-spec

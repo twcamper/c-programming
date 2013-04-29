@@ -1,4 +1,5 @@
 #include "parts.h"
+#include "part-type.h"
 #define INITIAL_SIZE 30
 
 struct parts_type {
@@ -12,21 +13,23 @@ Parts new_db(size_t initial_size)
   Parts db = malloc(sizeof(struct parts_type));
   if (db == NULL)
     memory_error(__FILE__, __LINE__, __func__);
-
-  db->count = 0;
   db->requested_row_allocation = initial_size;
-  db->rows = malloc(db->requested_row_allocation * sizeof(Part));
+  db->rows = malloc(db->requested_row_allocation * get_part_record_size());
 
   if (db->rows == NULL)
     memory_error(__FILE__, __LINE__, __func__);
 
+  db->count = 0;
   return db;
+}
+static void destroy_parts(Parts db)
+{
+  for (size_t i = 0; i < db->count; i++)
+    destroy_part(db->rows[i]);
 }
 void destroy_db(Parts db)
 {
-  for (size_t i = 0; i < db->count; i++)
-    free(db->rows[i]);
-
+  destroy_parts(db);
   free(db->rows);
   free(db);
 }
@@ -34,7 +37,11 @@ size_t size(Parts db)
 {
   return db->count;
 }
-static int resize_db_17_1(Parts db)
+Part last_part(Parts db)
+{
+  return db->rows[db->count - 1];
+}
+static int resize_db(Parts db)
 {
   db->requested_row_allocation *= 2;
   Part *temp = realloc(db->rows, db->requested_row_allocation * sizeof(Part));
@@ -71,7 +78,7 @@ int insert_part(Parts db, Part p)
   size_t i, j;
 
   if (db->count == db->requested_row_allocation)
-    if ((resize_db_17_1(db) != 0)) {
+    if ((resize_db(db) != 0)) {
       return -1;
     }
   /* invalid record? */
@@ -109,21 +116,107 @@ void iterate(Parts db, void (*op)(Part p))
   for (size_t i = 0; i < db->count; i++)
     op(db->rows[i]);
 }
-Part approximate_part(Parts db, PartNumber part_number)
+static size_t approximate_part_index(Parts db, PartNumber part_number)
 {
   size_t i = 0;
   PartNumber pn;
 
-  if (db->count == 0)
-    return NULL;
+  if (db->count == 0) {
+    fprintf(stderr, "%s: %d Trying to get index from empty array\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+  }
 
   /* return first if the target is smaller than all */
   if (get_part_number(db->rows[0]) > part_number)
-    return db->rows[0];
+    return 0;
 
   /* find whichever the exact part or the next greatest */
   while ( i < db->count && (pn = get_part_number(db->rows[i])) < part_number)
      ++i;
   /* return the exact part or the next smallest */
-  return db->rows[(pn == part_number ? i : i - 1)];
+  return (pn == part_number ? i : i - 1);
+}
+void iterate_by_page(Parts db, size_t page_size, void (*record_op)(Part), int(*interval_op)(void))
+{
+  if (db->count == 0)
+    return;
+
+  size_t i;
+  int rc = 0;
+  /* print first outside of loop to avoid a pause after the first;
+   * otherwise we'd have to test for > 0 every iteration
+   */
+  record_op(db->rows[0]);
+  for (i = 1; i < db->count; i++) {
+    record_op(db->rows[i]);
+    if (i % page_size == 0) {
+      if ((rc = interval_op()) == -2)
+        return;
+      else if (rc == -3) {
+        i = db->count - page_size;
+      } else if (rc > -1) {
+        i = approximate_part_index(db, rc);
+        i--;
+      }
+    }
+  }
+
+}
+Part approximate_part(Parts db, PartNumber part_number)
+{
+  if (db->count == 0)
+    return NULL;
+
+  return db->rows[approximate_part_index(db, part_number)];
+}
+static int write_db(char *filename, Parts db, char *write_mode)
+{
+  FILE *ostream;
+  size_t i, record_size = get_part_record_size();
+  if ((ostream = fopen(filename, write_mode)) == NULL) {
+    print_error(errno, __FILE__, filename);
+    return -1;
+  }
+
+  for (i = 0; i < db->count; i++) {
+    if ((fwrite(db->rows[i], record_size, 1, ostream) < 1) || (ferror(ostream)))
+      return -2;
+  }
+
+  if (fclose(ostream) == EOF)
+    return -3;
+
+  return 0;
+}
+/* write contents to file, which is overwritten if it existed */
+int dump(char *outfile, Parts db)
+{
+  return write_db(outfile, db, "wb");
+}
+/* append contents to file and reset count to 0 */
+int flush_to_disk(char *file, Parts db)
+{
+  int rc = 0;
+  if ((rc = write_db(file, db, "ab")) == 0) {
+    destroy_parts(db);
+    db->count = 0;
+  }
+
+  return rc;
+}
+static int read_to_db(Parts db, FILE *fp,  off_t record_size)
+{
+  for (; db->count < db->requested_row_allocation; db->count++)  {
+    db->rows[db->count] = new_part();
+    if (fread(db->rows[db->count], record_size, 1, fp) < 1) {
+      return -1;
+    }
+  }
+
+  return 0;
+}
+Parts load_parts(char *infile)
+{
+  return read_parts_file(infile, read_to_db);
+
 }

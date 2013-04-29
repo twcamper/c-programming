@@ -46,7 +46,6 @@ int read_one_part_test(void)
   _assert(get_part_price(p) == 7000);
   _assert(strcmp(get_part_name(p), "Ball Washer") == 0);
 
-  _assert(strcmp(checksum(db), "49542e9f9c2c3df4c236c81e8931a169") == 0);
   destroy_db(db);
   return 0;
 }
@@ -56,7 +55,7 @@ int write_one_part_test(void)
   char *file = "../data/test.dat";
   char *md5;
   insert_part(db, set_part(13, "Bat fruit", 1, 1200));
-  md5 = checksum(db);
+  md5 = "1783e722d30721a126314a2774244ecd";
   _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
 
@@ -73,7 +72,6 @@ int read_two_parts_test(void)
   Part p;
   _assert((p = find_part(db, 97)));
   _assert(get_part_price(p) == 123220);
-  _assert(strcmp(checksum(db), "728d3660a3b5c3cdbaaa18379d72986c") == 0);
   destroy_db(db);
   return 0;
 }
@@ -84,7 +82,7 @@ int write_two_parts_test(void)
   char *md5;
   insert_part(db, set_part(13, "Bat fruit", 1, 1200));
   insert_part(db, set_part(19, "Bat Wing Hammer", 1000, 13200));
-  md5 = checksum(db);
+  md5 = "322e17a974b145068c1fa57907d50d48";
   _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
 
@@ -95,10 +93,14 @@ int write_two_parts_test(void)
 int read_several_parts_test(void)
 {
   Parts db;
+  Part p;
   _assert((db = load_parts("../data/21-parts.dat")));
 
   _assert(size(db) == 21);
-  _assert(strcmp(checksum(db), "d1de97e54b5be68a83f25420d412398c") == 0);
+  _assert((p = find_part(db, 3497)));
+  _assert(strcmp(get_part_name(p), "Sink, burbling") == 0);
+  _assert(get_part_price(p) == 12720);
+  _assert(get_part_on_hand(p) == 47);
   destroy_db(db);
   return 0;
 }
@@ -113,7 +115,7 @@ int write_several_parts_test(void)
   insert_part(db, set_part(101, "Mental Health Services", 40, 100));
   insert_part(db, set_part(2, "Gas Ring, Municipal", 18, 214798900));
 
-  char *md5 = checksum(db);
+  char *md5 = "ac246148784a7e387271f80637ca6676";
   char *file = "../data/test.dat";
   _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
@@ -129,7 +131,6 @@ int read_many_parts_test(void)
 
   _assert(size(db) == 100000);
   _assert(find_part(db, 700500));
-  _assert(strcmp(checksum(db), "b69837f88ba23802c94519f4087fc6bc") == 0);
   destroy_db(db);
   return 0;
 }
@@ -139,7 +140,7 @@ int write_many_parts_test(void)
   _assert((db = load_parts("../data/100k-parts.dat")));
 
   _assert(size(db) == 100000);
-  char *md5 = checksum(db);
+  char *md5 = "b69837f88ba23802c94519f4087fc6bc";
   char *file = "../data/test.dat";
   _assert(dump(file, db) == 0);
   _assert(strcmp(disk_checksum(file), md5) == 0);
@@ -159,7 +160,7 @@ int flush_to_disk_test(void)
   insert_part(dbA, set_part(1, "A", 1, 100));
   _assert(size(dbA) == 1);
 
-  original_md5 = checksum(dbA);
+  original_md5 = "af0048599428dd1488104dcbc1e8239b";
   _assert(flush_to_disk(FLUSH_FILE, dbA) == 0);
   destroy_db(dbA);
   _assert(strcmp(disk_checksum(FLUSH_FILE), original_md5) == 0);

@@ -24,3 +24,36 @@ void load(Parts db)
   insert_part(db, set_part(53, "Stabilizers, vert,(pair)", 90, 280000));
   insert_part(db, set_part(3497, "Sink, burbling", 47, 12720));
 }
+Parts read_parts_file(char *infile, int(*process_records)(Parts, FILE *, off_t))
+{
+  FILE *istream;
+  if ((istream = fopen(infile, "rb")) == NULL) {
+    print_error(errno, __FILE__, infile);
+    return NULL;
+  }
+
+  struct stat infile_stat;
+  if (stat(infile, &infile_stat) != 0) {
+    print_error(errno, __FILE__, infile);
+    return NULL;
+  }
+  off_t record_size = (off_t)get_part_record_size();
+  if (infile_stat.st_size % record_size) {
+    fprintf(stderr, "Corrupt file '%s': size must be multiple of %ld\n",
+        infile,
+        (size_t)record_size);
+    return NULL;
+  }
+  Parts db = new_db(infile_stat.st_size / record_size);
+  if (process_records(db, istream, record_size) !=0)  {
+    print_error(errno, __FILE__, infile);
+    return NULL;
+  }
+
+  if (fclose(istream) == EOF) {
+    print_error(errno, __FILE__, infile);
+    return NULL;
+  }
+
+  return db;
+}
