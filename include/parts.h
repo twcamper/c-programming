@@ -1,7 +1,12 @@
 #ifndef PARTS_H
 #define PARTS_H
 #if defined(__linux__) || defined(__linux) || defined(__gnu_linux__)
-  #define _BSD_SOURCE 1
+  /* for off_t.
+   * including sys/types.h is a frowned upon hack,
+   * but I can't figure out the feature macro combination
+   * to make it work.
+   */
+  #include <sys/types.h>
 #endif
 #include <limits.h>
 #include <stdbool.h>

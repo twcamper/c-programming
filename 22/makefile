@@ -13,20 +13,20 @@ all: $(EXECUTABLES) 22.7-rle generate-parts 22.inventory load-parts
 #  Same as 16/16.inventory, except we use lib/part-structs-array.c instead of lib/parts-array.c
 ################################################################################################################################################
 22.inventory: 22.inventory.o $(LIBS)/parts.o $(LIBS)/part-structs-array.o $(LIBS)/inventory-view.o $(LIBS)/part.o $(LIBS)/readline.o $(LIBS)/error.o
-	$(LINK) -lssl -lcrypto
+	$(LINK)
 
 16 = $(PREFIX)16/
 22.inventory.o: $(16)16.inventory.c $(INCS)/parts.h $(INCS)/inventory-view.h $(INCS)/part.h $(INCS)/part-type.h $(INCS)/readline.h $(INCS)/error.h
 	$(COMPILE) -o $@
 
 generate-parts: generate-parts.o $(LIBS)/parts.o $(LIBS)/tokenize.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
-	$(LINK) -lssl -lcrypto
+	$(LINK)
 
 generate-parts.o: %.o : %.c $(INCS)/parts.h $(INCS)/tokenize.h $(INCS)/part.h $(INCS)/error.h
 	$(COMPILE)
 
 load-parts: load-parts.o $(LIBS)/parts.o $(LIBS)/part-structs-array.o $(LIBS)/part.o $(LIBS)/error.o
-	$(LINK) -lssl -lcrypto
+	$(LINK)
 
 load-parts.o: %.o : %.c $(INCS)/parts.h $(INCS)/tokenize.h $(INCS)/part.h $(INCS)/error.h
 	$(COMPILE)
