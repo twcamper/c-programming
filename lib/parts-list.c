@@ -32,14 +32,17 @@ static void destroy_node(Node *n)
   destroy_part(n->part);
   free(n);
 }
-void destroy_db(Parts db)
+static void destroy_nodes(Parts db)
 {
   Node *next;
   for (Node *n = db->head; n; n = next) {
     next = n->next;
     destroy_node(n);
   }
-
+}
+void destroy_db(Parts db)
+{
+  destroy_nodes(db);
   free(db);
 }
 static Node *create_node(Part p)
@@ -137,4 +140,69 @@ Part approximate_part(Parts db, PartNumber part_number)
     return current->part;
   else
     return previous->part;
+}
+static int write_db(char *filename, Parts db, char *write_mode)
+{
+  FILE *ostream;
+  size_t record_size = get_part_record_size();
+  if ((ostream = fopen(filename, write_mode)) == NULL) {
+    print_error(errno, __FILE__, filename);
+    return -1;
+  }
+
+  for (Node *n = db->head; n != NULL; n = n->next) {
+    if ((fwrite(n->part, record_size, 1, ostream) < 1) || (ferror(ostream)))
+      return -2;
+  }
+
+  if (fclose(ostream) == EOF)
+    return -3;
+
+  return 0;
+}
+/* write contents to file, which is overwritten if it existed */
+int dump(char *outfile, Parts db)
+{
+  return write_db(outfile, db, "wb");
+}
+/* append contents to file and reset count to 0 */
+int flush_to_disk(char *file, Parts db)
+{
+  int rc = 0;
+  if ((rc = write_db(file, db, "ab")) == 0) {
+    destroy_nodes(db);
+    db->head  = NULL;
+    db->count = 0;
+  }
+
+  return rc;
+}
+static int read_to_db(Parts db, FILE *fp,  off_t record_size)
+{
+  Node *n;
+  Part p;
+  for (;;)  {
+    p = new_part();
+    if (fread(p, record_size, 1, fp) < 1) {
+      destroy_part(p);
+      if (ferror(fp))
+        return -1;
+      break;
+    }
+    if (db->head) {
+      n->next = create_node(p);
+      n = n->next;
+    } else {
+      db->head = create_node(p);
+      n = db->head;
+    }
+    db->count++;
+  }
+
+  return 0;
+}
+Parts load_parts(char *infile)
+{
+  return read_parts_file(infile, read_to_db);
+
 }

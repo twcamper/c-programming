@@ -6,7 +6,9 @@
 #include <stdbool.h>
 #include <monetary.h>
 #include <locale.h>
-#define NAME_LEN 50
+#define NAME_LEN 51  /* size adjusted to prevent holes/padding in the struct.
+                      * This ensures consistency in the test checksums
+                      */
 
 typedef struct part_type *Part;
 typedef int PartNumber;

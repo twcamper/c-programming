@@ -1,6 +1,5 @@
 #include "parts.h"
 #include "part-type.h"
-#define INITIAL_SIZE 30
 
 struct parts_type {
   size_t count;

@@ -8,9 +8,7 @@ EXCLUDE     = ./bounded-queue-spec.c\
 							./part-spec.c\
 							./global-queue-spec.c\
 							./queue-spec.c\
-							./parts-io-spec.c \
-							./part-structs-io-spec.c \
-							./parts-array-io-spec.c
+							./parts-io-spec.c
 
 SPECS       = $(filter-out $(EXCLUDE), $(shell find . -name '*-spec.c'))
 # for lib/foo.c and spec/foo-spec.c, this will be 'foo'
@@ -28,9 +26,16 @@ all: $(SPECS:.c=)\
 	parts-list-spec \
 	part-structs-io-spec \
 	parts-array-io-spec \
+	parts-list-io-spec \
 	part-spec \
 	queue-spec
 	@for test in $(^); do ./$$test; done
+
+parts-list-io-spec: parts-list-io-spec.o $(LIBS)/parts-list.o $(LIBS)/parts.o $(LIBS)/part.o $(LIBS)/error.o
+	$(LINK)
+
+parts-list-io-spec.o: parts-io-spec.c $(INCS)/parts.h $(INCS)/part.h $(INCS)/error.h $(INCS)/test_runner.h
+	$(COMPILE)
 
 parts-array-io-spec: parts-array-io-spec.o $(LIBS)/parts-array.o $(LIBS)/parts.o $(LIBS)/part.o $(LIBS)/error.o
 	$(LINK)
