@@ -1,0 +1,198 @@
+./22/part-structs-io-profiler
+p 3.22389:	r 17:	Reading 100000000 from data/100M-parts.dat
+p 8.24268:	r 21:	Writing data/foo.dat
+
+real0m38.280s
+user0m0.170s
+sys0m11.528s
+
+./22/parts-array-io-profiler
+p 63.8722:	r 174:	Reading 100000000 from data/100M-parts.dat
+p 127.324:	r 264:	Writing data/foo.dat
+
+real7m18.066s
+user0m23.004s
+sys2m48.940s
+
+./22/parts-list-io-profiler
+p 40.8518:	r 142:	Reading 100000000 from data/100M-parts.dat
+p 81.7981:	r 179:	Writing data/foo.dat
+
+real5m21.945s
+user0m24.527s
+sys1m38.947s
+
+./22/part-structs-io-profiler
+p 4.54073:	r 20:	Reading 100000000 from data/100M-parts.dat
+p 5.084:	r 16:	Writing data/foo.dat
+
+real0m35.742s
+user0m0.152s
+sys0m9.748s
+
+./22/parts-array-io-profiler
+p 39.1349:	r 68:	Reading 100000000 from data/100M-parts.dat
+p 85.5709:	r 168:	Writing data/foo.dat
+
+real3m56.823s
+user0m17.153s
+sys1m48.316s
+
+./22/parts-list-io-profiler
+p 34.7234:	r 106:	Reading 100000000 from data/100M-parts.dat
+p 82.7824:	r 181:	Writing data/foo.dat
+
+real4m47.962s
+user0m22.935s
+sys1m35.368s
+
+./22/part-structs-io-profiler
+p 0.735043:	r 3:	Reading 10000000 from data/10M-parts.dat
+p 1.4407:	r 5:	Writing data/foo.dat
+
+        7.77 real         0.04 user         2.19 sys
+./22/parts-array-io-profiler
+p 1.67322:	r 2:	Reading 10000000 from data/10M-parts.dat
+p 1.84599:	r 5:	Writing data/foo.dat
+
+        6.95 real         1.36 user         2.23 sys
+./22/parts-list-io-profiler
+p 1.95782:	r 2:	Reading 10000000 from data/10M-parts.dat
+p 1.84996:	r 5:	Writing data/foo.dat
+
+        6.72 real         1.74 user         2.15 sys
+./22/part-structs-io-profiler
+p 0.603743:	r 1:	Reading 10000000 from data/10M-parts.dat
+p 1.40762:	r 3:	Writing data/foo.dat
+
+        4.28 real         0.04 user         2.03 sys
+./22/parts-array-io-profiler
+p 1.65881:	r 1:	Reading 10000000 from data/10M-parts.dat
+p 1.76241:	r 4:	Writing data/foo.dat
+
+        5.45 real         1.33 user         2.16 sys
+./22/parts-list-io-profiler
+p 1.95859:	r 2:	Reading 10000000 from data/10M-parts.dat
+p 1.81477:	r 5:	Writing data/foo.dat
+
+        6.62 real         1.73 user         2.12 sys
+./22/part-structs-io-profiler
+p 0.066695:	r 0:	Reading 1000000 from data/1M-parts.dat
+p 0.165315:	r 1:	Writing data/foo.dat
+
+        0.41 real         0.00 user         0.23 sys
+./22/parts-array-io-profiler
+p 0.159036:	r 0:	Reading 1000000 from data/1M-parts.dat
+p 0.180106:	r 0:	Writing data/foo.dat
+
+        0.52 real         0.13 user         0.20 sys
+./22/parts-list-io-profiler
+p 0.20111:	r 1:	Reading 1000000 from data/1M-parts.dat
+p 0.190427:	r 0:	Writing data/foo.dat
+
+        0.58 real         0.17 user         0.21 sys
+./22/part-structs-io-profiler
+p 0.063334:	r 0:	Reading 1000000 from data/1M-parts.dat
+p 0.137276:	r 0:	Writing data/foo.dat
+
+        0.38 real         0.00 user         0.20 sys
+./22/parts-array-io-profiler
+p 0.156973:	r 1:	Reading 1000000 from data/1M-parts.dat
+p 0.172259:	r 0:	Writing data/foo.dat
+
+        0.51 real         0.13 user         0.20 sys
+./22/parts-list-io-profiler
+p 0.196813:	r 0:	Reading 1000000 from data/1M-parts.dat
+p 0.181635:	r 0:	Writing data/foo.dat
+
+        0.56 real         0.17 user         0.21 sys
+./22/part-structs-io-profiler
+p 0.060746:	r 0:	Reading 1000000 from data/1M-parts.dat
+p 0.132335:	r 0:	Writing data/foo.dat
+
+        0.37 real         0.00 user         0.19 sys
+./22/parts-array-io-profiler
+p 0.157133:	r 0:	Reading 1000000 from data/1M-parts.dat
+p 0.169208:	r 1:	Writing data/foo.dat
+
+        0.51 real         0.13 user         0.19 sys
+./22/parts-list-io-profiler
+p 0.19647:	r 0:	Reading 1000000 from data/1M-parts.dat
+p 0.180191:	r 0:	Writing data/foo.dat
+
+        0.56 real         0.17 user         0.20 sys
+./22/part-structs-io-profiler
+p 0.008426:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.018725:	r 0:	Writing data/foo.dat
+
+        0.04 real         0.00 user         0.02 sys
+./22/parts-array-io-profiler
+p 0.016059:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.016975:	r 0:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/parts-list-io-profiler
+p 0.0203:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.018934:	r 1:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/part-structs-io-profiler
+p 0.006927:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.013581:	r 0:	Writing data/foo.dat
+
+        0.03 real         0.00 user         0.02 sys
+./22/parts-array-io-profiler
+p 0.015694:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.017628:	r 0:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/parts-list-io-profiler
+p 0.019446:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.020462:	r 0:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/part-structs-io-profiler
+p 0.009181:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.01554:	r 0:	Writing data/foo.dat
+
+        0.04 real         0.00 user         0.02 sys
+./22/parts-array-io-profiler
+p 0.016482:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.018052:	r 0:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/parts-list-io-profiler
+p 0.019704:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.019178:	r 0:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/part-structs-io-profiler
+p 0.008905:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.013836:	r 1:	Writing data/foo.dat
+
+        0.04 real         0.00 user         0.02 sys
+./22/parts-array-io-profiler
+p 0.016102:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.017956:	r 0:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/parts-list-io-profiler
+p 0.019637:	r 0:	Reading 100000 from data/100K-parts.dat
+p 0.021495:	r 0:	Writing data/foo.dat
+
+        0.05 real         0.01 user         0.02 sys
+./22/part-structs-io-profiler
+p 2.57348:	r 10:	Reading 100000000 from data/100M-parts.dat
+p 4.72986:	r 14:	Writing data/foo.dat
+
+       24.72 real         0.15 user         7.37 sys
+./22/parts-array-io-profiler
+p 38.6221:	r 66:	Reading 100000000 from data/100M-parts.dat
+p 91.2183:	r 180:	Writing data/foo.dat
+
+      246.62 real        17.26 user       113.27 sys
+./22/parts-list-io-profiler
+p 41.1468:	r 133:	Reading 100000000 from data/100M-parts.dat
+p 90.3896:	r 203:	Writing data/foo.dat
+
+      336.84 real        24.31 user       108.00 sys
