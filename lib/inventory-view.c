@@ -211,9 +211,12 @@ void save_db(Parts db)
 {
   char temp[FILENAME_MAX + 1];
   char prompt[FILENAME_MAX + 11];
-  snprintf(prompt, strlen(file_name) + 11, "Save to %s? ", file_name);
+  size_t file_name_length = strlen(file_name);
 
-  if (yes(prompt)) {
+  if (file_name_length)
+    snprintf(prompt, file_name_length + 11, "Save to %s? ", file_name);
+
+  if (file_name_length && yes(prompt)) {
     strncpy(temp, file_name, FILENAME_MAX + 1);
   } else {
     printf("Enter a data file name: ");
