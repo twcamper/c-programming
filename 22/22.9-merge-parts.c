@@ -8,7 +8,7 @@
 #include "part-type.h"
 
 typedef struct file_info {
-  char *name;//name[FILENAME_MAX];
+  char *name;
   off_t size;
   size_t count;
 } FileInfo;
