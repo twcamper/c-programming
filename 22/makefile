@@ -1,7 +1,7 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./22.7-rle.c ./generate-parts.c ./22.inventory.c ./parts-io-profiler.c
+EXCLUDE = ./22.7-rle.c ./generate-parts.c ./22.inventory.c ./parts-io-profiler.c ./22.9-merge-parts.c
 include $(PREFIX)make/generic.mk
 
 COMPILE = $(CC) -c $(CFLAGS) $<
@@ -13,7 +13,14 @@ all: $(EXECUTABLES) \
 	22.inventory \
 	parts-list-io-profiler \
 	parts-array-io-profiler \
-	part-structs-io-profiler
+	part-structs-io-profiler \
+	22.9-merge-parts
+
+22.9-merge-parts: 22.9-merge-parts.o $(LIBS)/part.o $(LIBS)/error.o
+	$(LINK)
+
+22.9-merge-parts.o: %.o: %.c $(INCS)/part-type.h $(INCS)/part.h $(INCS)/error.h
+	$(COMPILE)
 
 ################################################################################################################################################
 #  Same as 16/16.inventory, except we use lib/part-structs-array.c instead of lib/parts-array.c
