@@ -13,6 +13,19 @@ typedef struct file_info {
   size_t count;
 } FileInfo;
 
+/*
+ * This is an Absolute DOG of an algorithm!!
+ *
+ * Reading and writing single records at a time KILLS it in performance.
+ *
+ * At 100k records per file:
+ * 
+ * this:
+ * real4m50.708s user4m49.040s sys0m1.007s
+ *
+ * single record read/write:
+ * real0m0.150s  user0m0.023s  sys0m0.063s
+ */
 static void validate_input_file(char *f, struct stat *fs, size_t record_size)
 {
   if (stat(f, fs) !=0)
