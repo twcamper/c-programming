@@ -2,17 +2,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 #define FLIGHTS ((int) (sizeof(flights) / sizeof(flights[0])))
-#define INPUT_MAX  6
-#define INPUT_SIZE 512  /* extra long to ensure newline gets consumed
-                         * on each entry.  This keeps validation and
-                         * potential re-entry simple.
-                         */
+#define INPUT_SIZE 6
 void print_am_pm(int minutes_since_midnight);
 void find_closest_flight(int requested, int *departure_time, int *arrival_time);
 int get_valid_input(void);
-bool validate_and_convert(char *input, int *hour, int *minute);
+bool is_format_valid(char *);
+void convert(char *, int *, int *);
 
 static int flights[][2] = {
   {8*60,     10*60+16},
@@ -86,51 +84,72 @@ void find_closest_flight(int requested_departure, int *departure_time, int *arri
 
 int get_valid_input(void)
 {
-  int hour, minute;
+  int i, ch, hour, minute;
   char input[INPUT_SIZE];
 
   for (;;) {
     printf("Request departure time: (e.g. 21:23): ");
-    /* extra long buffer to ensure the newline is consumed
-     * otherwise, we get a double prompt per every
-     * bad entry */
-    fgets(input, INPUT_SIZE, stdin);
-    if (validate_and_convert(input, &hour, &minute))
-      return (hour * 60) + minute;
-    fprintf(stderr, "Invalid Input\n");
+    /* swallow spaces */
+    while (isspace(ch = getchar()))
+        ;
+
+    /* fill in the input buffer,
+     * and consume any remaining input
+     * on stdin including the newline.
+     * That way, we don't get any double prompts
+     * should we have to re-prompt after bad input
+     */
+    for (i = 0; ch != '\n'; ch = getchar())
+      if (i < INPUT_SIZE)
+        input[i++] = ch;
+
+    input[i] = '\0';
+    if (is_format_valid(input)) {
+      convert(input, &hour, &minute);
+      if (hour < 24 && minute < 60)
+        return (hour * 60) + minute;
+    }
+
+    fprintf(stderr, "Invalid Input: '%s'\n", input);
   }
 }
-bool validate_and_convert(char *input, int *hour, int *minute)
+bool is_format_valid(char *input)
 {
-  char *h, *m;
-  int len;
-
-  if (strlen(input) > (size_t)INPUT_MAX)
+  size_t i, len = strlen(input);
+  int d;
+  if (!len)
     return false;
 
-  /* find delimiter */
-  if (strchr(input, ':') == NULL)
-    return false;
+  for (d = -1, i = 0; i < len; i++)  {
+    if (d < 0 &&               /* No delimiter found yet */
+        input[i] == ':') {     /* First instance of delimiter */
+      d = i;                   /* Can't follow this branch anymore:
+                                * any other copies of ':' will see isdigit().
+                                */
+      if (d < 1 || d > 2)      /* possible positions */
+        return false;
+    } else if (!isdigit(input[i]))
+      return false;
+  }
 
-  /* point to start of token before the delimiter; */
-  /* replace the delimiter w/ NULL */
-  h = strtok(input, ":");
-  if ((len = strlen(h)) == 0 || len > 2)
-    return false;
+  if (d == -1 && len > 2)  /* if there's no delimiter, */
+    return false;          /* there can only be a 1 or 2 digit hour */
 
-  *hour = atoi(h);
-  if (*hour < 0 || *hour > 23)
-    return false;
-
-  /* point to start of next token after the delimiter; */
-  /* replace any NEWLINE with NULL */
-  m = strtok(NULL, ":\n");
-  if ((len = strlen(m)) == 0 || len > 2)
-    return false;
-
-  *minute = atoi(m);
-  if (*minute < 0 || *minute > 59)
+  if (d == (int)len - 1)   /* delimiter is at the end */
     return false;
 
   return true;
+}
+void convert(char *input, int *hour, int *minute)
+{
+  char h[3], *delimiter;
+
+  if ((delimiter = strchr(input, ':'))) {
+    strncpy(h, input, delimiter - input);
+    *hour   = atoi(h);
+    *minute = atoi(delimiter + 1);
+  } else {
+    *hour   = atoi(input);
+    *minute = 0;
+  }
 }
