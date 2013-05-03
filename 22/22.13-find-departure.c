@@ -3,25 +3,24 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
-#define FLIGHTS ((int) (sizeof(flights) / sizeof(flights[0])))
-#define INPUT_SIZE 6
+#define DATA_ERROR(f, l, s) fprintf(stderr, "Invalid data  %s:%ld  '%s'\n", (f), (l), (s))
+#define TIME_STR_SIZE 6
+#define FILE_PATH "data/flights.dat"
+
+struct file_info {
+  size_t size;
+  int data[][2];
+};
 void print_am_pm(int minutes_since_midnight);
 void find_closest_flight(int requested, int *departure_time, int *arrival_time);
 int get_valid_input(void);
+int to_minutes(char *);
 bool is_format_valid(char *);
 void convert(char *, int *, int *);
+struct file_info *load_data(char *);
 
-static int flights[][2] = {
-  {8*60,     10*60+16},
-  {9*60+43,  11*60+52},
-  {11*60+19, 13*60+31},
-  {12*60+47, 15*60},
-  {14*60,    16*60+8},
-  {15*60+45, 17*60+55},
-  {19*60,    21*60+20},
-  {21*60+45, 23*60+58}
-};
 int main(void)
 {
   int departure, arrival;
@@ -40,7 +39,68 @@ int main(void)
 
   return 0;
 }
+int to_minutes(char *s)
+{
+  int hour, minute;
+  if (is_format_valid(s)) {
+    convert(s, &hour, &minute);
+    if (hour < 24 && minute < 60)
+      return (hour * 60) + minute;
+  }
+  return -1;
+}
 
+struct file_info *load_data(char *filename)
+{
+  FILE *fp;
+  char line[TIME_STR_SIZE * 2 + 1];
+  char d[TIME_STR_SIZE], a[TIME_STR_SIZE];
+  int m;
+  bool read_error = false, data_error = false;
+  struct file_info *fi = NULL;  /* NULL so first realloc is just like malloc() */
+  size_t l;
+
+  if ((fp = fopen(filename, "r")) == NULL) {
+    fprintf(stderr, "failed to open %s\n", filename);
+    exit(EXIT_FAILURE);
+  }
+  for (l = 0;fgets(line, sizeof(line), fp) != NULL; l++)
+  {
+    if (!(fi = realloc(fi, sizeof(struct file_info) + (sizeof(int (*)[2])) *  (l + 1)))) {
+      fprintf(stderr, "realloc: %s:%d\n", __FILE__, __LINE__);
+      exit(EXIT_FAILURE);
+    }
+    sscanf(line, "%s %s", d, a);
+
+    if ((m = to_minutes(d)) == -1) {
+      DATA_ERROR(filename, l + 1, d);
+      data_error = true;
+      break;
+    }
+    fi->data[l][0] = m;
+    if ((m = to_minutes(a)) == -1) {
+      DATA_ERROR(filename, l + 1, a);
+      data_error = true;
+      break;
+    }
+    fi->data[l][1] = m;
+  }
+  fi->size = l;
+
+  if (!feof(fp) || ferror(fp)) {
+    fprintf(stderr, "%s: %s\n", strerror(errno), filename);
+    read_error = true;
+    errno = 0;
+  }
+
+  if (fclose(fp) == EOF || read_error || data_error) {
+    if (errno)
+      fprintf(stderr, "%s: %s\n", strerror(errno), filename);
+    free(fi);
+    exit(EXIT_FAILURE);
+  }
+  return fi;
+}
 void print_am_pm(int minutes_since_midnight)
 {
   int hours = minutes_since_midnight / 60;
@@ -59,7 +119,9 @@ void print_am_pm(int minutes_since_midnight)
 }
 void find_closest_flight(int requested_departure, int *departure_time, int *arrival_time)
 {
-  int diff, f;
+  struct file_info *flights =  load_data(FILE_PATH);
+  int diff;
+  size_t f;
   /* start as max possible diff */
   /*
    * for each entry in departures list:
@@ -72,20 +134,21 @@ void find_closest_flight(int requested_departure, int *departure_time, int *arri
    *       store the array index as 'closest' for use in accessing the flight info
    */
   int minimum_difference = 23*60+59;
-  for (f = 0; f < FLIGHTS; f++)  {
-    diff = abs(requested_departure - flights[f][0]);
+  for (f = 0; f < flights->size; f++)  {
+    diff = abs(requested_departure - flights->data[f][0]);
     if (diff < minimum_difference)  {
       minimum_difference = diff;
-      *departure_time = flights[f][0];
-      *arrival_time   = flights[f][1];
+      *departure_time = flights->data[f][0];
+      *arrival_time   = flights->data[f][1];
     }
   }
+  free(flights);
 }
 
 int get_valid_input(void)
 {
   int i, ch, hour, minute;
-  char input[INPUT_SIZE];
+  char input[TIME_STR_SIZE] = {'\0'};
 
   for (;;) {
     printf("Request departure time: (e.g. 21:23): ");
@@ -100,7 +163,7 @@ int get_valid_input(void)
      * should we have to re-prompt after bad input
      */
     for (i = 0; ch != '\n'; ch = getchar())
-      if (i < INPUT_SIZE)
+      if (i < TIME_STR_SIZE)
         input[i++] = ch;
 
     input[i] = '\0';
@@ -113,22 +176,22 @@ int get_valid_input(void)
     fprintf(stderr, "Invalid Input: '%s'\n", input);
   }
 }
-bool is_format_valid(char *input)
+bool is_format_valid(char *s)
 {
-  size_t i, len = strlen(input);
+  size_t i, len = strlen(s);
   int d;
   if (!len)
     return false;
 
   for (d = -1, i = 0; i < len; i++)  {
     if (d < 0 &&               /* No delimiter found yet */
-        input[i] == ':') {     /* First instance of delimiter */
+        s[i] == ':') {         /* First instance of delimiter */
       d = i;                   /* Can't follow this branch anymore:
                                 * any other copies of ':' will see isdigit().
                                 */
       if (d < 1 || d > 2)      /* possible positions */
         return false;
-    } else if (!isdigit(input[i]))
+    } else if (!isdigit(s[i]))
       return false;
   }
 
@@ -140,16 +203,16 @@ bool is_format_valid(char *input)
 
   return true;
 }
-void convert(char *input, int *hour, int *minute)
+void convert(char *s, int *hour, int *minute)
 {
-  char h[3], *delimiter;
+  char h[3] = {'\0'}, *delimiter;
 
-  if ((delimiter = strchr(input, ':'))) {
-    strncpy(h, input, delimiter - input);
+  if ((delimiter = strchr(s, ':'))) {
+    strncpy(h, s, delimiter - s);
     *hour   = atoi(h);
     *minute = atoi(delimiter + 1);
   } else {
-    *hour   = atoi(input);
+    *hour   = atoi(s);
     *minute = 0;
   }
 }
