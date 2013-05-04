@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   time_t  start_time  = time(NULL);
   clock_t start_clock = clock();
   if ((db = load_parts(argv[1])) == NULL)
-    print_error(errno, __FILE__, argv[1]);
+    print_error( __FILE__, argv[1]);
   time_t  end_time  = time(NULL);
   clock_t end_clock = clock() - start_clock;
 
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
   start_time  = time(NULL);
   start_clock = clock();
   if (dump(argv[2], db) != 0)
-    print_error(errno, __FILE__, argv[2]);
+    print_error( __FILE__, argv[2]);
   end_time  = time(NULL);
   end_clock = clock() - start_clock;
 

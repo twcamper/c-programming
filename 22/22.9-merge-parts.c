@@ -29,7 +29,7 @@ typedef struct file_info {
 static void validate_input_file(char *f, struct stat *fs, size_t record_size)
 {
   if (stat(f, fs) !=0)
-    exit_error(errno, __FILE__, f);
+    exit_error(__FILE__, f);
 
   if (fs->st_size == 0 || fs->st_size % record_size) {
     fprintf(stderr, "Empty or corrupt file '%s': size must be multiple of %ld\n",
@@ -63,18 +63,18 @@ static int read_input(FileInfo *f, Part buffer, size_t record_size)
 {
   FILE *stream;
   if ((stream = fopen(f->name, "rb")) == NULL) {
-    print_error(errno,__FILE__, f->name);
+    print_error(__FILE__, f->name);
     return -1;;
   }
   bool read_failure = false;
   if ((fread(buffer, record_size, f->count, stream) < f->count) || ferror(stream)) {
-    print_error(errno,__FILE__, f->name);
+    print_error(__FILE__, f->name);
     errno = 0;
     read_failure = true;
   }
   if ((fclose(stream) == EOF) || read_failure) {
     if (errno)
-      print_error(errno,__FILE__, f->name);
+      print_error(__FILE__, f->name);
     return -1;
   }
   return 0;
@@ -83,16 +83,16 @@ static int write_output(char *output_filename, Part out_buffer, size_t out_count
 {
   FILE *ostream;
   if ((ostream = fopen(output_filename, "wb")) == NULL) {
-    print_error(errno, __FILE__, output_filename);
+    print_error(__FILE__, output_filename);
     return -1;
   }
   bool write_error = false;
   if (fwrite(out_buffer, record_size, out_count, ostream) < out_count || ferror(ostream)) {
     write_error = true;
-    print_error(errno, __FILE__, output_filename);
+    print_error(__FILE__, output_filename);
   }
   if (fclose(ostream) == EOF || write_error) {
-    print_error(errno, __FILE__, output_filename);
+    print_error(__FILE__, output_filename);
     return -1;
   }
   return 0;

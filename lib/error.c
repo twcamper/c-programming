@@ -12,13 +12,13 @@ void memory_error(char *file, unsigned int line, const char *func)
   exit(EXIT_FAILURE);
 }
 
-void print_error(int e, char *program, char *s2)
+void print_error(char *program, char *s2)
 {
-  fprintf(stderr, "%s: %s: %s\n", program, s2, strerror(e));
+  fprintf(stderr, "%s: %s: %s\n", program, s2, strerror(errno));
 }
-void exit_error(int e, char *program, char *s2)
+void exit_error(char *program, char *s2)
 {
-  print_error(e, program, s2);
+  print_error(program, s2);
   exit(EXIT_FAILURE);
 }
 int is_file_name_error(int e)

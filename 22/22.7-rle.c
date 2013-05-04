@@ -11,15 +11,15 @@ int main(int argc, char *argv[])
   char *iname  = argv[1];
   FILE *istream;
   if ((istream = fopen(iname, "rb")) == NULL)
-    exit_error(errno, program, iname);
+    exit_error(program, iname);
 
   char *oname = build_output_file_name(iname);
   FILE *ostream;
   if ((ostream = fopen(oname, "wb")) == NULL) {
-    print_error(errno, program, oname);
+    print_error(program, oname);
     free(oname);
     if (fclose(istream) == EOF)
-      exit_error(errno, program, iname);
+      exit_error(program, iname);
     exit(EXIT_FAILURE);
   }
 
@@ -37,10 +37,10 @@ int main(int argc, char *argv[])
   free(oname);
 
   if (fclose(istream) == EOF)
-    print_error(errno, program, iname);
+    print_error(program, iname);
 
   if (fclose(ostream) == EOF)
-    exit_error(errno, program, oname);
+    exit_error(program, oname);
 
   return 0;
 }

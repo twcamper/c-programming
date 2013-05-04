@@ -37,7 +37,7 @@ process_buffers(FILE *in, FILE *out,
   for (;;) {
     if ((n_read = fread(inbuffer, sizeof(inbuffer[0]), BUFFER_SIZE, in)) < BUFFER_SIZE) {
       if (ferror(in)) {
-        print_error(errno, __FILE__, "fread(in)");
+        print_error(__FILE__, "fread(in)");
         free(outbuffer);
         return;
       }
@@ -52,7 +52,7 @@ process_buffers(FILE *in, FILE *out,
 
     n_written = fwrite(outbuffer, sizeof(outbuffer[0]), n_processed, out);
     if (n_written < n_processed || ferror(out)) {
-      print_error(errno, __FILE__, "fwrite(out)");
+      print_error(__FILE__, "fwrite(out)");
       free(outbuffer);
       return;
     }

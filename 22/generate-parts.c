@@ -41,14 +41,14 @@ static size_t get_word_pointers(char **tokens, char *filename, char *content, si
   FILE *fp;
   size_t n_read = 0;
   if ((fp = fopen(filename, "rb")) == NULL)
-    exit_error(errno, __FILE__, filename);
+    exit_error(__FILE__, filename);
 
   if (!(n_read = fread(content, sizeof(content[0]), byte_max, fp)))
     if (ferror(fp) || feof(fp))
-      exit_error(errno, __FILE__, "fread()");
+      exit_error(__FILE__, "fread()");
 
   if (fclose(fp) == EOF)
-    exit_error(errno, __FILE__, filename);
+    exit_error(__FILE__, filename);
 
   return tokenize(content, tokens);
 }
@@ -91,14 +91,14 @@ int main(int argc, char *argv[])
     if (i % CHUNK_SIZE == 0) {
       if (flush_to_disk(output_file, db) != 0) {
         destroy_db(db);
-        exit_error(errno, argv[0], output_file);
+        exit_error(argv[0], output_file);
       }
     }
   }
 
   if (flush_to_disk(output_file, db) != 0) {
     destroy_db(db);
-    exit_error(errno, argv[0], output_file);
+    exit_error(argv[0], output_file);
   }
   destroy_db(db);
 

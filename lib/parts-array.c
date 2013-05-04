@@ -172,7 +172,7 @@ int write_db(char *filename, Parts db, char *write_mode)
   FILE *ostream;
   size_t i, record_size = get_part_record_size();
   if ((ostream = fopen(filename, write_mode)) == NULL) {
-    print_error(errno, __FILE__, filename);
+    print_error(__FILE__, filename);
     return -1;
   }
 

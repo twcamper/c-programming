@@ -18,9 +18,9 @@
 
 #define KEY '&'
 
-static void exit_error(int e, char *program, char *file)
+static void exit_error(char *program, char *file)
 {
-  fprintf(stderr, "%s: %s: %s\n", program, file, strerror(e));
+  fprintf(stderr, "%s: %s: %s\n", program, file, strerror(errno));
   exit(EXIT_FAILURE);
 }
 
@@ -36,14 +36,14 @@ int main(int argc, char *argv[])
   FILE *in, *out;
 
   if ((in = fopen(argv[1], "rb")) == NULL)
-    exit_error(errno, argv[0], argv[1]);
+    exit_error(argv[0], argv[1]);
 
   if ((out = fopen(argv[2], "wb")) == NULL)
-    exit_error(errno, argv[0], argv[2]);
+    exit_error(argv[0], argv[2]);
 
   while ((ch = fgetc(in)) != EOF) {
     if (fputc(ch ^ KEY, out) == EOF)
-      exit_error(errno, argv[0], argv[2]);
+      exit_error(argv[0], argv[2]);
   }
 
   return 0;
