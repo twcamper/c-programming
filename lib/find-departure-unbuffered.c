@@ -35,8 +35,12 @@ void find_closest_flight(int requested_departure, int *departure_time, int *arri
     if (errno)  {  /* NOT data error */
       perror(FILE_PATH);
       read_error = true;
+      errno = 0;
     }
-    errno = 0;
+  }
+  if (feof(fp) && l == 0) {
+    fprintf(stderr, "Empty data file: %s\n", FILE_PATH);
+    data_error = true;
   }
 
   if (fclose(fp) == EOF || read_error || data_error) {

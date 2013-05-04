@@ -1,18 +1,35 @@
 #include "find-departure.h"
 
+#define LINE_SIZE  (TIME_STR_SIZE * 2 + 2)
+
 struct file_info {
   size_t size;
   int data[][2];
 };
-struct file_info *load_data(char *filename)
+static bool is_file_valid(char *f)
+{
+  struct stat fs;
+  stat(f, &fs);
+
+  if (fs.st_size < LINE_SIZE) {
+    fprintf(stderr, "Empty or corrupt file: %s\n", f);
+    return false;
+  }
+  return true;
+}
+
+static struct file_info *load_data(char *filename)
 {
   FILE *fp;
-  char line[TIME_STR_SIZE * 2 + 1];
+  char line[LINE_SIZE];
   char d[TIME_STR_SIZE], a[TIME_STR_SIZE];
   int m;
   bool read_error = false, data_error = false;
   struct file_info *fi = NULL;  /* NULL so first realloc is just like malloc() */
   size_t l;
+
+  if (!is_file_valid(filename))
+    exit(EXIT_FAILURE);
 
   if ((fp = fopen(filename, "r")) == NULL) {
     fprintf(stderr, "failed to open %s\n", filename);
@@ -43,8 +60,8 @@ struct file_info *load_data(char *filename)
     if (errno)  {  /* NOT data error */
       perror(FILE_PATH);
       read_error = true;
+      errno = 0;
     }
-    errno = 0;
   }
 
   if (fclose(fp) == EOF || read_error || data_error) {

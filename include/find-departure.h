@@ -7,6 +7,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <sys/stat.h>
 
 #define DATA_ERROR(f, l, s)                                               \
         do {                                                              \
