@@ -28,13 +28,11 @@ struct file_info *load_data(char *filename)
 
     if ((m = to_minutes(d)) == -1) {
       DATA_ERROR(filename, l + 1, d);
-      data_error = true;
       break;
     }
     fi->data[l][0] = m;
     if ((m = to_minutes(a)) == -1) {
       DATA_ERROR(filename, l + 1, a);
-      data_error = true;
       break;
     }
     fi->data[l][1] = m;
@@ -42,14 +40,16 @@ struct file_info *load_data(char *filename)
   fi->size = l;
 
   if (!feof(fp) || ferror(fp)) {
-    fprintf(stderr, "%s: %s\n", strerror(errno), filename);
-    read_error = true;
+    if (errno)  {  /* NOT data error */
+      perror(FILE_PATH);
+      read_error = true;
+    }
     errno = 0;
   }
 
   if (fclose(fp) == EOF || read_error || data_error) {
     if (errno)
-      fprintf(stderr, "%s: %s\n", strerror(errno), filename);
+      perror(filename);
     free(fi);
     exit(EXIT_FAILURE);
   }

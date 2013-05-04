@@ -8,9 +8,14 @@
 #include <ctype.h>
 #include <errno.h>
 
-#define DATA_ERROR(f, l, s) fprintf(stderr, "Invalid data  %s:%ld  '%s'\n", (f), (l), (s))
+#define DATA_ERROR(f, l, s)                                               \
+        do {                                                              \
+          fprintf(stderr, "Invalid data  %s:%ld  '%s'\n", (f), (l), (s)); \
+          data_error = true;                                              \
+        } while (0)
+
 #define TIME_STR_SIZE 6
-#define FILE_PATH "data/flights.dat"
+#define FILE_PATH "data/flights.txt"
 
 void find_closest_flight(int, int *, int *);
 void print_am_pm(int);

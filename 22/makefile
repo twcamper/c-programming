@@ -15,7 +15,11 @@ all: $(EXECUTABLES) \
 	parts-array-io-profiler \
 	part-structs-io-profiler \
 	22.13-find-departure \
+	22.13-find-departure-unbuffered \
 	22.9-merge-parts
+
+22.13-find-departure-unbuffered: 22.13-find-departure.o $(LIBS)/find-departure-unbuffered.o 
+	$(LINK)
 
 22.13-find-departure: 22.13-find-departure.o $(LIBS)/find-departure.o
 	$(LINK)
