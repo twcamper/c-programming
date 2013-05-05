@@ -2,10 +2,10 @@
 
 #define LINE_SIZE  (TIME_STR_SIZE * 2 + 2)
 
-struct file_info {
+typedef struct file_info {
   size_t size;
   int data[][2];
-};
+} FileInfo;
 static bool is_file_valid(char *f)
 {
   struct stat fs;
@@ -18,14 +18,14 @@ static bool is_file_valid(char *f)
   return true;
 }
 
-static struct file_info *load_data(char *filename)
+static FileInfo *load_data(char *filename)
 {
   FILE *fp;
   char line[LINE_SIZE];
   char d[TIME_STR_SIZE], a[TIME_STR_SIZE];
   int m;
   bool read_error = false, data_error = false;
-  struct file_info *fi = NULL;  /* NULL so first realloc is just like malloc() */
+  FileInfo *fi = NULL;  /* NULL so first realloc is just like malloc() */
   size_t l;
 
   if (!is_file_valid(filename))
@@ -37,7 +37,7 @@ static struct file_info *load_data(char *filename)
   }
   for (l = 0;fgets(line, sizeof(line), fp) != NULL; l++)
   {
-    if (!(fi = realloc(fi, sizeof(struct file_info) + (sizeof(int (*)[2])) *  (l + 1)))) {
+    if (!(fi = realloc(fi, sizeof(FileInfo) + (sizeof(int (*)[2])) *  (l + 1)))) {
       fprintf(stderr, "realloc: %s:%d\n", __FILE__, __LINE__);
       exit(EXIT_FAILURE);
     }
@@ -72,11 +72,27 @@ static struct file_info *load_data(char *filename)
   }
   return fi;
 }
-void find_closest_flight(int requested_departure, int *departure_time, int *arrival_time)
+static void overnight_search(FileInfo *flights, int requested_departure, int *departure, int *arrival)
 {
-  struct file_info *flights =  load_data(FILE_PATH);
-  int diff;
-  size_t f;
+
+  /* adjust first flight in the morning to be
+   * a number 'larger than midnight' to
+   * simplify the comparison.
+   */
+  int morning_departure = flights->data[0][0] + (24*60);
+  int night_deaparture  = flights->data[flights->size - 1][0];
+  if (requested_departure < flights->data[0][0])
+    requested_departure += 24*60;
+
+  *departure = flights->data[0][0];
+  *arrival   = flights->data[0][1];
+  if (abs(requested_departure - night_deaparture) < abs(requested_departure - morning_departure)) {
+    *departure = night_deaparture;
+    *arrival   = flights->data[flights->size - 1][1];
+  }
+}
+static void single_day_search(FileInfo *flights, int requested_departure, int *departure, int *arrival)
+{
   /* start as max possible diff */
   /*
    * for each entry in departures list:
@@ -88,14 +104,23 @@ void find_closest_flight(int requested_departure, int *departure_time, int *arri
    *       store the difference as 'mininum_difference' for use in next comparison
    *       store the array index as 'closest' for use in accessing the flight info
    */
-  int minimum_difference = 23*60+59;
+  int diff, minimum_difference = 23*60+59;
+  size_t f;
   for (f = 0; f < flights->size; f++)  {
     diff = abs(requested_departure - flights->data[f][0]);
     if (diff < minimum_difference)  {
       minimum_difference = diff;
-      *departure_time = flights->data[f][0];
-      *arrival_time   = flights->data[f][1];
+      *departure = flights->data[f][0];
+      *arrival   = flights->data[f][1];
     }
   }
+}
+void find_closest_flight(int requested_departure, int *departure_time, int *arrival_time)
+{
+  FileInfo *flights =  load_data(FILE_PATH);
+  if (requested_departure < flights->data[0][0] || requested_departure > flights->data[flights->size -1][0])
+    overnight_search(flights, requested_departure, departure_time, arrival_time);
+  else
+    single_day_search(flights, requested_departure, departure_time, arrival_time);
   free(flights);
 }
