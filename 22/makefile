@@ -1,7 +1,14 @@
 PREFIX = ../
 
 include $(PREFIX)make/env.mk
-EXCLUDE = ./22.7-rle.c ./generate-parts.c ./22.inventory.c ./parts-io-profiler.c ./22.9-merge-parts.c ./22.13-find-departure.c
+EXCLUDE = ./22.7-rle.c \
+					./generate-parts.c \
+					./22.inventory.c \
+					./parts-io-profiler.c \
+					./22.9-merge-parts.c \
+					./22.13-find-departure.c \
+					./22.15-justify.c
+
 include $(PREFIX)make/generic.mk
 
 COMPILE = $(CC) -c $(CFLAGS) $<
@@ -14,9 +21,16 @@ all: $(EXECUTABLES) \
 	parts-list-io-profiler \
 	parts-array-io-profiler \
 	part-structs-io-profiler \
+	22.9-merge-parts \
 	22.13-find-departure \
 	22.13-find-departure-unbuffered \
-	22.9-merge-parts
+	22.15-justify
+
+22.15-justify: 22.15-justify.o $(LIBS)/line.o $(LIBS)/word.o $(LIBS)/error.o
+	$(LINK)
+
+22.15-justify.o: %.o: %.c $(INCS)/line.h $(INCS)/word.h $(INCS)/error.h
+	$(COMPILE)
 
 22.13-find-departure-unbuffered: 22.13-find-departure.o $(LIBS)/find-departure-unbuffered.o 
 	$(LINK)
