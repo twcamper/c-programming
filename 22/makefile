@@ -7,7 +7,8 @@ EXCLUDE = ./22.7-rle.c \
 					./parts-io-profiler.c \
 					./22.9-merge-parts.c \
 					./22.13-find-departure.c \
-					./22.15-justify.c
+					./22.15-justify.c \
+					./22.19-convert-line-endings.c
 
 include $(PREFIX)make/generic.mk
 
@@ -24,7 +25,21 @@ all: $(EXECUTABLES) \
 	22.9-merge-parts \
 	22.13-find-departure \
 	22.13-find-departure-unbuffered \
-	22.15-justify
+	22.15-justify \
+	dos2unix \
+	unix2dos
+
+dos2unix: dos2unix.o
+	$(LINK)
+
+dos2unix.o: 22.19-convert-line-endings.c
+	$(COMPILE) -D DOS2UNIX -o $@
+
+unix2dos: unix2dos.o
+	$(LINK)
+
+unix2dos.o: 22.19-convert-line-endings.c
+	$(COMPILE) -D UNIX2DOS -o $@
 
 22.15-justify: 22.15-justify.o $(LIBS)/line.o $(LIBS)/word.o $(LIBS)/error.o
 	$(LINK)
