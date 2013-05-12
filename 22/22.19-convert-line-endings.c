@@ -78,13 +78,10 @@ int convert_line_endings(int argc, char *argv[], int (*detect_newline)(FILE *, b
 #if defined(DOS2UNIX)
 static int detect_dos_newline(FILE *fp, bool *is_newline)
 {
-  int next = 0;
   int ch = fgetc(fp);
   if (ch == 0x0D) {
-    if ((next = fgetc(fp)) == 0x0A)
+    if ((ch = fgetc(fp)) == 0x0A)
       *is_newline = true;
-    else if (next == EOF)
-      ungetc(next, fp);
   }
   return ch;
 }
