@@ -109,10 +109,8 @@ static int detect_unix_newline(FILE *fp, bool *is_newline)
 
 static int write_dos_newline(FILE *fp)
 {
-  if (fputc(0x0D, fp) == EOF)
-    return EOF;
-
-  return fputc(0x0A, fp);
+  static char newline[] = {0x0D, 0x0A};
+  return fputs(newline, fp);
 }
 
 int main(int argc, char *argv[])
