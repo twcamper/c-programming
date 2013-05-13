@@ -32,7 +32,7 @@ void find_closest_flight(int requested_departure, int *departure_time, int *arri
     }
   }
   if (!feof(fp) || ferror(fp)) {
-    if (errno)  {  /* NOT data error */
+    if (!data_error)  {
       perror(FILE_PATH);
       read_error = true;
       errno = 0;
@@ -44,7 +44,7 @@ void find_closest_flight(int requested_departure, int *departure_time, int *arri
   }
 
   if (fclose(fp) == EOF || read_error || data_error) {
-    if (errno)
+    if (!data_error && !read_error)
       perror(FILE_PATH);
     exit(EXIT_FAILURE);
   }

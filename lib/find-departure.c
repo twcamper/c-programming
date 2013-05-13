@@ -57,7 +57,7 @@ static FileInfo *load_data(char *filename)
   fi->size = l;
 
   if (!feof(fp) || ferror(fp)) {
-    if (errno)  {  /* NOT data error */
+    if (!data_error)  {
       perror(FILE_PATH);
       read_error = true;
       errno = 0;
@@ -65,7 +65,7 @@ static FileInfo *load_data(char *filename)
   }
 
   if (fclose(fp) == EOF || read_error || data_error) {
-    if (errno)
+    if (!data_error && !read_error)
       perror(filename);
     free(fi);
     exit(EXIT_FAILURE);
