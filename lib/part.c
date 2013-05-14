@@ -96,7 +96,10 @@ void print_part(Part p)
 /* locale needed for currency formatting */
 void init_locale(void)
 {
-  setlocale(LC_ALL, "en_US");
+  if (!setlocale(LC_ALL, "")) {
+    fprintf(stderr, "%s:%d setlocale() failed\n", __FILE__, __LINE__);
+    exit(EXIT_FAILURE);
+  }
 }
 #define CURRENCY_MAX 16
 char * dollars(Part p)
