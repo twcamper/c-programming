@@ -1,6 +1,3 @@
-#ifdef __linux__
-  #define _GNU_SOURCE 1
-#endif
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -11,7 +8,7 @@
 int main(int argc, char *argv[])
 {
   if (argc < 2) {
-    fprintf(stderr, "%s locale\n", program_invocation_short_name);
+    fprintf(stderr, "%s locale\n", argv[0]);
     exit(EXIT_FAILURE);
   }
 
