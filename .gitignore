@@ -185,3 +185,4 @@ spec/parts-list-io-spec
 22/unix2dos
 weird/compound-literal-string-parameter-clang-bug
 23/23.8-numchar
+25/25.2-print-lconv
